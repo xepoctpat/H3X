@@ -1,0 +1,17 @@
+{
+    "debug.onTaskErrors": "abort",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/aad.*.json"
+            ],
+            "schema": {}
+        }
+    ],
+    "frontMatter.content.pageFolders": [
+        {
+            "title": "H3X",
+            "path": "[[workspace]]"
+        }
+    ]
+}

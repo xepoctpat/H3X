@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+
+/**
+ * Standalone Weather Agent Launcher
+ * 
+ * Launches the weather agent as a standalone Express server
+ * with M365 integration capabilities.
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { exec, spawn } = require('child_process');
+
+console.log('🌦️  Starting Weather Agent in Standalone Mode...\n');
+
+// Check if required files exist
+const requiredFiles = [
+    'env/.env.standalone',
+    'src/agent.js',
+    'package.json'
+];
+
+for (const file of requiredFiles) {
+    if (!fs.existsSync(path.join(__dirname, file))) {
+        console.error(`❌ Required file missing: ${file}`);
+        process.exit(1);
+    }
+}
+
+// Load standalone environment
+process.env.TEAMSFX_ENV = 'standalone';
+
+// Check OpenAI API key
+const envPath = path.join(__dirname, 'env/.env.standalone');
+const envContent = fs.readFileSync(envPath, 'utf8');
+const hasValidKey = envContent.includes('SECRET_OPENAI_API_KEY=') && 
+                   !envContent.includes('your_openai_api_key_here');
+
+if (!hasValidKey) {
+    console.error('❌ OpenAI API key not configured in env/.env.standalone');
+    console.log('🔧 Please set SECRET_OPENAI_API_KEY in env/.env.standalone');
+    process.exit(1);
+}
+
+console.log('✅ Configuration validated');
+
+// Start the server
+console.log('🚀 Launching Weather Agent Server...');
+console.log('📍 Server will be available at: http://localhost:3978');
+console.log('🔍 API endpoints:');
+console.log('   • POST /api/messages - Bot Framework endpoint');
+console.log('   • GET /health - Health check');
+console.log('   • GET / - Status page\n');
+
+// Start with environment variables
+const env = { 
+    ...process.env, 
+    TEAMSFX_ENV: 'standalone',
+    NODE_ENV: 'development'
+};
+
+const child = spawn('node', ['src/index.js'], {
+    env,
+    stdio: 'inherit',
+    cwd: __dirname
+});
+
+child.on('error', (err) => {
+    console.error('❌ Failed to start server:', err.message);
+    process.exit(1);
+});
+
+child.on('close', (code) => {
+    if (code !== 0) {
+        console.error(`❌ Server exited with code ${code}`);
+        process.exit(code);
+    }
+});
+
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+    console.log('\n🛑 Shutting down Weather Agent...');
+    child.kill('SIGTERM');
+});
+
+process.on('SIGTERM', () => {
+    child.kill('SIGTERM');
+});
