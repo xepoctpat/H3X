@@ -5,15 +5,16 @@ const { AzureChatOpenAI, ChatOpenAI } = require("@langchain/openai");
 const { ActivityTypes } = require("@microsoft/agents-activity");
 const { AgentApplicationBuilder, MessageFactory } = require("@microsoft/agents-hosting");
 const { dateTool } = require("./tools/dateTimeTool");
-const { getWeatherTool } = require("./tools/getWeatherTool");
+const { sirAnalysisTool } = require("./tools/sirAnalysisTool");
+const { environmentSimulationTool } = require("./tools/environmentSimulationTool");
 
-const weatherAgent = new AgentApplicationBuilder().build();
+const sirAgent = new AgentApplicationBuilder().build();
 
-weatherAgent.conversationUpdate(
+sirAgent.conversationUpdate(
   "membersAdded",
   async (context) => {
     await context.sendActivity(
-      `Hello and Welcome! I'm here to help with all your weather forecast needs!`
+      `Welcome to the Hexperiment Labs SIR Control Interface! I am your Super Intelligent Regulator assistant, ready to help you with environment analysis, simulation control, and AI assistant generation.`
     );
   }
 );
@@ -24,7 +25,7 @@ const agentModel = new ChatOpenAI({
   temperature: 0,
 });
 
-const agentTools = [getWeatherTool, dateTool];
+const agentTools = [sirAnalysisTool, environmentSimulationTool, dateTool];
 const agentCheckpointer = new MemorySaver();
 const agent = createReactAgent({
   llm: agentModel,
@@ -33,9 +34,20 @@ const agent = createReactAgent({
 });
 
 const sysMessage = new SystemMessage(`
-You are a friendly assistant that helps people find a weather forecast for a given time and place.
-You may ask follow up questions until you have enough informatioon to answer the customers question,
-but once you have a forecast forecast, make sure to format it nicely using an adaptive card.
+You are the Hexperiment Labs Super Intelligent Regulator (SIR) Control Interface assistant.
+
+Your primary functions:
+1. Environmental Analysis - Analyze real-world environments and conditions for optimal AI assistant deployment
+2. Simulation Control - Manage and monitor environment simulations for AI training
+3. AI Assistant Generation - Help users understand and configure tailored AI assistants for specific environments
+4. System Monitoring - Provide insights into SIR system status and operational metrics
+
+You operate in two modes:
+- PASSIVE MODE: Observation and analysis phase, gathering environmental data
+- ACTIVE MODE: Generating and deploying tailored AI assistants based on simulation results
+
+Always provide responses that are professional, technical, and focused on the SIR system capabilities.
+Use adaptive cards for complex data visualization and system status reports.
 
 Respond in JSON format with the following JSON schema, and do not use markdown in the response:
 
@@ -44,7 +56,7 @@ Respond in JSON format with the following JSON schema, and do not use markdown i
     "content": "{The content of the response, may be plain text, or JSON based adaptive card}"
 }`);
 
-weatherAgent.activity(ActivityTypes.Message, async (context, state) => {
+sirAgent.activity(ActivityTypes.Message, async (context, state) => {
   const llmResponse = await agent.invoke(
     {
       messages: [sysMessage, new HumanMessage(context.activity.text)],
@@ -70,5 +82,5 @@ weatherAgent.activity(ActivityTypes.Message, async (context, state) => {
 });
 
 module.exports = {
-  weatherAgent,
+  sirAgent,
 };
