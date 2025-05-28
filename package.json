@@ -35,7 +35,15 @@
         "lmstudio:interface": "node sir-interface.js",
         "lmstudio:autorun": "node sir-autorun.js start",
         "lmstudio:autorun-fast": "node sir-autorun.js start --interval 10",
-        "lmstudio:autorun-custom": "node sir-autorun.js start --interval 60 --tasks system_status,security_monitoring"
+        "lmstudio:autorun-custom": "node sir-autorun.js start --interval 60 --tasks system_status,security_monitoring",
+        "lmstudio:response": "node Scripts/lmstudio-response-handler.js",
+        "lmstudio:response-docker": "node Scripts/lmstudio-response-handler.js docker",
+        "lmstudio:npm-integration": "node Scripts/npm-lmstudio-integration.js",
+        "lmstudio:docker-integration": "node Scripts/docker-lmstudio-integration.js",
+        "lmstudio:docker-up": "node Scripts/docker-lmstudio-integration.js start",
+        "lmstudio:docker-down": "node Scripts/docker-lmstudio-integration.js stop",
+        "lmstudio:docker-test": "node Scripts/docker-lmstudio-integration.js test",
+        "lmstudio:generate-docker": "node Scripts/docker-lmstudio-integration.js generate"
     },
     "repository": {
         "type": "git",
