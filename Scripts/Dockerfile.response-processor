@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copy application code
+COPY Scripts/ ./Scripts/
+COPY lmstudio-response-handler.js ./
+COPY npm-lmstudio-integration.js ./
+
+# Create output directory
+RUN mkdir -p /app/outputs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "console.log('Health check passed')" || exit 1
+
+# Start the response processor
+CMD ["node", "Scripts/response-processor-daemon.js"]

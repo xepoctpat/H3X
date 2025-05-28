@@ -4,9 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile.h3x
     ports:
-      - "4978:3978"
+      - "3979:3978"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=3978
       - LMSTUDIO_URL=http://lmstudio:1234
       - PROTOCOL_SERVER_URL=http://protocol-server:8080

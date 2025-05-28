@@ -152,6 +152,9 @@
                             <button class="docker-btn" onclick="orchestrateContainers()">
                                 <i class="fas fa-layer-group"></i> Orchestrate Stack
                             </button>
+                            <button class="docker-btn" onclick="cloneDatabase()">
+                                <i class="fas fa-database"></i> Clone DB
+                            </button>
                         </div>
                     </div>
 
@@ -179,24 +182,24 @@
                         <div class="config-grid">
                             <div class="config-item">
                                 <label>Server URL:</label>
-                                <input type="text" id="lmstudioUrl" value="http://localhost:1234" readonly>
+                                <input type="text" id="lmstudioUrl" value="http://localhost:1234" readonly title="LMStudio server URL" placeholder="LMStudio server URL">
                                 <button onclick="testLMStudioConnection()">Test</button>
                             </div>
                             <div class="config-item">
                                 <label>Model:</label>
-                                <select id="selectedModel">
+                                <select id="selectedModel" title="Select AI model" aria-label="Model">
                                     <option value="">Select Model...</option>
                                 </select>
                                 <button onclick="loadModels()">Refresh</button>
                             </div>
                             <div class="config-item">
                                 <label>Temperature:</label>
-                                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7" title="Set temperature (randomness)" aria-label="Temperature">
                                 <span id="tempValue">0.7</span>
                             </div>
                             <div class="config-item">
                                 <label>Max Tokens:</label>
-                                <input type="number" id="maxTokens" value="2048" min="1" max="8192">
+                                <input type="number" id="maxTokens" value="2048" min="1" max="8192" title="Maximum tokens for AI response" placeholder="Max tokens">
                             </div>
                         </div>
                     </div>
@@ -331,14 +334,14 @@
                             <div class="metric-label">LMStudio Health</div>
                             <div class="metric-value" id="lmstudioHealth">85%</div>
                             <div class="metric-bar">
-                                <div class="metric-fill" data-metric="lmstudio" style="width: 85%"></div>
+                                <div class="metric-fill width-85" data-metric="lmstudio"></div>
                             </div>
                         </div>
                         <div class="metric-item">
                             <div class="metric-label">Neural Interfaces</div>
                             <div class="metric-value" id="neuralHealth">100%</div>
                             <div class="metric-bar">
-                                <div class="metric-fill" data-metric="neural" style="width: 100%"></div>
+                                <div class="metric-fill width-100" data-metric="neural"></div>
                             </div>
                         </div>
                     </div>
@@ -481,7 +484,46 @@
                 </div>
             </div>
 
-            <!-- ...existing panels... -->
+            <!-- Persona Generation Panel -->
+            <section class="control-panel persona-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-user-astronaut"></i> Persona Generation</h2>
+                    <div class="connection-status" id="personaStatus">READY</div>
+                </div>
+                <div class="panel-content">
+                    <div class="persona-config">
+                        <h3>🧬 Persona Parameters</h3>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <label for="personaSocialSetting">Social Setting:</label>
+                                <select id="personaSocialSetting" title="Select social setting">
+                                    <option value="work">Work</option>
+                                    <option value="family">Family</option>
+                                    <option value="friends">Friends</option>
+                                    <option value="public">Public</option>
+                                </select>
+                            </div>
+                            <div class="config-item">
+                                <label for="personaTrait">Personality Trait:</label>
+                                <input type="text" id="personaTrait" placeholder="e.g. extrovert, analytical" title="Enter personality trait">
+                            </div>
+                            <div class="config-item">
+                                <label for="personaVariations">Number of Variations:</label>
+                                <input type="number" id="personaVariations" value="3" min="1" max="10" placeholder="Number of variations" title="Number of persona variations">
+                            </div>
+                        </div>
+                        <div class="persona-controls">
+                            <button class="persona-btn" onclick="generatePersona()">
+                                <i class="fas fa-magic"></i> Generate Persona(s)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="persona-results">
+                        <h3>🧑‍🚀 Generated Personas</h3>
+                        <div id="personaResults" class="persona-results-list"></div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 

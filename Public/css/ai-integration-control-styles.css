@@ -670,6 +670,13 @@ body {
     transition: width 1s ease;
 }
 
+.metric-fill.width-85 {
+    width: 85%;
+}
+.metric-fill.width-100 {
+    width: 100%;
+}
+
 .system-logs {
     margin: 20px 0;
 }

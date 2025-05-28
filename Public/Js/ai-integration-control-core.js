@@ -1,25 +1,12 @@
 /**
  * AI Integration Control Center Core JavaScript
- * Handles Azure M365 Bot connections, Docker integration, LMStudio management, and system resets
+ * Handles Docker integration, LMStudio management, and system resets
+ * (All Azure, M365, Teams, and bot logic removed for local/server/container operation)
  */
 
 class AIIntegrationControlCenter {
     constructor() {
-        this.azureConfig = {
-            subscriptionId: '',
-            resourceGroup: 'H3X-Neural-Resources',
-            botName: 'H3X-Neural-Bot',
-            tenantId: '',
-            clientId: '',
-            clientSecret: '',
-            status: 'disconnected'
-        };
-
-        this.dockerConfig = {
-            containers: [],
-            networks: [],
-            status: 'detecting'
-        };
+        this.dockerConfig = { status: 'detecting' };
 
         this.lmstudioConfig = {
             url: 'http://localhost:1234',
@@ -30,14 +17,12 @@ class AIIntegrationControlCenter {
         };
 
         this.systemHealth = {
-            azure: 0,
             docker: 0,
             lmstudio: 85,
             neural: 100
         };
 
         this.resetState = {
-            azure: true,
             docker: true,
             lmstudio: true,
             neural: true,
@@ -54,7 +39,6 @@ class AIIntegrationControlCenter {
             this.log('Initializing AI Integration Control Center...', 'info');
             
             // Initialize components
-            await this.initializeAzureConnection();
             await this.initializeDockerIntegration();
             await this.initializeLMStudioConnection();
             await this.initializeSystemMonitoring();
@@ -67,194 +51,6 @@ class AIIntegrationControlCenter {
             this.log(`Initialization failed: ${error.message}`, 'error');
             this.updateSystemStatus('ERROR');
         }
-    }
-
-    // Azure Integration Methods
-    async initializeAzureConnection() {
-        try {
-            // Check if user is authenticated with Azure
-            const authState = await this.checkAzureAuth();
-            if (authState.isSignedIn) {
-                this.log('Azure authentication detected', 'success');
-                this.updateAzureStatus('AUTHENTICATED');
-                this.systemHealth.azure = 50;
-            } else {
-                this.log('Azure authentication required', 'warning');
-                this.updateAzureStatus('AUTH_REQUIRED');
-            }
-        } catch (error) {
-            this.log(`Azure initialization error: ${error.message}`, 'error');
-            this.updateAzureStatus('ERROR');
-        }
-    }
-
-    async checkAzureAuth() {
-        // Simulate Azure auth check
-        return { isSignedIn: true };
-    }
-
-    async setupAzureSubscription() {
-        try {
-            this.log('Setting up Azure subscription...', 'info');
-            
-            // Validate subscription ID
-            const subscriptionId = document.getElementById('subscriptionId').value;
-            if (!subscriptionId) {
-                alert('Please enter a valid Azure Subscription ID');
-                return;
-            }
-
-            this.azureConfig.subscriptionId = subscriptionId;
-            this.markRequirementComplete('subscription');
-            this.log(`Azure subscription configured: ${subscriptionId}`, 'success');
-            this.systemHealth.azure += 15;
-            this.updateHealthMetrics();
-            
-        } catch (error) {
-            this.log(`Subscription setup failed: ${error.message}`, 'error');
-        }
-    }
-
-    async setupBotService() {
-        try {
-            this.log('Setting up Azure Bot Service...', 'info');
-            
-            // Simulate bot service creation
-            await this.delay(2000);
-            
-            this.markRequirementComplete('bot');
-            this.log('Azure Bot Service configured successfully', 'success');
-            this.systemHealth.azure += 15;
-            this.updateHealthMetrics();
-            
-        } catch (error) {
-            this.log(`Bot service setup failed: ${error.message}`, 'error');
-        }
-    }
-
-    async setupAppService() {
-        try {
-            this.log('Setting up Azure App Service...', 'info');
-            
-            // Simulate app service creation
-            await this.delay(2000);
-            
-            this.markRequirementComplete('app');
-            this.log('Azure App Service configured successfully', 'success');
-            this.systemHealth.azure += 15;
-            this.updateHealthMetrics();
-            
-        } catch (error) {
-            this.log(`App service setup failed: ${error.message}`, 'error');
-        }
-    }
-
-    async setupAppRegistration() {
-        try {
-            this.log('Setting up Azure App Registration...', 'info');
-            
-            // Simulate app registration
-            await this.delay(1500);
-            
-            this.azureConfig.clientId = 'generated-client-id';
-            this.markRequirementComplete('registration');
-            this.log('Azure App Registration configured successfully', 'success');
-            this.systemHealth.azure += 10;
-            this.updateHealthMetrics();
-            
-        } catch (error) {
-            this.log(`App registration setup failed: ${error.message}`, 'error');
-        }
-    }
-
-    async setupTeamsManifest() {
-        try {
-            this.log('Setting up Teams App Manifest...', 'info');
-            
-            // Generate Teams manifest
-            const manifest = this.generateTeamsManifest();
-            
-            this.markRequirementComplete('teams');
-            this.log('Teams App Manifest generated successfully', 'success');
-            this.systemHealth.azure += 5;
-            this.updateHealthMetrics();
-            
-        } catch (error) {
-            this.log(`Teams manifest setup failed: ${error.message}`, 'error');
-        }
-    }
-
-    async setupManagedIdentity() {
-        try {
-            this.log('Setting up Managed Identity...', 'info');
-            
-            // Simulate managed identity setup
-            await this.delay(1000);
-            
-            this.markRequirementComplete('identity');
-            this.log('Managed Identity configured successfully', 'success');
-            this.systemHealth.azure += 5;
-            this.updateHealthMetrics();
-            
-            if (this.systemHealth.azure >= 95) {
-                this.updateAzureStatus('CONNECTED');
-            }
-            
-        } catch (error) {
-            this.log(`Managed identity setup failed: ${error.message}`, 'error');
-        }
-    }
-
-    generateTeamsManifest() {
-        return {
-            "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-            "manifestVersion": "1.16",
-            "version": "1.0.0",
-            "id": "generated-app-id",
-            "packageName": "com.h3x.neural.bot",
-            "developer": {
-                "name": "H3X Neural Systems",
-                "websiteUrl": "https://h3x-neural.com",
-                "privacyUrl": "https://h3x-neural.com/privacy",
-                "termsOfUseUrl": "https://h3x-neural.com/terms"
-            },
-            "name": {
-                "short": "H3X Neural Bot",
-                "full": "H3X Neural AI Integration Bot"
-            },
-            "description": {
-                "short": "Advanced AI integration bot for Microsoft 365",
-                "full": "H3X Neural AI Integration Bot provides advanced AI capabilities across Microsoft 365 applications with LMStudio integration."
-            },
-            "icons": {
-                "outline": "icon-outline.png",
-                "color": "icon-color.png"
-            },
-            "accentColor": "#00ff88",
-            "bots": [
-                {
-                    "botId": this.azureConfig.clientId,
-                    "scopes": ["personal", "team", "groupchat"],
-                    "commandLists": [
-                        {
-                            "scopes": ["personal", "team", "groupchat"],
-                            "commands": [
-                                {
-                                    "title": "Neural Query",
-                                    "description": "Send a query to the H3X Neural AI system"
-                                },
-                                {
-                                    "title": "System Status",
-                                    "description": "Check the status of AI integration systems"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "permissions": ["identity", "messageTeamMembers"],
-            "validDomains": ["localhost", "h3x-neural.azurewebsites.net"]
-        };
     }
 
     // Docker Integration Methods
@@ -615,13 +411,11 @@ volumes:
 
     updateHealthMetrics() {
         // Update health displays
-        document.getElementById('azureHealth').textContent = `${this.systemHealth.azure}%`;
         document.getElementById('dockerHealth').textContent = `${this.systemHealth.docker}%`;
         document.getElementById('lmstudioHealth').textContent = `${this.systemHealth.lmstudio}%`;
         document.getElementById('neuralHealth').textContent = `${this.systemHealth.neural}%`;
 
         // Update progress bars
-        document.querySelector('[data-metric="azure"]').style.width = `${this.systemHealth.azure}%`;
         document.querySelector('[data-metric="docker"]').style.width = `${this.systemHealth.docker}%`;
         document.querySelector('[data-metric="lmstudio"]').style.width = `${this.systemHealth.lmstudio}%`;
         document.querySelector('[data-metric="neural"]').style.width = `${this.systemHealth.neural}%`;
@@ -649,18 +443,34 @@ volumes:
         console.log(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
     }
 
+    // --- Database Clone/Backup Integration ---
+    async cloneDatabase() {
+        try {
+            this.log('Initiating database clone/backup...', 'info');
+            showBanner('Cloning database...','info',0);
+            const response = await fetch('http://localhost:8080/api/db/clone', { method: 'POST' });
+            if (response.ok) {
+                this.log('Database clone/backup completed successfully', 'success');
+                showBanner('Database clone/backup completed!','success');
+            } else {
+                this.log('Database clone/backup failed', 'error');
+                showBanner('Database clone/backup failed','error',5000);
+            }
+        } catch (error) {
+            this.log('Database clone/backup error: ' + error.message, 'error');
+            showBanner('Database clone/backup error: ' + error.message, 'error', 5000);
+        } finally {
+            setTimeout(() => {
+                let banner = document.getElementById('qolBanner');
+                if (banner) banner.style.display = 'none';
+            }, 2000);
+        }
+    }
+
     updateSystemStatus(status) {
         const statusElement = document.getElementById('systemStatus');
         if (statusElement) {
             statusElement.textContent = status;
-        }
-    }
-
-    updateAzureStatus(status) {
-        const statusElement = document.getElementById('azureStatus');
-        if (statusElement) {
-            statusElement.textContent = status;
-            statusElement.setAttribute('data-status', status.toLowerCase().includes('connected') ? 'connected' : 'disconnected');
         }
     }
 
@@ -704,25 +514,22 @@ volumes:
     }
 
     resetConfigurations() {
-        this.azureConfig = {
-            subscriptionId: '',
-            resourceGroup: 'H3X-Neural-Resources',
-            botName: 'H3X-Neural-Bot',
-            tenantId: '',
-            clientId: '',
-            clientSecret: '',
-            status: 'disconnected'
+        this.dockerConfig = { status: 'detecting', containers: [] };
+        this.lmstudioConfig = {
+            url: 'http://localhost:1234',
+            model: '',
+            temperature: 0.7,
+            maxTokens: 2048,
+            status: 'connected'
         };
-
-        this.systemHealth.azure = 0;
         this.systemHealth.docker = 0;
+        this.systemHealth.lmstudio = 0;
+        this.systemHealth.neural = 50;
         this.resetUIStates();
     }
 
     hardResetSystems() {
         this.resetConfigurations();
-        this.dockerConfig.containers = [];
-        this.systemHealth = { azure: 0, docker: 0, lmstudio: 0, neural: 50 };
         this.logs = [];
         
         // Clear log viewer
@@ -806,48 +613,6 @@ function startHealthMonitoring() {
     }
 }
 
-// Azure Functions
-function setupAzureSubscription() { controlCenter.setupAzureSubscription(); }
-function setupBotService() { controlCenter.setupBotService(); }
-function setupAppService() { controlCenter.setupAppService(); }
-function setupAppRegistration() { controlCenter.setupAppRegistration(); }
-function setupTeamsManifest() { controlCenter.setupTeamsManifest(); }
-function setupManagedIdentity() { controlCenter.setupManagedIdentity(); }
-
-function validateSubscription() {
-    const subscriptionId = document.getElementById('subscriptionId').value;
-    if (subscriptionId) {
-        controlCenter.log(`Validating subscription: ${subscriptionId}`, 'info');
-        controlCenter.setupAzureSubscription();
-    } else {
-        alert('Please enter a subscription ID');
-    }
-}
-
-function createResourceGroup() {
-    const resourceGroup = document.getElementById('resourceGroup').value;
-    if (resourceGroup) {
-        controlCenter.log(`Creating resource group: ${resourceGroup}`, 'info');
-        controlCenter.markRequirementComplete('resource group');
-    } else {
-        alert('Please enter a resource group name');
-    }
-}
-
-function registerBot() {
-    const botName = document.getElementById('botName').value;
-    if (botName) {
-        controlCenter.log(`Registering bot: ${botName}`, 'info');
-        controlCenter.setupBotService();
-    } else {
-        alert('Please enter a bot name');
-    }
-}
-
-function provisionResources() { controlCenter.log('Provisioning Azure resources...', 'info'); }
-function deployBot() { controlCenter.log('Deploying M365 bot...', 'info'); }
-function validateDeployment() { controlCenter.log('Validating deployment...', 'info'); }
-
 // Docker Functions
 function scanContainers() { controlCenter.scanContainers(); }
 function createNetwork() { controlCenter.log('Creating AI network...', 'info'); }
@@ -855,9 +620,9 @@ function orchestrateContainers() { controlCenter.log('Orchestrating container st
 function generateCompose() { controlCenter.generateCompose(); }
 function launchStack() { controlCenter.log('Launching Docker stack...', 'info'); }
 function resetStack() { controlCenter.log('Resetting Docker stack...', 'warning'); }
-
 function connectContainer(name) { controlCenter.connectContainer(name); }
 function configureContainer(name) { controlCenter.log(`Configuring container: ${name}`, 'info'); }
+function cloneDatabase() { controlCenter.cloneDatabase(); }
 
 // LMStudio Functions
 function testLMStudioConnection() { controlCenter.testLMStudioConnection(); }
@@ -867,8 +632,6 @@ function clearTest() {
     document.getElementById('testPrompt').value = '';
     document.getElementById('testResponse').textContent = '';
 }
-
-function toggleMapping(mapping) { controlCenter.toggleMapping(mapping); }
 
 // Reset Functions
 function performSoftReset() { controlCenter.performSoftReset(); }
@@ -882,6 +645,115 @@ function cancelReset() { controlCenter.cancelReset(); }
 function clearLogs() { controlCenter.clearLogs(); }
 function exportLogs() { controlCenter.exportLogs(); }
 function refreshLogs() { controlCenter.refreshLogs(); }
+
+// --- QOL: Utility for showing banners ---
+function showBanner(message, type = 'info', timeout = 3000) {
+    let banner = document.getElementById('qolBanner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'qolBanner';
+        banner.style.position = 'fixed';
+        banner.style.top = '10px';
+        banner.style.left = '50%';
+        banner.style.transform = 'translateX(-50%)';
+        banner.style.zIndex = 9999;
+        banner.style.padding = '10px 24px';
+        banner.style.borderRadius = '6px';
+        banner.style.fontWeight = 'bold';
+        banner.style.fontSize = '1.1em';
+        banner.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+        document.body.appendChild(banner);
+    }
+    banner.textContent = message;
+    banner.style.background = type === 'error' ? '#ffdddd' : (type === 'success' ? '#ddffdd' : '#ddeeff');
+    banner.style.color = type === 'error' ? '#a00' : (type === 'success' ? '#080' : '#005');
+    banner.style.display = 'block';
+    if (timeout > 0) {
+        setTimeout(() => { banner.style.display = 'none'; }, timeout);
+    }
+}
+
+// --- QOL: Persona Generation Integration with Loading State ---
+async function generatePersonaFrontend() {
+    const personaBtn = document.getElementById('generatePersonaBtn');
+    if (personaBtn) personaBtn.disabled = true;
+    showBanner('Generating persona(s)...', 'info', 0);
+    const socialSetting = document.getElementById('personaSocialSetting')?.value || 'work';
+    const trait = document.getElementById('personaTrait')?.value || '';
+    const variations = parseInt(document.getElementById('personaVariations')?.value || '1', 10);
+    const useAI = document.getElementById('personaUseAI')?.checked || false;
+    const payload = { socialSetting, trait, variations, useAI };
+    try {
+        const response = await fetch('http://localhost:8080/api/persona/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+            const data = await response.json();
+            displayPersonas(data.personas || []);
+            showBanner('Persona(s) generated successfully!', 'success');
+        } else {
+            showBanner('Persona generation failed.', 'error', 5000);
+        }
+    } catch (error) {
+        showBanner('Persona generation error: ' + error.message, 'error', 5000);
+    } finally {
+        if (personaBtn) personaBtn.disabled = false;
+        setTimeout(() => {
+            let banner = document.getElementById('qolBanner');
+            if (banner) banner.style.display = 'none';
+        }, 2000);
+    }
+}
+
+// --- QOL: WebSocket Connection Status Indicator ---
+function updateWebSocketStatus(connected) {
+    let wsStatus = document.getElementById('wsStatus');
+    if (!wsStatus) {
+        wsStatus = document.createElement('span');
+        wsStatus.id = 'wsStatus';
+        wsStatus.style.position = 'fixed';
+        wsStatus.style.bottom = '10px';
+        wsStatus.style.right = '20px';
+        wsStatus.style.padding = '6px 16px';
+        wsStatus.style.borderRadius = '6px';
+        wsStatus.style.fontWeight = 'bold';
+        wsStatus.style.background = '#ddeeff';
+        wsStatus.style.color = '#005';
+        wsStatus.style.zIndex = 9999;
+        document.body.appendChild(wsStatus);
+    }
+    wsStatus.textContent = connected ? 'WebSocket: Connected' : 'WebSocket: Disconnected';
+    wsStatus.style.background = connected ? '#ddffdd' : '#ffdddd';
+    wsStatus.style.color = connected ? '#080' : '#a00';
+}
+
+// --- Patch ProtocolIntegration WebSocket events for QOL ---
+if (typeof ProtocolIntegration !== 'undefined') {
+    const origStartWebSocket = ProtocolIntegration.prototype.startWebSocket;
+    ProtocolIntegration.prototype.startWebSocket = function() {
+        origStartWebSocket.call(this);
+        if (this.websocket) {
+            this.websocket.onopen = () => {
+                this.updateStatus('websocket-status', 'CONNECTED', 'online');
+                this.addProtocolMessage('system', '🔌 WebSocket connection established');
+                updateWebSocketStatus(true);
+            };
+            this.websocket.onclose = () => {
+                this.updateStatus('websocket-status', 'DISCONNECTED', 'offline');
+                this.addProtocolMessage('system', '🔌 WebSocket connection closed');
+                updateWebSocketStatus(false);
+            };
+            this.websocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                this.updateStatus('websocket-status', 'ERROR', 'error');
+                this.addProtocolMessage('system', '❌ WebSocket error');
+                updateWebSocketStatus(false);
+            };
+        }
+    };
+}
 
 // Emergency reset function
 document.addEventListener('DOMContentLoaded', function() {
@@ -906,162 +778,13 @@ document.addEventListener('DOMContentLoaded', function() {
             tempValue.textContent = this.value;
         });
     }
+
+    // Persona generation button wiring
+    const personaBtn = document.getElementById('generatePersonaBtn');
+    if (personaBtn) {
+        personaBtn.addEventListener('click', generatePersonaFrontend);
+    }
 });
-
-// M365 AI Integration Module
-class M365AIIntegration {
-    constructor() {
-        this.baseUrl = 'http://localhost:3978';
-        this.isConnected = false;
-        this.chatHistory = [];
-    }    async initialize() {
-        try {
-            // Test M365 agent health (correct endpoint)
-            const healthResponse = await fetch(`${this.baseUrl}/health`);
-            if (healthResponse.ok) {
-                const healthData = await healthResponse.json();
-                this.updateStatus('m365-status', 'ONLINE', 'online');
-                this.isConnected = true;
-                this.addChatMessage('system', `🤖 ${healthData.service} initialized successfully`);
-                
-                // Test additional endpoints
-                await this.testGraphAPI();
-                await this.testTeamsBot();
-                await this.testAdaptiveCards();
-                
-                return true;
-            }
-        } catch (error) {
-            console.error('M365 initialization failed:', error);
-            this.updateStatus('m365-status', 'ERROR', 'error');
-            this.addChatMessage('system', '❌ M365 AI Agent initialization failed');
-        }
-        return false;
-    }    async testGraphAPI() {
-        try {
-            // Test main endpoint which shows features including M365 integration
-            const response = await fetch(`${this.baseUrl}/`);
-            if (response.ok) {
-                const data = await response.json();
-                if (data.features && data.features.some(f => f.includes('Microsoft SDK'))) {
-                    this.updateStatus('graph-api-status', 'ONLINE', 'online');
-                } else {
-                    this.updateStatus('graph-api-status', 'LIMITED', 'warning');
-                }
-            } else {
-                this.updateStatus('graph-api-status', 'OFFLINE', 'offline');
-            }
-        } catch (error) {
-            this.updateStatus('graph-api-status', 'OFFLINE', 'offline');
-        }
-    }    async testTeamsBot() {
-        try {
-            // Test if Bot Framework endpoint exists
-            const testMessage = {
-                type: 'message',
-                text: 'ping',
-                from: { id: 'test', name: 'Test' },
-                timestamp: new Date().toISOString()
-            };
-            
-            const response = await fetch(`${this.baseUrl}/api/messages`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(testMessage)
-            });
-            
-            // Even if auth fails, endpoint existence means Teams Bot is configured
-            if (response.status === 401 || response.status === 200) {
-                this.updateStatus('teams-bot-status', 'ONLINE', 'online');
-            } else {
-                this.updateStatus('teams-bot-status', 'LIMITED', 'warning');
-            }
-        } catch (error) {
-            this.updateStatus('teams-bot-status', 'OFFLINE', 'offline');
-        }
-    }    async testAdaptiveCards() {
-        try {
-            // Check if service supports adaptive cards (based on M365 features)
-            const response = await fetch(`${this.baseUrl}/`);
-            if (response.ok) {
-                const data = await response.json();
-                if (data.features && data.features.some(f => f.includes('Microsoft'))) {
-                    this.updateStatus('adaptive-cards-status', 'ONLINE', 'online');
-                } else {
-                    this.updateStatus('adaptive-cards-status', 'LIMITED', 'warning');
-                }
-            } else {
-                this.updateStatus('adaptive-cards-status', 'OFFLINE', 'offline');
-            }
-        } catch (error) {
-            this.updateStatus('adaptive-cards-status', 'OFFLINE', 'offline');
-        }
-    }
-
-    async sendMessage(message) {
-        if (!this.isConnected) {
-            this.addChatMessage('system', '❌ M365 Agent not connected');
-            return;
-        }
-
-        this.addChatMessage('user', message);
-
-        try {
-            const response = await fetch(`${this.baseUrl}/api/messages`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    type: 'message',
-                    text: message,
-                    from: { id: 'user', name: 'User' },
-                    timestamp: new Date().toISOString()
-                })
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                this.addChatMessage('assistant', result.text || result.response || 'Message processed');
-            } else {
-                this.addChatMessage('system', '❌ Failed to send message to M365 Agent');
-            }
-        } catch (error) {
-            console.error('M365 message error:', error);
-            this.addChatMessage('system', '❌ Connection error with M365 Agent');
-        }
-    }
-
-    addChatMessage(type, message) {
-        const chatHistory = document.getElementById('m365-chat-history');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${type}`;
-        messageDiv.innerHTML = `
-            <span class="message-time">[${new Date().toLocaleTimeString()}]</span>
-            <span class="message-content">${message}</span>
-        `;
-        chatHistory.appendChild(messageDiv);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-        this.chatHistory.push({ type, message, timestamp: new Date() });
-    }
-
-    updateStatus(elementId, text, className) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.textContent = text;
-            element.className = `status-indicator ${className}`;
-        }
-    }
-
-    disconnect() {
-        this.isConnected = false;
-        this.updateStatus('m365-status', 'OFFLINE', 'offline');
-        this.updateStatus('graph-api-status', 'OFFLINE', 'offline');
-        this.updateStatus('teams-bot-status', 'OFFLINE', 'offline');
-        this.updateStatus('adaptive-cards-status', 'OFFLINE', 'offline');
-        this.addChatMessage('system', '🔌 M365 AI Agent disconnected');
-    }
-}
 
 // Hexperiment Protocol Integration Module
 class ProtocolIntegration {
@@ -1112,35 +835,42 @@ class ProtocolIntegration {
         if (this.websocket) {
             this.websocket.close();
         }
-
         try {
             this.websocket = new WebSocket(`ws://localhost:8080/ws`);
-            
             this.websocket.onopen = () => {
                 this.updateStatus('websocket-status', 'CONNECTED', 'online');
                 this.addProtocolMessage('system', '🔌 WebSocket connection established');
             };
-
             this.websocket.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    this.addProtocolMessage('incoming', `${data.type}: ${JSON.stringify(data.data)}`);
+                    switch (data.type) {
+                        case 'persona_response':
+                            this.addProtocolMessage('persona', `Persona(s) generated: ${JSON.stringify(data.data.personas, null, 2)}`);
+                            displayPersonas(data.data.personas || []);
+                            break;
+                        case 'lmstudio_response':
+                            this.addProtocolMessage('lmstudio', `LMStudio: ${JSON.stringify(data.data.response)}`);
+                            break;
+                        case 'heartbeat_response':
+                            this.addProtocolMessage('heartbeat', `Heartbeat: ${JSON.stringify(data.data)}`);
+                            break;
+                        default:
+                            this.addProtocolMessage('incoming', `${data.type}: ${JSON.stringify(data.data)}`);
+                    }
                 } catch (error) {
-                    this.addProtocolMessage('incoming', event.data);
+                    this.addProtocolMessage('system', '❌ WebSocket message parse error');
                 }
             };
-
             this.websocket.onclose = () => {
                 this.updateStatus('websocket-status', 'DISCONNECTED', 'offline');
                 this.addProtocolMessage('system', '🔌 WebSocket connection closed');
             };
-
             this.websocket.onerror = (error) => {
                 console.error('WebSocket error:', error);
                 this.updateStatus('websocket-status', 'ERROR', 'error');
                 this.addProtocolMessage('system', '❌ WebSocket error');
             };
-
         } catch (error) {
             console.error('WebSocket connection failed:', error);
             this.updateStatus('websocket-status', 'ERROR', 'error');
@@ -1237,37 +967,7 @@ class ProtocolIntegration {
 }
 
 // Initialize integration modules
-const m365Integration = new M365AIIntegration();
 const protocolIntegration = new ProtocolIntegration();
-
-// M365 AI Functions
-async function initializeM365Agent() {
-    await m365Integration.initialize();
-}
-
-async function testGraphAPI() {
-    await m365Integration.testGraphAPI();
-}
-
-async function sendTeamsMessage() {
-    const message = prompt('Enter message to send to Teams:');
-    if (message) {
-        await m365Integration.sendMessage(`Teams: ${message}`);
-    }
-}
-
-function disconnectM365() {
-    m365Integration.disconnect();
-}
-
-function sendM365Message() {
-    const input = document.getElementById('m365-chat-input');
-    const message = input.value.trim();
-    if (message) {
-        m365Integration.sendMessage(message);
-        input.value = '';
-    }
-}
 
 // Protocol Integration Functions
 async function connectProtocolServer() {
@@ -1298,9 +998,7 @@ function sendProtocolMessage() {
 // Enhanced keyboard shortcuts
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        if (event.target.id === 'm365-chat-input') {
-            sendM365Message();
-        } else if (event.target.id === 'protocol-message') {
+        if (event.target.id === 'protocol-message') {
             sendProtocolMessage();
         }
     }

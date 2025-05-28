@@ -554,13 +554,14 @@ async function main() {
                 await integration.generateResponseProcessorDaemon();
                 console.log('✅ Generated all Docker integration files');
                 break;
-                
-            case 'scripts':
+                  case 'scripts':
                 const scripts = await integration.generateNpmScripts();
                 console.log('Generated NPM scripts:', scripts);
                 break;
-                  case 'help':
-            default:                console.log(`
+                
+            case 'help':
+            default:
+                console.log(`
 H3X Docker + LM Studio Integration Commands:
 
   start     - Start containerized environment
@@ -577,7 +578,6 @@ Examples:
   node docker-lmstudio-integration.js test
   node docker-lmstudio-integration.js generate
                 `);
-                break;
                 break;
         }
         

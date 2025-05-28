@@ -33,7 +33,8 @@ COPY --from=builder /app/main .
 # Create static directory for web files
 RUN mkdir -p static
 
-# Note: Static files would need to be copied in a separate RUN command if they exist
+# Copy static files if they exist
+COPY static ./static
 
 # Expose port
 EXPOSE 8080
