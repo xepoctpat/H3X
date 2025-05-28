@@ -1,25 +1,94 @@
-// H3X SIR Control Interface - Frontend Integration
-// Connects the beautiful UI to LMStudio backend
-
+/**
+ * SIR Dashboard - Main Integration File
+ * Combines Core, Data, and UI modules into a single unified dashboard
+ */
 class SIRDashboard {
     constructor() {
-        this.serverUrl = 'http://localhost:3979';
-        this.systemState = {
-            mode: 'PASSIVE',
-            monitoring: false,
-            simulation: false,
-            connected: false
+        console.log("🔮 SIR Dashboard Initialization Starting...");
+        
+        // Initialize the components
+        this.core = null;
+        this.dataManager = null;
+        this.ui = null;
+        
+        this.initialize();
+    }
+    
+    async initialize() {
+        // Create core component
+        this.core = new SIRDashboardCore();
+        window.sirDashboardCore = this.core;
+        await this.core.initialize();
+        
+        // Create data manager component
+        this.dataManager = new SIRDashboardData();
+        window.sirDataManager = this.dataManager;
+        this.dataManager.initialize();
+        
+        // Create UI component
+        this.ui = new SIRDashboardUI();
+        window.sirUI = this.ui;
+        this.ui.initialize();
+        
+        console.log("✅ SIR Dashboard fully initialized");
+    }
+    
+    // Forward core methods for backward compatibility
+    runAnalysis() {
+        if (this.core) this.core.runAnalysis();
+    }
+    
+    startSimulation() {
+        if (this.core) this.core.startSimulation();
+    }
+    
+    checkMonitoring() {
+        if (this.core) this.core.checkMonitoring();
+    }
+    
+    requestSupervision() {
+        if (this.core) this.core.requestSupervision();
+    }
+    
+    emergencyStop() {
+        if (this.core) this.core.emergencyStop();
+    }
+}
+                anomaliesFound: 0,
+                predictionAccuracy: 0,
+                learningVelocity: 0
+            },
+            environmentalFactors: {
+                temperature: 22.5,
+                humidity: 45,
+                airQuality: 'Good',
+                lightLevels: 350,
+                soundLevels: 42,
+                vibrationLevels: 0.2,
+                electromagneticField: 0.8,
+                airPressure: 1013.25
+            },
+            neuralActivity: {
+                activeNodes: 247,
+                connectionStrength: 85,
+                processingSpeed: 2.4,
+                learningRate: 0.73,
+                memoryUtilization: 67,
+                predictiveAccuracy: 94.2
+            },
+            temporalPatterns: {
+                hourlyTrends: new Array(24).fill(0),
+                dailyAverages: new Array(7).fill(0),
+                monthlyProgression: new Array(30).fill(0)
+            }
         };
-        this.metrics = {
-            environmentalCompliance: 0,
-            aiReadiness: 0,
-            simulationAccuracy: 0,
-            systemHealth: 0
-        };
+        
         this.isConnected = false;
         this.updateInterval = null;
+        this.patternAnalysisInterval = null;
+        this.dataCollectionInterval = null;
         
-        console.log("🔮 SIR Dashboard initialized");
+        console.log("🔮 Enhanced SIR Dashboard with Pattern Analytics initialized");
         this.initialize();
     }
 
@@ -518,60 +587,287 @@ class SIRDashboard {
     }
 
     startRealTimeUpdates() {
-        // Update every 5 seconds
+        // Main system updates every 5 seconds
         this.updateInterval = setInterval(() => {
             if (this.isConnected) {
                 this.checkSystemStatus();
+                this.collectRealTimeInsights();
             } else {
-                // Demo mode - simulate some updates
+                // Enhanced demo mode with pattern simulation
                 this.simulateRealTimeData();
+                this.simulatePatternDetection();
             }
         }, 5000);
+        
+        // Advanced pattern analysis every 2 seconds for more granular insights
+        this.patternAnalysisInterval = setInterval(() => {
+            this.analyzeObservationalPatterns();
+            this.updatePatternVisualizations();
+        }, 2000);
+        
+        // Data collection metrics every 1 second for real-time feel
+        this.dataCollectionInterval = setInterval(() => {
+            this.updateDataCollectionMetrics();
+            this.trackLearningVelocity();
+        }, 1000);
     }
 
-    async checkSystemStatus() {
+    async collectRealTimeInsights() {
         try {
-            const response = await fetch(`${this.serverUrl}/status`);
-            const data = await response.json();
+            // Collect insights from multiple endpoints for comprehensive data
+            const [statusResponse, analysisResponse] = await Promise.all([
+                fetch(`${this.serverUrl}/status`),
+                fetch(`${this.serverUrl}/sir-analysis`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        environment: 'realtime_observation',
+                        analysisType: 'pattern_detection',
+                        parameters: 'passive_learning_insights'
+                    })
+                })
+            ]);
             
-            if (response.ok) {
-                this.systemState = { ...this.systemState, ...data.systemState };
-                this.updateSystemStatus();
+            if (statusResponse.ok) {
+                const statusData = await statusResponse.json();
+                this.processStatusInsights(statusData);
+            }
+            
+            if (analysisResponse.ok) {
+                const analysisData = await analysisResponse.json();
+                this.processAnalysisInsights(analysisData);
             }
         } catch (error) {
-            console.log("Status check failed:", error);
-            this.isConnected = false;
-            this.systemState.connected = false;
+            console.log("Real-time insights collection failed:", error);
         }
     }
 
-    simulateRealTimeData() {
-        // Simulate environmental data changes
-        const tempEl = document.getElementById('temp-value');
-        const humidityEl = document.getElementById('humidity-value');
-        const airQualityEl = document.getElementById('air-quality-value');
-
-        if (tempEl) {
-            const temp = (22.5 + (Math.random() - 0.5) * 2).toFixed(1);
-            tempEl.textContent = temp + '°C';
+    processStatusInsights(data) {
+        // Process system status for behavioral patterns
+        this.realtimeData.observations.dataPointsCollected += Math.floor(Math.random() * 50) + 25;
+        
+        if (data.systemState) {
+            this.systemState = { ...this.systemState, ...data.systemState };
+            
+            // Track pattern progression
+            this.realtimeData.patterns.behavioralTrends.push({
+                timestamp: Date.now(),
+                mode: data.systemState.mode,
+                activity: data.systemState.monitoring ? 'active' : 'passive',
+                efficiency: Math.random() * 20 + 80
+            });
+            
+            // Keep only last 100 entries for performance
+            if (this.realtimeData.patterns.behavioralTrends.length > 100) {
+                this.realtimeData.patterns.behavioralTrends.shift();
+            }
         }
+    }
 
-        if (humidityEl) {
-            const humidity = Math.floor(45 + (Math.random() - 0.5) * 10);
-            humidityEl.textContent = humidity + '%';
+    processAnalysisInsights(data) {
+        // Process SIR analysis for environmental patterns
+        if (data.result && data.result.environmentalData) {
+            this.updateEnvironmentalFactors(data.result.environmentalData);
         }
+        
+        // Simulate pattern detection results
+        this.realtimeData.observations.patternMatches += Math.floor(Math.random() * 5) + 1;
+        this.realtimeData.observations.predictionAccuracy = Math.max(85, 
+            this.realtimeData.observations.predictionAccuracy + (Math.random() - 0.5) * 2);
+    }
 
-        if (airQualityEl) {
-            const airQualities = ['Excellent', 'Good', 'Fair', 'Poor'];
-            airQualityEl.textContent = airQualities[Math.floor(Math.random() * 2)]; // Bias toward good
+    analyzeObservationalPatterns() {
+        const now = Date.now();
+        
+        // Detect environmental shifts
+        const recentTemp = this.realtimeData.environmentalFactors.temperature;
+        const recentHumidity = this.realtimeData.environmentalFactors.humidity;
+        
+        this.realtimeData.patterns.environmentalShifts.push({
+            timestamp: now,
+            temperature: recentTemp,
+            humidity: recentHumidity,
+            stability: Math.abs(recentTemp - 22.5) < 1 && Math.abs(recentHumidity - 45) < 5
+        });
+        
+        // Learning progression tracking
+        this.realtimeData.patterns.learningProgressions.push({
+            timestamp: now,
+            accuracy: this.realtimeData.observations.predictionAccuracy,
+            dataPoints: this.realtimeData.observations.dataPointsCollected,
+            velocity: this.realtimeData.observations.learningVelocity
+        });
+        
+        // Anomaly detection simulation
+        if (Math.random() < 0.1) { // 10% chance of detecting an anomaly
+            this.realtimeData.patterns.anomalyDetections.push({
+                timestamp: now,
+                type: ['temperature_spike', 'unusual_pattern', 'data_irregularity', 'processing_anomaly'][Math.floor(Math.random() * 4)],
+                severity: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
+                resolved: Math.random() > 0.3
+            });
+            this.realtimeData.observations.anomaliesFound++;
+        }
+        
+        // Maintain array sizes for performance
+        [this.realtimeData.patterns.environmentalShifts, 
+         this.realtimeData.patterns.learningProgressions,
+         this.realtimeData.patterns.anomalyDetections].forEach(array => {
+            if (array.length > 200) array.splice(0, array.length - 200);
+        });
+    }
+
+    updateDataCollectionMetrics() {
+        // Simulate continuous data collection in PASSIVE mode
+        this.realtimeData.observations.dataPointsCollected += Math.floor(Math.random() * 3) + 1;
+        
+        // Update neural activity
+        this.realtimeData.neuralActivity.activeNodes = 247 + Math.floor(Math.random() * 20 - 10);
+        this.realtimeData.neuralActivity.connectionStrength = Math.max(70, 
+            this.realtimeData.neuralActivity.connectionStrength + (Math.random() - 0.5) * 3);
+        this.realtimeData.neuralActivity.processingSpeed = Math.max(1.0,
+            2.4 + (Math.random() - 0.5) * 0.8).toFixed(1);
+        this.realtimeData.neuralActivity.memoryUtilization = Math.min(95,
+            Math.max(50, this.realtimeData.neuralActivity.memoryUtilization + (Math.random() - 0.5) * 5));
+    }
+
+    trackLearningVelocity() {
+        // Calculate learning velocity based on data collection rate
+        const recent = this.realtimeData.patterns.learningProgressions.slice(-10);
+        if (recent.length >= 2) {
+            const latest = recent[recent.length - 1];
+            const previous = recent[recent.length - 2];
+            const timeDiff = (latest.timestamp - previous.timestamp) / 1000; // seconds
+            const dataDiff = latest.dataPoints - previous.dataPoints;
+            
+            this.realtimeData.observations.learningVelocity = (dataDiff / timeDiff).toFixed(2);
         }
     }
 
-    destroy() {
-        if (this.updateInterval) {
-            clearInterval(this.updateInterval);
+    updateEnvironmentalFactors(data) {
+        // Update environmental factors with new data
+        if (data.temperature) this.realtimeData.environmentalFactors.temperature = data.temperature;
+        if (data.humidity) this.realtimeData.environmentalFactors.humidity = data.humidity;
+        if (data.airQuality) this.realtimeData.environmentalFactors.airQuality = data.airQuality;
+        if (data.lightLevels) this.realtimeData.environmentalFactors.lightLevels = data.lightLevels;
+    }
+
+    updatePatternVisualizations() {
+        // Update the dashboard with pattern insights
+        this.updateAdvancedMetrics();
+        this.updateEnvironmentalDisplay();
+        this.updateNeuralActivityDisplay();
+        this.updateAnomalyAlerts();
+    }
+
+    updateAdvancedMetrics() {
+        // Update data points collected
+        const dataPointsEl = document.getElementById('data-points-collected');
+        if (dataPointsEl) {
+            dataPointsEl.textContent = this.realtimeData.observations.dataPointsCollected.toLocaleString();
+        }
+        
+        // Update pattern matches
+        const patternMatchesEl = document.getElementById('pattern-matches');
+        if (patternMatchesEl) {
+            patternMatchesEl.textContent = this.realtimeData.observations.patternMatches.toLocaleString();
+        }
+        
+        // Update prediction accuracy
+        const predictionAccuracyEl = document.getElementById('prediction-accuracy');
+        if (predictionAccuracyEl) {
+            predictionAccuracyEl.textContent = this.realtimeData.observations.predictionAccuracy.toFixed(1) + '%';
+        }
+        
+        // Update learning velocity
+        const learningVelocityEl = document.getElementById('learning-velocity');
+        if (learningVelocityEl) {
+            learningVelocityEl.textContent = this.realtimeData.observations.learningVelocity + ' pts/sec';
+        }
+        
+        // Update anomalies found
+        const anomaliesEl = document.getElementById('anomalies-found');
+        if (anomaliesEl) {
+            anomaliesEl.textContent = this.realtimeData.observations.anomaliesFound;
         }
     }
+
+    updateEnvironmentalDisplay() {
+        // Update detailed environmental readings
+        const envReadings = [
+            ['temp-reading', this.realtimeData.environmentalFactors.temperature.toFixed(1) + '°C'],
+            ['humidity-reading', this.realtimeData.environmentalFactors.humidity + '%'],
+            ['air-quality-reading', this.realtimeData.environmentalFactors.airQuality],
+            ['light-levels-reading', this.realtimeData.environmentalFactors.lightLevels + ' lux'],
+            ['sound-levels-reading', this.realtimeData.environmentalFactors.soundLevels + ' dB'],
+            ['vibration-reading', this.realtimeData.environmentalFactors.vibrationLevels.toFixed(1) + ' Hz'],
+            ['em-field-reading', this.realtimeData.environmentalFactors.electromagneticField.toFixed(1) + ' mT'],
+            ['pressure-reading', this.realtimeData.environmentalFactors.airPressure.toFixed(1) + ' hPa']
+        ];
+        
+        envReadings.forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        });
+    }
+
+    updateNeuralActivityDisplay() {
+        // Update neural network activity metrics
+        const neuralReadings = [
+            ['neural-nodes', this.realtimeData.neuralActivity.activeNodes],
+            ['connection-strength', this.realtimeData.neuralActivity.connectionStrength.toFixed(1) + '%'],
+            ['processing-speed', this.realtimeData.neuralActivity.processingSpeed + ' GHz'],
+            ['learning-rate', this.realtimeData.neuralActivity.learningRate.toFixed(2)],
+            ['memory-utilization', this.realtimeData.neuralActivity.memoryUtilization.toFixed(1) + '%'],
+            ['predictive-accuracy', this.realtimeData.neuralActivity.predictiveAccuracy.toFixed(1) + '%']
+        ];
+        
+        neuralReadings.forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        });
+    }
+
+    updateAnomalyAlerts() {
+        // Display recent anomalies
+        const recentAnomalies = this.realtimeData.patterns.anomalyDetections.slice(-5);
+        const anomalyListEl = document.getElementById('anomaly-list');
+        
+        if (anomalyListEl && recentAnomalies.length > 0) {
+            anomalyListEl.innerHTML = recentAnomalies.map(anomaly => {
+                const timeStr = new Date(anomaly.timestamp).toLocaleTimeString();
+                const severityColor = { low: '#00ff00', medium: '#ffaa00', high: '#ff0000' }[anomaly.severity];
+                const statusIcon = anomaly.resolved ? '✅' : '⚠️';
+                
+                return `<div style="color: ${severityColor}; margin: 2px 0;">
+                    ${statusIcon} ${timeStr} - ${anomaly.type.replace('_', ' ').toUpperCase()} 
+                    (${anomaly.severity})
+                </div>`;
+            }).join('');
+        }
+    }
+
+    simulatePatternDetection() {
+        // Enhanced simulation for pattern detection in demo mode
+        this.realtimeData.observations.patternMatches += Math.floor(Math.random() * 3) + 1;
+        
+        // Simulate environmental shifts
+        this.realtimeData.environmentalFactors.temperature += (Math.random() - 0.5) * 0.2;
+        this.realtimeData.environmentalFactors.humidity += Math.floor((Math.random() - 0.5) * 2);
+        this.realtimeData.environmentalFactors.soundLevels = 42 + Math.floor((Math.random() - 0.5) * 8);
+        this.realtimeData.environmentalFactors.vibrationLevels = Math.max(0, 
+            this.realtimeData.environmentalFactors.vibrationLevels + (Math.random() - 0.5) * 0.1);
+        
+        // Simulate neural activity changes
+        this.realtimeData.neuralActivity.learningRate = Math.max(0.1,
+            Math.min(1.0, this.realtimeData.neuralActivity.learningRate + (Math.random() - 0.5) * 0.05));
+        
+        // Update prediction accuracy with slight improvements over time (learning effect)
+        this.realtimeData.observations.predictionAccuracy = Math.min(99.9,
+            this.realtimeData.observations.predictionAccuracy + Math.random() * 0.1);
+    }
+
+    // ...existing code...
 }
 
 // Global instance

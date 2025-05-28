@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; connect-src 'self' http://localhost:3979; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hexperiment Labs - SIR Control Interface</title>
     <style>
@@ -47,6 +47,30 @@
         .header .subtitle {
             color: #a0a0a0;
             font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .header .sub-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .header .app-link, .header .docs-link {
+            color: #00ccff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 5px 12px;
+            border-radius: 15px;
+            background: rgba(0, 204, 255, 0.1);
+            border: 1px solid rgba(0, 204, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .header .app-link:hover, .header .docs-link:hover {
+            background: rgba(0, 204, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .nav-tabs {
@@ -395,6 +419,10 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Modular SIR Dashboard components -->
+    <script src="public/js/sir-dashboard-core.js"></script>
+    <script src="public/js/sir-dashboard-data.js"></script>
+    <script src="public/js/sir-dashboard-ui.js"></script>
     <script src="public/js/sir-dashboard.js"></script>
 </head>
 <body>
@@ -402,6 +430,10 @@
         <div class="header">
             <h1>Hexperiment Labs</h1>
             <p class="subtitle">Super Intelligent Regulator (SIR) - Control Interface</p>
+            <div class="sub-links">
+                <a href="public/index2.html" class="app-link" target="_blank">H3X Symbolic Currency</a>
+                <a href="Modular-Dashboard-README.md" class="docs-link" target="_blank">Modular Architecture Docs</a>
+            </div>
         </div>
 
         <div class="nav-tabs">

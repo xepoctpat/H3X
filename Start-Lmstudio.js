@@ -1,6 +1,7 @@
 // LMStudio Server for H3X SIR Control Interface
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { SIRLMStudioAgent } = require('./src/agent-lmstudio');
 const { H3XCodeGenerator } = require('./src/generators/codeGenerator');
 const { HSPImaginationEngine } = require('./src/protocol/hspImaginationEngine');
@@ -52,6 +53,11 @@ const imaginationEngine = new HSPImaginationEngine();
 console.log("🚀 Starting H3X SIR Control Interface with LMStudio Integration");
 console.log("🔮 Hexperiment Labs Framework Active");
 console.log("🎯 H3X Code Generator Initialized");
+
+// Root route - serve the main SIR Control Interface
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {

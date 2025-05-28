@@ -29,6 +29,7 @@
         "no-openai:test": "node test-client-no-openai.js",
         "lmstudio": "node start-lmstudio.js",
         "lmstudio:dev": "nodemon --inspect=9239 --signal SIGINT start-lmstudio.js",
+        "modular": "node Start-Modular-Dashboard.js",
         "lmstudio:test": "node test-lmstudio.js",
         "lmstudio:test-simple": "node test-lmstudio-simple.js",
         "lmstudio:interface": "node sir-interface.js",
@@ -46,6 +47,7 @@
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^5.0.1",
+        "open": "^10.1.2",
         "uuid": "^11.1.0",
         "ws": "^8.18.2",
         "zod": "^3.22.0"
