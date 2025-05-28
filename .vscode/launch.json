@@ -8,7 +8,8 @@
             "url": "https://teams.microsoft.com/l/app/${{TEAMS_APP_ID}}?installAppPackage=true&webjoin=true&${account-hint}",
             "presentation": {
                 "group": "2-Teams",
-                "order": 4
+                "order": 4,
+                "hidden": true
             },
             "internalConsoleOptions": "neverOpen"
         },
@@ -19,7 +20,8 @@
             "url": "https://teams.microsoft.com/l/app/${{TEAMS_APP_ID}}?installAppPackage=true&webjoin=true&${account-hint}",
             "presentation": {
                 "group": "2-Teams",
-                "order": 5
+                "order": 5,
+                "hidden": true
             },
             "internalConsoleOptions": "neverOpen"
         },
@@ -72,9 +74,10 @@
             "preLaunchTask": "Start App in Desktop Client (Remote)",
             "presentation": {
                 "group": "2-Teams",
-                "order": 6
+                "order": 6,
+                "hidden": true
             },
-            "internalConsoleOptions": "neverOpen",
+            "internalConsoleOptions": "neverOpen"
         },
         {
             "name": "(Preview) Launch Remote in Copilot (Edge)",
@@ -184,7 +187,8 @@
             "preLaunchTask": "Start App Locally",
             "presentation": {
                 "group": "2-Teams",
-                "order": 1
+                "order": 1,
+                "hidden": true
             },
             "stopAll": true
         },
@@ -197,7 +201,8 @@
             "preLaunchTask": "Start App Locally",
             "presentation": {
                 "group": "2-Teams",
-                "order": 2
+                "order": 2,
+                "hidden": true
             },
             "stopAll": true
         },
@@ -209,7 +214,8 @@
             "preLaunchTask": "Start App in Desktop Client",
             "presentation": {
                 "group": "2-Teams",
-                "order": 3
+                "order": 3,
+                "hidden": true
             },
             "stopAll": true
         },

@@ -179,7 +179,7 @@
         .progress-fill-w100 { width: 100%; }
 
         /* Visualization Styles */
-        .visualization-container {
+        .visualization-contacreat a checkpointaand resume as plannediner {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             padding: 20px;
@@ -365,6 +365,33 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        .reminder-banner {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 2000;
+            background: rgba(0,255,255,0.12);
+            color: #00ffff;
+            padding: 18px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px #00ffff33;
+            font-size: 1.1em;
+            font-weight: bold;
+            -webkit-backdrop-filter: blur(8px); /* Safari support */
+            backdrop-filter: blur(8px);
+            border: 1.5px solid #00ffff;
+            transition: opacity 0.3s;
+        }
+        .reminder-close-btn {
+            margin-left: 24px;
+            background: none;
+            border: none;
+            color: #00ffff;
+            font-size: 1.2em;
+            cursor: pointer;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1239,6 +1266,24 @@
             });
         });
     </script>
-
-
-</body></html>
+    <div id="reminder-banner" class="reminder-banner">
+        ⏳ It's been a while! Consider checkpointing your progress or resuming your planned actions.
+        <button class="reminder-close-btn" onclick="document.getElementById('reminder-banner').style.display='none'">✕</button>
+    </div>
+    <script>
+    // Reminder logic: show after 2 minutes of inactivity
+    let reminderTimeout;
+    function showReminder() {
+        document.getElementById('reminder-banner').style.display = 'block';
+    }
+    function resetReminderTimer() {
+        document.getElementById('reminder-banner').style.display = 'none';
+        clearTimeout(reminderTimeout);
+        reminderTimeout = setTimeout(showReminder, 2 * 60 * 1000); // 2 minutes
+    }
+    ['mousemove','keydown','mousedown','touchstart'].forEach(evt => {
+        window.addEventListener(evt, resetReminderTimer, true);
+    });
+    resetReminderTimer();
+    </script>
+  </body></html>
