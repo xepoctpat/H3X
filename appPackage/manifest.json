@@ -14,12 +14,12 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "H3X${{APP_NAME_SUFFIX}}",
-        "full": "full name for H3X"
+        "short": "SIR${{APP_NAME_SUFFIX}}",
+        "full": "Hexperiment Labs SIR Control Interface"
     },
     "description": {
-        "short": "short description for H3X",
-        "full": "full description for H3X"
+        "short": "SIR environmental analysis interface",
+        "full": "Hexperiment Labs Super Intelligent Regulator (SIR) Control Interface for environmental analysis, simulation control, and AI assistant generation"
     },
     "accentColor": "#FFFFFF",
     "copilotAgents": {
@@ -52,8 +52,8 @@
                             "description": "How can you help me?"
                         },
                         {
-                            "title": "Forecast the weather tomorrow in San Francisco.",
-                            "description": "Can you forecast the tomorrow weather in San Francisco for me?"
+                            "title": "What is the status of the SIR system?",
+                            "description": "Can you provide the current status of the SIR Control Interface?"
                         }
                     ]
                 }

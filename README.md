@@ -1,26 +1,28 @@
-# Weather Agent - Microsoft 365 Agents Template
+# Hexperiment Labs SIR Control Interface - Microsoft 365 Agents Implementation
 
-This weather agent template demonstrates how to build intelligent conversational AI using the [Microsoft 365 Agents SDK](https://github.com/Microsoft/Agents) with LangChain integration. The agent provides weather forecasts with beautiful adaptive card responses and can be deployed in multiple environments.
+This SIR (Super Intelligent Regulator) Control Interface demonstrates advanced AI system management using the [Microsoft 365 Agents SDK](https://github.com/Microsoft/Agents) with LangChain integration. The SIR agent provides environmental analysis, simulation control, and AI assistant generation capabilities.
 
 ## 🌟 Features
 
-- **Smart Weather Forecasting** - Ask about weather for any date and location
+- **Environmental Analysis** - Real-time analysis of environmental conditions and AI system status
+- **Simulation Control** - Advanced simulation management and experimental control systems
+- **AI Assistant Generation** - Dynamic creation and deployment of specialized AI assistants
 - **LangChain Integration** - Advanced AI reasoning with OpenAI GPT models
-- **Adaptive Cards** - Beautiful, interactive responses in Teams-style format
-- **Date/Time Tools** - Intelligent date parsing and calculations
+- **Adaptive Cards** - Beautiful, interactive responses with SIR-style formatting
+- **Date/Time Tools** - Intelligent temporal analysis for system operations
 - **Multiple Deployment Options** - Test locally, in playground, or deploy to Teams/Azure
-- **Memory Management** - Conversation context retention across interactions
+- **Memory Management** - Conversation context retention across SIR interactions
 
 ## 🚀 Deployment Options
 
-This agent can run in several environments:
+This SIR Control Interface can run in several environments:
 
 1. **Microsoft 365 Agents Playground** - Browser-based testing (no Teams required)
 2. **Microsoft Teams** - Full Teams integration with channels and chats
-3. **Azure Bot Service** - Deploy as a standalone bot service
-4. **Local Development** - Direct Express.js server for testing
+3. **Azure Bot Service** - Deploy as a standalone SIR service
+4. **Local Development** - Direct Express.js server for SIR testing
 
-Note: This template works best with newer OpenAI models like gpt-4o-mini that support reliable JSON output.
+Note: The SIR system works best with newer OpenAI models like gpt-4o-mini that support reliable JSON output for complex environmental analysis.
 
 ## Get started with the template
 
@@ -36,11 +38,10 @@ Note: This template works best with newer OpenAI models like gpt-4o-mini that su
 
 1. First, select the Microsoft 365 Agents Toolkit icon on the left in the VS Code toolbar.
 1. In file *env/.env.playground.user*, fill in your OpenAI key `SECRET_OPENAI_API_KEY=<your-key>`.
-1. Press F5 to start debugging which launches your agent in Microsoft 365 Agents Playground using a web browser. Select `Debug in Microsoft 365 Agents Playground`.
-1. You can send any message to get a response from the agent.
+1. Press F5 to start debugging which launches the SIR Control Interface in Microsoft 365 Agents Playground using a web browser. Select `Debug in Microsoft 365 Agents Playground`.
+1. You can send SIR commands like "Analyze environmental conditions" or "What is the status of the SIR system?" to interact with the interface.
 
-**Congratulations**! You are running an agent that can now interact with users in Microsoft 365 Agents Playground.
-
+**Congratulations**! You are running the SIR Control Interface that can now provide environmental analysis and simulation control through Microsoft 365 Agents Playground.
 
 ## What's included in the template
 
@@ -56,9 +57,9 @@ The following files can be customized and demonstrate an example implementation 
 
 | File                                 | Contents                                           |
 | - | - |
-|`src/index.js`| Sets up the agent server.|
-|`src/tools/*.js`| Tools that can be utilized by model.|
-|`src/agent.js`| Handles business logics for the Weather Agent.|
+|`src/index.js`| Sets up the SIR Control Interface server.|
+|`src/tools/*.js`| SIR tools for environmental analysis and simulation control.|
+|`src/agent.js`| Handles business logic for the SIR Control Interface.|
 
 The following are Microsoft 365 Agents Toolkit specific project files. You can [visit a complete guide on Github](https://github.com/OfficeDev/TeamsFx/wiki/Teams-Toolkit-Visual-Studio-Code-v5-Guide#overview) to understand how Microsoft 365 Agents Toolkit works.
 
@@ -75,4 +76,5 @@ The following are Microsoft 365 Agents Toolkit specific project files. You can [
 - [Microsoft 365 Agents Toolkit Samples](https://github.com/OfficeDev/TeamsFx-Samples)
 
 ## Known issue
-- The agent is currently not working in any Teams group chats or Teams channels when the stream response is enabled.
+
+- The SIR Control Interface is currently not working in any Teams group chats or Teams channels when the stream response is enabled.

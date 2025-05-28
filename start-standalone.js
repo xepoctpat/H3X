@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Standalone Weather Agent Launcher
+ * Hexperiment Labs SIR Control Interface Launcher
  * 
- * Launches the weather agent as a standalone Express server
+ * Launches the SIR system as a standalone Express server
  * with M365 integration capabilities.
  */
 
@@ -11,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec, spawn } = require('child_process');
 
-console.log('🌦️  Starting Weather Agent in Standalone Mode...\n');
+console.log('🔬 Starting Hexperiment Labs SIR Control Interface in Standalone Mode...\n');
 
 // Check if required files exist
 const requiredFiles = [
@@ -45,7 +45,7 @@ if (!hasValidKey) {
 console.log('✅ Configuration validated');
 
 // Start the server
-console.log('🚀 Launching Weather Agent Server...');
+console.log('🚀 Launching SIR Control Interface Server...');
 console.log('📍 Server will be available at: http://localhost:3978');
 console.log('🔍 API endpoints:');
 console.log('   • POST /api/messages - Bot Framework endpoint');
@@ -79,7 +79,7 @@ child.on('close', (code) => {
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
-    console.log('\n🛑 Shutting down Weather Agent...');
+    console.log('\n🛑 Shutting down SIR Control Interface...');
     child.kill('SIGTERM');
 });
 

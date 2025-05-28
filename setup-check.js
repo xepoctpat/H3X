@@ -1,5 +1,5 @@
 /**
- * Weather Agent Setup Verification Script
+ * Hexperiment Labs SIR Control Interface Setup Verification Script
  * Checks prerequisites and validates different deployment options
  */
 
@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const net = require('net');
 
-console.log('🌦️  Weather Agent - Setup Verification\n');
+console.log('🔬 Hexperiment Labs SIR Control Interface - Setup Verification\n');
 
 // Check Node.js version
 const nodeVersion = process.version;
@@ -110,10 +110,10 @@ function showDeploymentOptions() {
 // Sample test queries
 function showTestQueries() {
   console.log('\n💬 Sample Test Queries:');
-  console.log('   • "What\'s the weather like in Seattle tomorrow?"');
-  console.log('   • "Tell me the forecast for New York on June 15th"');
-  console.log('   • "What will the temperature be in London next week?"');
-  console.log('   • "I\'m traveling to Tokyo next month. What should I expect weather-wise?"');
+  console.log('   • "What is the current status of the SIR system?"');
+  console.log('   • "Can you analyze the environment for optimal AI assistant deployment?"');
+  console.log('   • "Please run a simulation for office environment conditions"');
+  console.log('   • "Generate an AI assistant for customer service environment"');
 }
 
 async function main() {

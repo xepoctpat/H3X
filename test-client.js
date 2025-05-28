@@ -1,16 +1,16 @@
 /**
- * Standalone Bot Test Client
- * Test your weather agent directly via HTTP API
+ * Hexperiment Labs SIR Control Interface Test Client
+ * Test your SIR agent directly via HTTP API
  */
 
 const axios = require('axios');
 
 const BOT_URL = 'http://localhost:3978/api/messages';
 
-class WeatherBotClient {
+class SIRBotClient {
   constructor() {
-    this.conversationId = `test-conv-${Date.now()}`;
-    this.userId = 'test-user-1';
+    this.conversationId = `sir-test-conv-${Date.now()}`;
+    this.userId = 'sir-test-user-1';
   }
 
   async sendMessage(text) {
@@ -55,16 +55,16 @@ class WeatherBotClient {
       throw error;
     }
   }
-
   async testConversation() {
     const testQueries = [
-      "Hello, can you help me with weather?",
-      "What's the weather like in Seattle tomorrow?",
-      "Tell me the forecast for New York on June 15th",
-      "What will the temperature be in London next week?"
+      "Hello, I need help with environmental analysis",
+      "What is the current status of the SIR system?",
+      "Can you analyze the environment for optimal AI assistant deployment?",
+      "Please run a simulation for office environment conditions",
+      "Generate an AI assistant for customer service environment"
     ];
 
-    console.log('🌦️  Weather Agent - Standalone Test Client');
+    console.log('🔬 Hexperiment Labs SIR Control Interface - Test Client');
     console.log('=' .repeat(50));
     console.log(`📡 Bot URL: ${BOT_URL}`);
     console.log(`🆔 Conversation ID: ${this.conversationId}`);
@@ -87,17 +87,18 @@ class WeatherBotClient {
 
 // CLI usage
 if (require.main === module) {
-  const client = new WeatherBotClient();
+  const client = new SIRBotClient();
   
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
-    console.log('🌦️  Weather Agent Test Client\n');
+    console.log('🔬 Hexperiment Labs SIR Control Interface Test Client\n');
     console.log('Usage:');
     console.log('  node test-client.js "Your message here"');
     console.log('  node test-client.js --test    # Run automated test');
     console.log('\nExamples:');
-    console.log('  node test-client.js "What\'s the weather in Paris?"');
+    console.log('  node test-client.js "Analyze the current environment"');
+    console.log('  node test-client.js "What is the SIR system status?"');
     console.log('  node test-client.js --test');
     process.exit(0);
   }
@@ -110,4 +111,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = WeatherBotClient;
+module.exports = SIRBotClient;

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * 🌦️  Enhanced Weather Agent Test Client
+ * 🔬 Enhanced Hexperiment Labs SIR Control Interface Test Client
  * 
- * Comprehensive testing tool for your standalone weather agent
+ * Comprehensive testing tool for your SIR (Super Intelligent Regulator) system
  * Features:
  * - Server health checks
  * - Automated test suite
@@ -31,10 +31,9 @@ function createActivity(message, conversationId = 'test-conversation') {
         },
         conversation: {
             id: conversationId
-        },
-        recipient: {
+        },        recipient: {
             id: 'bot-456',
-            name: 'Weather Agent'
+            name: 'SIR Agent'
         },
         text: message,
         locale: 'en-US'
@@ -102,8 +101,8 @@ async function sendMessage(message, conversationId = 'test-conversation') {
     }
 }
 
-async function runWeatherTests() {
-    console.log('\n🌦️  Weather Agent Test Suite');
+async function runSIRTests() {
+    console.log('\n🔬 Hexperiment Labs SIR Control Interface Test Suite');
     console.log('=' .repeat(50));
     
     // Test server health
@@ -118,13 +117,13 @@ async function runWeatherTests() {
     console.log('\n🚀 Starting conversation tests...\n');
     
     const testQueries = [
-        "Hello! Can you help me with weather?",
-        "What's the weather like in Seattle tomorrow?", 
-        "Tell me the forecast for New York on June 15th, 2025",
-        "What will the temperature be in London next week?",
-        "I'm traveling to Tokyo next month. What should I expect weather-wise?",
-        "What's the current time?",
-        "Thanks for your help!"
+        "Hello! I need help with the SIR Control Interface",
+        "What is the current status of the SIR system?",
+        "Can you analyze the environment for optimal AI assistant deployment?",
+        "Please run a simulation for office environment conditions", 
+        "Generate an AI assistant for customer service environment",
+        "What's the current time and system status?",
+        "Thanks for your assistance with the SIR system!"
     ];
     
     for (let i = 0; i < testQueries.length; i++) {
@@ -157,7 +156,7 @@ async function interactiveMode() {
         output: process.stdout
     });
     
-    console.log('\n💬 Interactive Weather Agent Chat');
+    console.log('\n💬 Interactive SIR Control Interface Chat');
     console.log('Type your messages and press Enter. Type "exit" to quit.\n');
     
     const conversationId = `interactive-${Date.now()}`;
@@ -195,7 +194,7 @@ async function interactiveMode() {
 
 // Single message mode
 async function singleMessage(message) {
-    console.log('\n🌦️  Weather Agent - Single Message Test');
+    console.log('\n🔬 SIR Control Interface - Single Message Test');
     console.log('=' .repeat(50));
     
     const healthOk = await testHealthCheck();
@@ -210,16 +209,15 @@ async function singleMessage(message) {
 // Main execution
 async function main() {
     const args = process.argv.slice(2);
-    
-    if (args.includes('--help') || args.includes('-h')) {
-        console.log('\n🌦️  Weather Agent Test Client');
+      if (args.includes('--help') || args.includes('-h')) {
+        console.log('\n🔬 Hexperiment Labs SIR Control Interface Test Client');
         console.log('Usage:');
         console.log('  node test-client-enhanced.js                    # Run automated test suite');
         console.log('  node test-client-enhanced.js --interactive      # Interactive chat mode');
         console.log('  node test-client-enhanced.js "Your message"     # Send single message');
         console.log('  node test-client-enhanced.js --health           # Health check only');
         console.log('\nExamples:');
-        console.log('  node test-client-enhanced.js "What\'s the weather in Paris?"');
+        console.log('  node test-client-enhanced.js "Analyze the current environment"');
         console.log('  node test-client-enhanced.js --interactive');
         console.log('  node test-client-enhanced.js --health');
         return;
@@ -235,9 +233,8 @@ async function main() {
         await interactiveMode();
     } else if (args.length > 0 && !args[0].startsWith('--')) {
         const message = args.join(' ');
-        await singleMessage(message);
-    } else {
-        await runWeatherTests();
+        await singleMessage(message);    } else {
+        await runSIRTests();
         
         console.log('\n💡 Want to chat interactively? Run:');
         console.log('   node test-client-enhanced.js --interactive');

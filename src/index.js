@@ -3,7 +3,7 @@ const { authorizeJWT, CloudAdapter, loadAuthConfigFromEnv } = require("@microsof
 const express = require("express");
 
 // This bot's main dialog.
-const { weatherAgent } = require("./agent");
+const { sirAgent } = require("./agent");
 
 // Create authentication configuration
 const authConfig = loadAuthConfigFromEnv();
@@ -17,7 +17,7 @@ server.use(express.json());
 server.get("/health", (req, res) => {
   res.json({ 
     status: "healthy", 
-    service: "Weather Agent", 
+    service: "Hexperiment Labs SIR Control Interface", 
     timestamp: new Date().toISOString(),
     port: process.env.port || process.env.PORT || 3978
   });
@@ -26,7 +26,7 @@ server.get("/health", (req, res) => {
 // Status endpoint (no auth required)
 server.get("/", (req, res) => {
   res.json({
-    service: "Microsoft 365 Weather Agent",
+    service: "Hexperiment Labs SIR Control Interface",
     version: "1.0.0",
     status: "running",
     environment: process.env.TEAMSFX_ENV || "development",
@@ -37,10 +37,13 @@ server.get("/", (req, res) => {
     },
     features: [
       "OpenAI GPT-4 integration",
-      "Weather forecasting",
-      "Date/time assistance",
+      "Environmental analysis",
+      "Simulation control",
+      "AI assistant generation",
       "Microsoft 365 Agents framework"
     ],
+    mode: "PASSIVE",
+    description: "Super Intelligent Regulator for AI assistant generation and environment analysis",
     timestamp: new Date().toISOString()
   });
 });
@@ -51,7 +54,7 @@ server.use("/api", authorizeJWT(authConfig));
 // Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
   await adapter.process(req, res, async (context) => {
-    await weatherAgent.run(context);
+    await sirAgent.run(context);
   });
 });
 

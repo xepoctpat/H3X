@@ -4,7 +4,7 @@
     "msteams": {
         "teamsAppId": null
     },
-    "description": "Weather Agent with Microsoft 365 Agents SDK and LangChain",
+    "description": "Hexperiment Labs SIR Control Interface - Super Intelligent Regulator with Microsoft 365 Agents SDK",
     "engines": {
         "node": "18 || 20 || 22"
     },

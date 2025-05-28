@@ -1,4 +1,4 @@
-# Standalone Weather Agent Configuration
+# Standalone SIR Control Interface Configuration
 
 ## 🚀 Standalone Deployment Guide
 
@@ -23,7 +23,7 @@ NODE_ENV=development
 SECRET_OPENAI_API_KEY=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
 
 # Bot Configuration
-BOT_ID=local-weather-bot
+BOT_ID=local-sir-interface
 BOT_PASSWORD=local-password-123
 PORT=3978
 
@@ -50,7 +50,7 @@ curl -X POST http://localhost:3978/api/messages \
   -H "Content-Type: application/json" \
   -d '{
     "type": "message",
-    "text": "What is the weather in Seattle?",
+    "text": "What is the status of the SIR system?",
     "from": {"id": "user1", "name": "Test User"},
     "conversation": {"id": "test-conv-1"}
   }'
