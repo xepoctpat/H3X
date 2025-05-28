@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">  <title>Synapse TaskFlow Orchestration Interface</title>
+  <meta charset="UTF-8">
+  <title>SYNAPSE-TASKFLOW Orchestration Engine</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Advanced workflow orchestration and task automation interface">
   <link rel="manifest" href="/appPackage/manifest.json">
   <meta name="theme-color" content="#181c24">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Synapse TaskFlow">
+  <meta name="application-name" content="SYNAPSE-TASKFLOW">
   <link rel="icon" sizes="192x192" href="/appPackage/color.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Synapse TaskFlow">
+  <meta name="apple-mobile-web-app-title" content="SYNAPSE-TASKFLOW">
   <meta name="format-detection" content="telephone=no">
   <meta name="HandheldFriendly" content="true">
   <meta name="msapplication-TileColor" content="#181c24">
@@ -18,30 +20,104 @@
   <link rel="stylesheet" href="css/synapse-taskflow-orchestration-styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>H3X Virtual Taskmaster</h1>
-    <div class="status" id="status">Connecting to Taskmaster...</div>
-    <div class="controls">
-      <input id="taskInput" placeholder="Describe a new task (e.g. Generate report, Monitor system...)" size="40">
-      <select id="typeInput" title="Task type">
-        <option value="ai_assistant">AI Assistant</option>
-        <option value="simulation">Simulation</option>
-        <option value="analysis_tool">Analysis Tool</option>
-        <option value="endpoint">Endpoint</option>
-        <option value="project">Project</option>
-        <option value="data_simulator">Data Simulator</option>
-        <option value="movement">Movement</option>
-        <option value="proactive">Proactive</option>
-        <option value="interactive">Interactive</option>
-      </select>
-      <button id="sendTask">Send Task</button>
+  <div class="orchestration-container">
+    <header class="orchestration-header">
+      <h1>⚡ SYNAPSE-TASKFLOW Orchestration Engine</h1>
+      <div id="connectionStatus" class="connection-status">
+        <span class="status-dot connecting"></span>
+        <span>Connecting to orchestration engine...</span>
+      </div>
+    </header>
+    
+    <div class="workflow-workspace">
+      <div class="sidebar">
+        <div class="task-palette">
+          <h3>Task Components</h3>
+          <div class="component-category">
+            <h4>Data Processing</h4>
+            <div class="component" draggable="true" data-type="data-input">📥 Data Input</div>
+            <div class="component" draggable="true" data-type="data-transform">🔄 Transform</div>
+            <div class="component" draggable="true" data-type="data-output">📤 Data Output</div>
+          </div>
+          
+          <div class="component-category">
+            <h4>AI Operations</h4>
+            <div class="component" draggable="true" data-type="ai-analysis">🧠 AI Analysis</div>
+            <div class="component" draggable="true" data-type="ai-generation">✨ AI Generation</div>
+            <div class="component" draggable="true" data-type="ai-decision">🎯 AI Decision</div>
+          </div>
+          
+          <div class="component-category">
+            <h4>Integration</h4>
+            <div class="component" draggable="true" data-type="api-call">🌐 API Call</div>
+            <div class="component" draggable="true" data-type="webhook">🔗 Webhook</div>
+            <div class="component" draggable="true" data-type="notification">📢 Notification</div>
+          </div>
+        </div>
+        
+        <div class="workflow-templates">
+          <h3>Quick Templates</h3>
+          <button class="template-btn" data-template="content-pipeline">📝 Content Pipeline</button>
+          <button class="template-btn" data-template="data-analysis">📊 Data Analysis</button>
+          <button class="template-btn" data-template="automation">🤖 Automation</button>
+        </div>
+      </div>
+      
+      <div class="canvas-area">
+        <div class="canvas-toolbar">
+          <button id="newWorkflow" class="toolbar-btn">➕ New</button>
+          <button id="saveWorkflow" class="toolbar-btn">💾 Save</button>
+          <button id="runWorkflow" class="toolbar-btn primary">▶️ Run</button>
+          <button id="pauseWorkflow" class="toolbar-btn">⏸️ Pause</button>
+          <button id="stopWorkflow" class="toolbar-btn">⏹️ Stop</button>
+        </div>
+        
+        <div id="workflowCanvas" class="workflow-canvas">
+          <div class="canvas-placeholder">
+            <p>🎯 Drag components from the sidebar to build your workflow</p>
+            <p>Or select a template to get started quickly</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="properties-panel">
+        <h3>Properties</h3>
+        <div id="componentProperties" class="properties-content">
+          <p>Select a component to view its properties</p>
+        </div>
+        
+        <div class="execution-status">
+          <h3>Execution Status</h3>
+          <div id="executionLog" class="execution-log">
+            <div class="log-entry info">[READY] Workflow engine initialized</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="tasks"></div>
-    <div id="visualization" class="task-visualization"></div>
-    <div id="installBanner">
-      Install H3X Virtual Taskmaster as an app for a better experience!
-      <button id="installBtn">Install</button>
-    </div>  </div>
+    
+    <div class="quick-actions">
+      <div class="action-group">
+        <h3>Quick Task Creation</h3>
+        <input id="quickTaskInput" placeholder="Describe a task to automate..." size="40">
+        <select id="quickTaskType">
+          <option value="ai_assistant">AI Assistant</option>
+          <option value="data_processing">Data Processing</option>
+          <option value="content_generation">Content Generation</option>
+          <option value="api_integration">API Integration</option>
+          <option value="monitoring">System Monitoring</option>
+          <option value="notification">Notification System</option>
+        </select>
+        <button id="createQuickTask">⚡ Create & Deploy</button>
+      </div>
+    </div>
+    
+    <footer class="interface-footer">
+      <a href="node-neural-dashboard-interface.html" class="nav-link">🧠 Dashboard</a>
+      <a href="matrix-observer-analytics-interface.html" class="nav-link">📊 Analytics</a>
+      <a href="hex-genesis-creative-interface.html" class="nav-link">🎨 Creative</a>
+    </footer>
+  </div>
+  
   <script src="js/synapse-taskflow-orchestration-core.js"></script>
 </body>
 </html>

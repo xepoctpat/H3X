@@ -2,21 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>H3X Node Neural Dashboard Interface</title>
+  <title>NODE-NEURAL Central Command Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="H3X Neural Cortex Interface - Central Command and Control Dashboard">
   <link rel="stylesheet" href="css/node-neural-dashboard-styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>H3X Node Neural Dashboard</h1>
-    <div class="input-area">
-      <input id="intentInput" type="text" placeholder="Enter desired outcome (e.g. 'Increase energy', 'Start project')">
-      <button id="generateBtn">Generate Outcome</button>
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>🧠 NODE-NEURAL Central Command</h1>
+      <div class="system-status">
+        <span id="systemStatus" class="status-indicator online">ONLINE</span>
+        <span id="timestamp" class="timestamp"></span>
+      </div>
+    </header>
+    
+    <div class="control-grid">
+      <div class="control-panel">
+        <h2>System Control</h2>
+        <div class="control-buttons">
+          <button id="emergencyStop" class="emergency-btn">🛑 Emergency Stop</button>
+          <button id="systemRestart" class="control-btn">🔄 Restart</button>
+          <button id="diagnostics" class="control-btn">🔍 Diagnostics</button>
+        </div>
+      </div>
+      
+      <div class="neural-interfaces-grid">
+        <h2>Neural Interface Status</h2>
+        <div class="interface-cards">
+          <div class="interface-card" data-interface="genesis">
+            <h3>🎨 HEX-GENESIS</h3>
+            <div class="status-indicator online"></div>
+            <p>Creative AI Hub</p>
+            <button onclick="window.open('hex-genesis-creative-interface.html', '_blank')">Launch</button>
+          </div>
+          
+          <div class="interface-card" data-interface="taskflow">
+            <h3>⚡ SYNAPSE-TASKFLOW</h3>
+            <div class="status-indicator online"></div>
+            <p>Workflow Orchestrator</p>
+            <button onclick="window.open('synapse-taskflow-orchestration-interface.html', '_blank')">Launch</button>
+          </div>
+          
+          <div class="interface-card" data-interface="observer">
+            <h3>📊 MATRIX-OBSERVER</h3>
+            <div class="status-indicator online"></div>
+            <p>Analytics Engine</p>
+            <button onclick="window.open('matrix-observer-analytics-interface.html', '_blank')">Launch</button>
+          </div>
+          
+          <div class="interface-card" data-interface="current">
+            <h3>⚡ CORTEX-CURRENT</h3>
+            <div class="status-indicator online"></div>
+            <p>Real-time Processor</p>
+            <button onclick="window.open('cortex-current-realtime-interface.html', '_blank')">Launch</button>
+          </div>
+          
+          <div class="interface-card" data-interface="taskmaster">
+            <h3>🤖 VIRTUAL-TASKMASTER</h3>
+            <div class="status-indicator online"></div>
+            <p>Virtual Assistant</p>
+            <button onclick="window.open('Virtual-Taskmaster.html', '_blank')">Launch</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="ai-integration-panel">
+        <h2>AI Integration Status</h2>
+        <div class="ai-services">
+          <div class="service-status">
+            <span class="service-name">LMStudio</span>
+            <span id="lmstudioStatus" class="status-dot"></span>
+            <span id="lmstudioPort">:1234</span>
+          </div>
+          <div class="service-status">
+            <span class="service-name">Microsoft 365 Agents</span>
+            <span id="m365Status" class="status-dot online"></span>
+            <span>Integrated</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="metrics-panel">
+        <h2>System Metrics</h2>
+        <div class="metrics-grid">
+          <div class="metric">
+            <span class="metric-label">Active Interfaces</span>
+            <span id="activeInterfaces" class="metric-value">5</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Processing Load</span>
+            <span id="processingLoad" class="metric-value">23%</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Neural Activity</span>
+            <span id="neuralActivity" class="metric-value">Normal</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Uptime</span>
+            <span id="uptime" class="metric-value">--</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="currency-symbol" id="currencySymbol">⬡</div>
-    <div class="result" id="result">Symbolic outcome will be displayed here (80% accuracy).</div>
-    <div class="note">Symbolic result is approximately 80% accurate to your intention.</div>
-    <a href="../index.html" class="nav-link">← Return to SIR Control Interface</a>
+    
+    <div class="command-center">
+      <h2>Command Center</h2>
+      <div class="command-input">
+        <input id="commandInput" type="text" placeholder="Enter system command or neural directive...">
+        <button id="executeBtn">Execute</button>
+      </div>
+      <div id="commandLog" class="command-log">
+        <div class="log-entry">[SYSTEM] NODE-NEURAL Dashboard initialized</div>
+        <div class="log-entry">[INFO] All neural interfaces online</div>
+        <div class="log-entry">[READY] Awaiting commands...</div>
+      </div>
+    </div>
   </div>
   
   <script src="js/node-neural-dashboard-core.js"></script>

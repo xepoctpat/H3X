@@ -1,87 +1,129 @@
-# Standalone SIR Control Interface Configuration
+# H3X Containerized Deployment Guide
 
-## 🚀 Standalone Deployment Guide
+## 🐳 Docker-Based Deployment
 
-Since you have an M365 account, standalone deployment gives you the best of both worlds:
+This guide covers the containerized deployment of the H3X Hexperiment System.
 
-- Full bot capabilities without playground limitations
-- Easy transition to Teams when ready
-- Real-world testing environment
+### System Requirements
 
-## Quick Setup
+- **Docker Desktop** (Windows/Mac) or **Docker Engine** (Linux)
+- **Docker Compose** v2.0+
+- **Minimum 4GB RAM** for containers
+- **Ports 4978 and 8081** available
 
-### 1. Environment Configuration for Standalone
-
-Create `env/.env.standalone` for standalone-specific settings:
-
-```bash
-# Standalone Environment
-TEAMSFX_ENV=standalone
-NODE_ENV=development
-
-# OpenAI Configuration
-SECRET_OPENAI_API_KEY=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
-
-# Bot Configuration
-BOT_ID=local-sir-interface
-BOT_PASSWORD=local-password-123
-PORT=3978
-
-# Optional: Enable detailed logging
-DEBUG=true
-LOG_LEVEL=debug
-```
-
-### 2. Enhanced Standalone Server
-
-The standalone server gives you:
-
-- Direct HTTP API access
-- Real Bot Framework integration
-- Proper adaptive card rendering
-- Microsoft Graph API readiness (when you add it)
-
-### 3. Testing Options
-
-#### A) Direct API Testing
+### Quick Deployment
 
 ```bash
-curl -X POST http://localhost:3978/api/messages \
-  -H "Content-Type: application/json" \
-  -d '{
-    "type": "message",
-    "text": "What is the status of the SIR system?",
-    "from": {"id": "user1", "name": "Test User"},
-    "conversation": {"id": "test-conv-1"}
-  }'
+# 1. Clone and navigate
+git clone [repository]
+cd H3X
+
+# 2. Start the system
+docker-compose up -d
+
+# 3. Verify deployment
+docker-compose ps
+curl http://localhost:8081/api/health
 ```
 
-#### B) Bot Framework Emulator
+### Service Configuration
 
-- Download: <https://github.com/Microsoft/BotFramework-Emulator>
-- Connect to: <http://localhost:3978/api/messages>
-- Full conversation testing with adaptive cards
+The system consists of two main services:
 
-#### C) Teams Integration (when ready)
+#### H3X Server (Port 4978)
+- **Image**: Built from Dockerfile.h3x
+- **Purpose**: Main application server with SIR Control Interface
+- **Dependencies**: Protocol server, mounted volumes
+- **Health**: Automatic restart policies
 
-- Use your M365 account for full Teams deployment
-- Same codebase, just provision Azure resources
+#### Protocol Server (Port 8081)
+- **Image**: Built from hexperiment-system-protocol/Dockerfile
+- **Purpose**: Service coordination and protocol management
+- **Health Endpoint**: `/api/health`
+- **Status**: Lightweight Alpine-based container (26.4MB)
 
-### 4. Advantages Over Playground
+### Development Workflow
 
-| Feature | Playground | Standalone | Teams |
-|---------|------------|------------|-------|
-| **API Access** | Limited | Full ✅ | Full ✅ |
-| **Adaptive Cards** | Preview | Real ✅ | Real ✅ |
-| **Custom Integration** | No | Yes ✅ | Yes ✅ |
-| **M365 Features** | No | Ready ✅ | Full ✅ |
-| **Production Ready** | No | Yes ✅ | Yes ✅ |
+```bash
+# Live development (recommended)
+docker-compose up
 
-## Next Steps
+# Background deployment
+docker-compose up -d
 
-1. **Current**: Test in standalone mode
-2. **When ready**: Add Microsoft Graph API integration
-3. **Deploy**: Provision to Azure with your M365 account
-4. **Integrate**: Connect to Teams, Outlook, SharePoint
+# View logs
+docker-compose logs -f
 
-Standalone gives you real bot capabilities while keeping development simple!
+# Stop services
+docker-compose down
+```
+
+### Volume Mounting
+
+The system mounts local directories for live development:
+- `./Public` → Container public files
+- `./Src` → Container source code
+
+Changes to these directories are immediately reflected in running containers.
+
+### Network Architecture
+
+Services communicate via the `h3x-network` bridge:
+- **Internal DNS**: Services can reach each other by name
+- **Service Discovery**: Automatic container networking
+- **Port Mapping**: External access via mapped ports
+
+### Troubleshooting
+
+#### Port Conflicts
+If ports 4978 or 8081 are in use:
+```yaml
+# Edit docker-compose.yml
+ports:
+  - "5000:3978"  # Change external port
+```
+
+#### Container Issues
+```bash
+# Check container status
+docker-compose ps
+
+# View detailed logs
+docker-compose logs [service-name]
+
+# Restart specific service
+docker-compose restart [service-name]
+```
+
+#### Network Problems
+```bash
+# Recreate network
+docker-compose down
+docker-compose up -d
+```
+
+### Configuration
+
+Environment variables can be set in `docker-compose.yml`:
+```yaml
+environment:
+  - NODE_ENV=production
+  - LOG_LEVEL=info
+  - CUSTOM_CONFIG=value
+```
+
+### Backup and Recovery
+
+```bash
+# Backup container data
+docker-compose down
+tar -czf h3x-backup.tar.gz .
+
+# Restore
+tar -xzf h3x-backup.tar.gz
+docker-compose up -d
+```
+
+---
+
+*This containerized approach replaces all previous deployment methods and provides a consistent, reliable deployment experience across all environments.*

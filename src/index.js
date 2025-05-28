@@ -1,9 +1,10 @@
 // Import required packages
 const { authorizeJWT, CloudAdapter, loadAuthConfigFromEnv } = require("@microsoft/agents-hosting");
 const express = require("express");
+const path = require("path");
 
 // This bot's main dialog.
-const { sirAgent } = require("./agent-no-openai");
+const { sirAgent } = require("./Agent-No-Openai");
 
 // Create authentication configuration
 const authConfig = loadAuthConfigFromEnv();
@@ -12,6 +13,9 @@ const adapter = new CloudAdapter(authConfig);
 // Create express application.
 const server = express();
 server.use(express.json());
+
+// Serve static files from Public directory for neural interfaces
+server.use(express.static(path.join(__dirname, '../Public')));
 
 // Health check endpoint (no auth required)
 server.get("/health", (req, res) => {

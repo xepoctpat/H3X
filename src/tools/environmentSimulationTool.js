@@ -1,6 +1,6 @@
 // No-OpenAI version - Native implementation without LangChain
 const { z } = require("zod");
-const { HexperimentFramework } = require("../framework/hexperimentFramework");
+const { HexperimentFramework } = require("../Framework/Hexperimentframework");
 
 // Initialize framework
 const framework = new HexperimentFramework();

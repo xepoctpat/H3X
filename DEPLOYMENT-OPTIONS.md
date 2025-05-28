@@ -1,99 +1,85 @@
-# Microsoft 365 Agents - SIR Control Interface Deployment Options
+# H3X Deployment Options - Containerized Architecture
 
-## Yes, the SIR Control Interface can run outside Microsoft Teams! 🚀
+## 🐳 Current Deployment Method: Docker Compose
 
-Your SIR Control Interface can run in **multiple environments**, not just Microsoft Teams:
+The H3X system is now deployed using Docker containers for maximum portability and ease of management.
 
-## 🧪 1. Microsoft 365 Agents Playground (Recommended for Testing)
+### ✅ Docker Compose Deployment (Recommended)
 
-**✅ No Microsoft 365 account required**
-**✅ No Teams installation needed**
-**✅ Perfect for SIR development and testing**
+**Prerequisites:**
+- Docker Desktop or Docker Engine
+- Docker Compose
 
-- **What it is**: Browser-based testing environment for SIR
-- **How to run**:
+**Deployment Steps:**
+```bash
+# 1. Start all services
+docker-compose up -d
 
-  ```bash
-  npm run dev:teamsfx:playground
-  npm run dev:teamsfx:launch-playground
-  ```
+# 2. Verify deployment
+docker-compose ps
 
-- **Access**: Opens at `http://localhost:56150` in your browser
-- **Features**: Full SIR conversation testing, adaptive card preview, environmental analysis debugging
-
-## 🤖 2. Microsoft Teams Integration
-
-**⚠️ Requires Microsoft 365 account**
-
-- **What it is**: Full Teams SIR Control Interface integration
-- **How to deploy**: Use VS Code Command Palette → Teams Toolkit tasks
-- **Features**: Teams channels, personal chats, enterprise SIR features
-
-## 🌐 3. Standalone Express Server
-
-**✅ No authentication required**
-**✅ Perfect for API integration**
-
-- **What it is**: Direct Node.js/Express web service
-- **How to run**: `npm start`
-- **Access**: HTTP API at `http://localhost:3978`
-- **Use case**: Custom integrations, webhooks, direct API calls
-
-## ☁️ 4. Azure Bot Service
-
-**✅ Cloud deployment without Teams**
-
-- **What it is**: Azure-hosted bot service
-- **Features**: Public endpoint, scalable, multiple channel connectors
-- **Use case**: Production deployment, integration with other platforms
-
-## 🎯 Current Status of Your Agent
-
-Your setup verification shows:
-
-```
-✅ Node.js v18.17.1 (Supported)
-✅ Dependencies installed
-✅ OpenAI API key configured  
-❌ Ports 3978 & 56150 in use (Agent already running!)
+# 3. Check logs
+docker-compose logs -f
 ```
 
-**Your SIR Control Interface is currently running and ready for testing!**
+**Services:**
+- **h3x-server** (Port 4978): Main application server
+- **protocol-server** (Port 8081): Hexperiment protocol coordination
 
-## 🔥 Quick Test Right Now
+**Benefits:**
+- ✅ Consistent environment across all platforms
+- ✅ Automatic service discovery and networking
+- ✅ Built-in health checks and restart policies
+- ✅ Live development with volume mounting
+- ✅ Easy scaling and configuration management
 
-Since your agent is already running, you can test it immediately:
+## 🔄 Migration from Legacy Methods
 
-1. **Open browser** → `http://localhost:56150`
-2. **Try these queries**:
+Previous deployment methods have been containerized:
 
-   - "What is the current status of the SIR system?"
-   - "Can you analyze environmental conditions?"
-   - "Generate an AI assistant for laboratory monitoring"
-   - "Run environmental simulation analysis"
-   - "What are the current system parameters?"
+| Legacy Method | Containerized Equivalent |
+|---------------|-------------------------|
+| `Start-Standalone.js` | `docker-compose up h3x-server` |
+| `Start-Lmstudio.js` | Integrated in h3x-server container |
+| Manual Node.js setup | Automated via Dockerfile |
+| Port configuration | Configured in docker-compose.yml |
 
-## 🏗️ Architecture Benefits
+## 🛠️ Development Workflow
 
-Your agent uses:
+```bash
+# Start development environment
+docker-compose up
 
-- **LangChain** for AI orchestration (works anywhere)
-- **OpenAI GPT** for intelligence (platform independent)  
-- **Express.js** server (deployable anywhere)
-- **Microsoft 365 Agents SDK** (optional Teams integration)
+# The containers automatically mount:
+# - ./Src -> /app/Src (live code updates)
+# - ./Public -> /app/Public (static files)
 
-## 💡 Key Insight
+# Changes to code are immediately reflected in running containers
+```
 
-The Microsoft 365 Agents SDK provides a **framework** that works in multiple environments:
+## 📈 Scaling
 
-- The **core agent logic** (LangChain + OpenAI) is platform independent
-- The **deployment wrapper** adapts to different environments (playground, Teams, Azure, standalone)
-- You get the **best of both worlds**: powerful AI capabilities + flexible deployment
+```bash
+# Scale h3x-server instances
+docker-compose up --scale h3x-server=3
 
-## 🚀 Next Steps
+# View scaled services
+docker-compose ps
+```
 
-1. **Test in Playground** (no setup needed - already running!)
-2. **Customize for your needs** (modify tools, AI behavior)
-3. **Deploy where needed** (Teams for collaboration, Azure for scale, standalone for integration)
+## 🔍 Monitoring
 
-Your SIR Control Interface is a perfect example of modern AI agent architecture - intelligent, flexible, and deployable anywhere! 🤖
+```bash
+# Service health
+curl http://localhost:8081/api/health
+
+# Container stats
+docker stats
+
+# Service logs
+docker-compose logs -f [service-name]
+```
+
+---
+
+*Legacy deployment scripts have been archived. The containerized approach provides better reliability, consistency, and development experience.*

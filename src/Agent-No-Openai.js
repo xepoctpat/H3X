@@ -1,10 +1,10 @@
 const { ActivityTypes } = require("@microsoft/agents-activity");
 const { AgentApplicationBuilder, MessageFactory } = require("@microsoft/agents-hosting");
-const { dateTool } = require("./tools/dateTimeTool");
-const { sirAnalysisTool } = require("./tools/sirAnalysisTool");
-const { environmentSimulationTool } = require("./tools/environmentSimulationTool");
-const { monitoringTool } = require("./tools/monitoringTool");
-const { humanSupervisionTool } = require("./tools/humanSupervisionTool");
+const { dateTool } = require("./Tools/Datetimetool");
+const { sirAnalysisTool } = require("./Tools/Siranalysistool");
+const { environmentSimulationTool } = require("./Tools/Environmentsimulationtool");
+const { monitoringTool } = require("./Tools/Monitoringtool");
+const { humanSupervisionTool } = require("./Tools/Humansupervisiontool");
 
 const sirAgent = new AgentApplicationBuilder().build();
 
