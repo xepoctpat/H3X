@@ -1,0 +1,79 @@
+body { 
+  font-family: Arial, sans-serif; 
+  background: #f6f8fa; 
+  margin: 0; 
+  padding: 0; 
+}
+
+.container { 
+  max-width: 600px; 
+  margin: 40px auto; 
+  background: #fff; 
+  border-radius: 10px; 
+  box-shadow: 0 2px 8px #0001; 
+  padding: 32px; 
+}
+
+h1 { 
+  color: #2b3a4b; 
+}
+
+label { 
+  display: block; 
+  margin-top: 18px; 
+  font-weight: bold; 
+}
+
+textarea, input, select { 
+  width: 100%; 
+  padding: 10px; 
+  margin-top: 6px; 
+  border-radius: 5px; 
+  border: 1px solid #ccc; 
+  font-size: 1em; 
+}
+
+button { 
+  margin-top: 24px; 
+  padding: 12px 32px; 
+  background: #2b3a4b; 
+  color: #fff; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 1.1em; 
+  cursor: pointer; 
+}
+
+button:disabled { 
+  background: #aaa; 
+}
+
+.result, .ui-dynamic, .suggestions, .movement { 
+  margin-top: 32px; 
+  padding: 18px; 
+  background: #f0f4f8; 
+  border-radius: 8px; 
+}
+
+.ui-dynamic label { 
+  margin-top: 8px; 
+}
+
+.suggestion-btn { 
+  margin: 6px 6px 0 0; 
+  padding: 8px 18px; 
+  background: #4b7bec; 
+  color: #fff; 
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer; 
+}
+
+.movement-param { 
+  margin-bottom: 8px; 
+}
+
+.small { 
+  font-size: 0.95em; 
+  color: #666; 
+}

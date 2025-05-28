@@ -56,13 +56,25 @@ To modify or extend the dashboard:
 ```
 public/
 ├── js/
-│   ├── sir-dashboard.js          # Main integration file
-│   ├── sir-dashboard-core.js     # Core functionality
-│   ├── sir-dashboard-data.js     # Data management
-│   ├── sir-dashboard-ui.js       # UI components
-│   └── currency-connector.js     # H3X Currency connector
-├── index2.html                   # H3X Symbolic Currency interface
-└── ...
+│   ├── sir-dashboard.js                              # Main integration file
+│   ├── sir-dashboard-core.js                         # Core functionality
+│   ├── sir-dashboard-data.js                         # Data management
+│   ├── sir-dashboard-ui.js                           # UI components
+│   ├── hex-genesis-creative-core.js                  # Creative neural interface
+│   ├── cortex-burrent-realtime-core.js               # Real-time data processing
+│   ├── synapse-taskflow-orchestration-core.js       # Task orchestration
+│   ├── matrix-observer-analytics-core.js             # Analytics and monitoring
+│   └── node-neural-dashboard-core.js                 # Neural dashboard
+├── css/
+│   ├── hex-genesis-creative-styles.css               # Creative interface styles
+│   ├── synapse-taskflow-orchestration-styles.css    # Task orchestration styles
+│   ├── matrix-observer-analytics-styles.css         # Analytics interface styles
+│   └── node-neural-dashboard-styles.css             # Dashboard styles
+├── hex-genesis-creative-interface.html               # Creative genesis interface
+├── cortex-burrent-realtime-interface.html            # Real-time burrent interface
+├── synapse-taskflow-orchestration-interface.html     # Task orchestration interface
+├── matrix-observer-analytics-interface.html          # Analytics interface
+└── node-neural-dashboard-interface.html              # Neural dashboard interface
 ```
 
 ## Backend Connection

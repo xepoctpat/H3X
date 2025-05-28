@@ -1,0 +1,95 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #e0e6ef;
+  /* Abstract background: animated gradient */
+  background: linear-gradient(120deg, #23293a 0%, #3a2a5d 50%, #1e3c72 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease-in-out infinite;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.container {
+  max-width: 420px;
+  margin: 60px auto 0 auto;
+  background: rgba(24,28,36,0.92);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.25);
+  padding: 36px 32px 32px 32px;
+  text-align: center;
+}
+h1 {
+  color: #f7b731;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+}
+.input-area {
+  margin-bottom: 24px;
+}
+input[type="text"] {
+  width: 80%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1.1em;
+  background: #23293a;
+  color: #e0e6ef;
+  margin-bottom: 10px;
+}
+button {
+  background: #7ed957;
+  color: #23293a;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 1.1em;
+  cursor: pointer;
+  margin-left: 8px;
+  box-shadow: 0 2px 8px 0 rgba(126,217,87,0.08);
+  transition: background 0.2s;
+}
+button:active {
+  background: #5fae3e;
+}
+.currency-symbol {
+  font-size: 4.2em;
+  margin: 24px 0 10px 0;
+  color: #f7b731;
+  text-shadow: 0 2px 12px #23293a99;
+  /* user-select: none; */
+  letter-spacing: 0.1em;
+}
+.result {
+  margin-top: 18px;
+  background: rgba(34, 41, 58, 0.85);
+  border-radius: 10px;
+  padding: 18px 12px;
+  font-size: 1.15em;
+  color: #7ed957;
+  min-height: 38px;
+  box-shadow: 0 1px 6px 0 rgba(31,38,135,0.10);
+  transition: background 0.3s;
+}
+.note {
+  margin-top: 18px;
+  color: #b3b3b3;
+  font-size: 0.98em;
+  letter-spacing: 0.01em;
+}
+.nav-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #00aaff;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: #00ccff;
+  text-decoration: underline;
+}

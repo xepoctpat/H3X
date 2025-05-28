@@ -1,0 +1,40 @@
+body { 
+  background: #181c24; 
+  color: #e0e6ef; 
+  font-family: monospace; 
+  margin: 0; 
+}
+.container { 
+  max-width: 900px; 
+  margin: 0 auto; 
+  padding: 32px; 
+}
+h1 { 
+  color: #7ed957; 
+}
+#log { 
+  background: #23293a; 
+  border-radius: 8px; 
+  padding: 24px; 
+  min-height: 400px; 
+  max-height: 70vh; 
+  overflow-y: auto; 
+  font-size: 1.1em; 
+}
+.event { 
+  margin-bottom: 18px; 
+  border-left: 4px solid #7ed957; 
+  padding-left: 12px; 
+}
+.event .time { 
+  color: #7ed957; 
+  font-size: 0.95em; 
+  margin-right: 8px; 
+}
+.event .type { 
+  font-weight: bold; 
+  margin-right: 8px; 
+}
+.event .payload { 
+  color: #e0e6ef; 
+}

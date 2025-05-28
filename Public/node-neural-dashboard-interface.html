@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>H3X Node Neural Dashboard Interface</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/node-neural-dashboard-styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>H3X Node Neural Dashboard</h1>
+    <div class="input-area">
+      <input id="intentInput" type="text" placeholder="Enter desired outcome (e.g. 'Increase energy', 'Start project')">
+      <button id="generateBtn">Generate Outcome</button>
+    </div>
+    <div class="currency-symbol" id="currencySymbol">⬡</div>
+    <div class="result" id="result">Symbolic outcome will be displayed here (80% accuracy).</div>
+    <div class="note">Symbolic result is approximately 80% accurate to your intention.</div>
+    <a href="../index.html" class="nav-link">← Return to SIR Control Interface</a>
+  </div>
+  
+  <script src="js/node-neural-dashboard-core.js"></script>
+</body>
+</html>

@@ -82,7 +82,7 @@ class SIRDashboardUI {
                     <div class="status-indicator ${systemState.simulation ? 'status-active' : 'status-warning'}"></div>
                 </div>
                 <div class="metric-value" id="simulation-status">${systemState.simulation ? 'Running' : 'Standby'}</div>
-                <div class="metric-description">Environment simulation state</div>
+                <div class="metric-description">Neural matrix simulation state</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="simulation-progress" style="width: ${metrics.simulationAccuracy}%"></div>
                 </div>
@@ -160,7 +160,7 @@ class SIRDashboardUI {
         if (!visualizationContainer) return;
 
         visualizationContainer.innerHTML = `
-            <h3 style="color: #00ffff; margin-bottom: 20px;">🔮 SIR Environment Simulation</h3>
+            <h3 style="color: #00ffff; margin-bottom: 20px;">🔮 SIR Neural Matrix Simulation</h3>
             
             <div class="simulation-display">
                 <div id="threejs-container">
