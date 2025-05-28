@@ -3,7 +3,7 @@ const { authorizeJWT, CloudAdapter, loadAuthConfigFromEnv } = require("@microsof
 const express = require("express");
 
 // This bot's main dialog.
-const { sirAgent } = require("./agent");
+const { sirAgent } = require("./agent-no-openai");
 
 // Create authentication configuration
 const authConfig = loadAuthConfigFromEnv();
@@ -27,7 +27,7 @@ server.get("/health", (req, res) => {
 server.get("/", (req, res) => {
   res.json({
     service: "Hexperiment Labs SIR Control Interface",
-    version: "1.0.0",
+    version: "2.0.0",
     status: "running",
     environment: process.env.TEAMSFX_ENV || "development",
     endpoints: {
@@ -36,14 +36,19 @@ server.get("/", (req, res) => {
       "GET /": "Service status"
     },
     features: [
-      "OpenAI GPT-4 integration",
-      "Environmental analysis",
+      "Microsoft SDK Agents (No OpenAI dependency)",
+      "Environmental analysis with real-life standards",
       "Simulation control",
       "AI assistant generation",
-      "Microsoft 365 Agents framework"
+      "Human-supervised confirmation scenarios",
+      "Monitoring system implementation",
+      "PDF framework integration ready"
     ],
     mode: "PASSIVE",
-    description: "Super Intelligent Regulator for AI assistant generation and environment analysis",
+    description: "Super Intelligent Regulator for AI assistant generation and environment analysis using Microsoft SDK Agents",
+    framework: "Microsoft SDK Agents",
+    aiDependency: "None - Native Microsoft agents only",
+    realLifeStandards: true,
     timestamp: new Date().toISOString()
   });
 });

@@ -1,17 +1,34 @@
 # Hexperiment Labs SIR Control Interface - Microsoft 365 Agents Implementation
 
-This SIR (Super Intelligent Regulator) Control Interface demonstrates advanced AI system management using the [Microsoft 365 Agents SDK](https://github.com/Microsoft/Agents) with LangChain integration. The SIR agent provides environmental analysis, simulation control, and AI assistant generation capabilities.
+This SIR (Super Intelligent Regulator) Control Interface demonstrates advanced AI system management using the [Microsoft 365 Agents SDK](https://github.com/Microsoft/Agents). The SIR agent provides environmental analysis, simulation control, and AI assistant generation capabilities.
 
 ## 🌟 Features
 
 - **Environmental Analysis** - Real-time analysis of environmental conditions and AI system status
 - **Simulation Control** - Advanced simulation management and experimental control systems
 - **AI Assistant Generation** - Dynamic creation and deployment of specialized AI assistants
-- **LangChain Integration** - Advanced AI reasoning with OpenAI GPT models
+- **Monitoring System** - Continuous monitoring of environmental parameters with real-life standards
+- **Human Supervision** - Request and process human-supervised confirmation for critical operations
 - **Adaptive Cards** - Beautiful, interactive responses with SIR-style formatting
 - **Date/Time Tools** - Intelligent temporal analysis for system operations
 - **Multiple Deployment Options** - Test locally, in playground, or deploy to Teams/Azure
-- **Memory Management** - Conversation context retention across SIR interactions
+- **No External Dependencies** - Can operate without OpenAI dependency (Microsoft SDK only version)
+
+## 📋 Available Versions
+
+This SIR Control Interface has two implementation options:
+
+### 1. Standard Version (with OpenAI)
+- Uses LangChain integration with OpenAI GPT models
+- Requires an OpenAI API key
+- Provides advanced reasoning capabilities
+
+### 2. No-OpenAI Version
+- Uses only Microsoft SDK Agents (no external AI dependencies)
+- No API key required
+- Implements real-life environment creation standards
+- Includes monitoring and human-supervised confirmation scenarios
+- Based on Hexperiment Labs framework from provided PDFs
 
 ## 🚀 Deployment Options
 

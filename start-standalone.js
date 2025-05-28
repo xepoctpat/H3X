@@ -30,22 +30,10 @@ for (const file of requiredFiles) {
 // Load standalone environment
 process.env.TEAMSFX_ENV = 'standalone';
 
-// Check OpenAI API key
-const envPath = path.join(__dirname, 'env/.env.standalone');
-const envContent = fs.readFileSync(envPath, 'utf8');
-const hasValidKey = envContent.includes('SECRET_OPENAI_API_KEY=') && 
-                   !envContent.includes('your_openai_api_key_here');
-
-if (!hasValidKey) {
-    console.error('❌ OpenAI API key not configured in env/.env.standalone');
-    console.log('🔧 Please set SECRET_OPENAI_API_KEY in env/.env.standalone');
-    process.exit(1);
-}
-
 console.log('✅ Configuration validated');
 
 // Start the server
-console.log('🚀 Launching SIR Control Interface Server...');
+console.log('🚀 Launching SIR Control Interface Server (No OpenAI)...');
 console.log('📍 Server will be available at: http://localhost:3978');
 console.log('🔍 API endpoints:');
 console.log('   • POST /api/messages - Bot Framework endpoint');

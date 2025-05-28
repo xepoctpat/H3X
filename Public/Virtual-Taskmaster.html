@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>H3X Virtual Taskmaster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/appPackage/manifest.json">
+  <meta name="theme-color" content="#181c24">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="H3X Taskmaster">
+  <link rel="icon" sizes="192x192" href="/appPackage/color.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="H3X Taskmaster">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="msapplication-TileColor" content="#181c24">
+  <meta name="msapplication-TileImage" content="/appPackage/color.png">
+  <style>
+    body { background: #181c24; color: #e0e6ef; font-family: Arial, sans-serif; margin: 0; -webkit-tap-highlight-color: transparent; }
+    .container { max-width: 700px; margin: 0 auto; padding: 32px; }
+    h1 { color: #f7b731; }
+    #tasks { background: #23293a; border-radius: 8px; padding: 24px; min-height: 200px; margin-bottom: 24px; }
+    .task { margin-bottom: 18px; border-left: 4px solid #f7b731; padding-left: 12px; word-break: break-word; }
+    .task .time { color: #f7b731; font-size: 0.95em; margin-right: 8px; }
+    .task .type { font-weight: bold; margin-right: 8px; }
+    .task .payload { color: #e0e6ef; }
+    .controls { margin-bottom: 24px; }
+    .controls input, .controls select, .controls button { margin-right: 8px; padding: 8px; border-radius: 4px; border: none; font-size: 1em; }
+    .controls input, .controls select { width: 100%; max-width: 260px; box-sizing: border-box; }
+    .controls button { background: #f7b731; color: #23293a; font-weight: bold; cursor: pointer; }
+    .controls button:disabled { background: #aaa; color: #fff; }
+    .status { color: #7ed957; margin-bottom: 12px; }
+    /* App-like install banner */
+    #installBanner { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #23293a; color: #f7b731; border-radius: 12px; box-shadow: 0 2px 12px #0008; padding: 18px 32px; z-index: 1000; }
+    #installBanner button { background: #7ed957; color: #23293a; margin-left: 18px; }
+    .task-visualization { margin: 32px 0 0 0; }
+    @media (max-width: 600px) {
+      .container { padding: 8vw 2vw; }
+      #tasks { padding: 4vw 2vw; }
+      .controls input, .controls select, .controls button { font-size: 1em; margin-bottom: 8px; width: 100%; max-width: none; }
+      .controls { display: flex; flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>H3X Virtual Taskmaster</h1>
+    <div class="status" id="status">Connecting to Taskmaster...</div>
+    <div class="controls">
+      <input id="taskInput" placeholder="Describe a new task (e.g. Generate report, Monitor system...)" size="40">
+      <select id="typeInput" title="Task type">
+        <option value="ai_assistant">AI Assistant</option>
+        <option value="simulation">Simulation</option>
+        <option value="analysis_tool">Analysis Tool</option>
+        <option value="endpoint">Endpoint</option>
+        <option value="project">Project</option>
+        <option value="data_simulator">Data Simulator</option>
+        <option value="movement">Movement</option>
+        <option value="proactive">Proactive</option>
+        <option value="interactive">Interactive</option>
+      </select>
+      <button id="sendTask">Send Task</button>
+    </div>
+    <div id="tasks"></div>
+    <div id="visualization" class="task-visualization"></div>
+    <div id="installBanner">
+      Install H3X Virtual Taskmaster as an app for a better experience!
+      <button id="installBtn">Install</button>
+    </div>
+  </div>
+  <script>
+    const tasksDiv = document.getElementById('tasks');
+    const statusDiv = document.getElementById('status');
+    const wsPort = location.port ? (parseInt(location.port, 10) + 1) : 3980;
+    const wsProto = location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${wsProto}://${location.hostname}:${wsPort}`);
+    ws.onopen = () => {
+      statusDiv.textContent = 'Connected to Taskmaster (Spectator mode)';
+    };
+    ws.onclose = () => {
+      statusDiv.textContent = 'Disconnected from Taskmaster.';
+    };
+    ws.onmessage = (msg) => {
+      let data;
+      try { data = JSON.parse(msg.data); } catch { data = { type: 'raw', payload: msg.data }; }
+      const div = document.createElement('div');
+      div.className = 'task';
+      div.innerHTML = `<span class="time">[${data.time ? new Date(data.time).toLocaleTimeString() : ''}]</span>` +
+        `<span class="type">${data.type ? data.type.toUpperCase() : 'TASK'}</span>` +
+        `<span class="payload">${JSON.stringify(data, null, 2)}</span>`;
+      tasksDiv.appendChild(div);
+      tasksDiv.scrollTop = tasksDiv.scrollHeight;
+    };
+    // Task sending
+    document.getElementById('sendTask').onclick = async () => {
+      const task = document.getElementById('taskInput').value.trim();
+      const type = document.getElementById('typeInput').value;
+      if (!task) return;
+      // Compose imagination for /imagine-to-create
+      let imagination;
+      if (type === 'interactive') {
+        imagination = { type: 'interactive', prompt: task, uiSchema: { fields: [{ name: 'option', type: 'text', label: 'Opcija' }] }, actions: [{ type: 'generate', label: 'Generiši' }] };
+      } else if (type === 'proactive') {
+        imagination = { type: 'proactive', prompt: task };
+      } else if (type === 'movement') {
+        imagination = { type: 'movement', prompt: task, parameters: { speed: '1.0 m/s', path: 'A-B', agent: 'robot', duration: '60s' } };
+      } else {
+        imagination = { type, prompt: task };
+      }
+      // --- Ljudska nada i empatija ---
+      if (/\b(hope|nada)\b/i.test(task)) {
+        const hopeDiv = document.createElement('div');
+        hopeDiv.className = 'task';
+        hopeDiv.style.borderLeft = '4px solid #7ed957';
+        hopeDiv.innerHTML = `<span class="type">HOPE</span> <span class="payload">🌟 Prava nada je pokrenuta! Svaka ljudska akcija menja svet. <b>Hvala ti što doprinosiš boljem sutra.</b> 🌟</span>`;
+        tasksDiv.appendChild(hopeDiv);
+        // Animacija
+        let i = 0;
+        const anim = setInterval(() => {
+          hopeDiv.querySelector('.payload').textContent += '✨';
+          i++;
+          if (i > 10) clearInterval(anim);
+        }, 120);
+      }
+      // --- Ljudska toplina za svaki task ---
+      const humanDiv = document.createElement('div');
+      humanDiv.className = 'task';
+      humanDiv.style.borderLeft = '4px solid #f7b731';
+      humanDiv.innerHTML = `<span class="type">HUMAN</span> <span class="payload">🫱 Svaki zadatak je važan. Tvoj doprinos je primećen. 🫲</span>`;
+      tasksDiv.appendChild(humanDiv);
+      // --- Kraj dodatka ---
+      const res = await fetch('/imagine-to-create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imagination, generationType: type })
+      });
+      const data = await res.json();
+      const div = document.createElement('div');
+      div.className = 'task';
+      div.innerHTML = `<span class="time">[${new Date().toLocaleTimeString()}]</span>` +
+        `<span class="type">SENT</span>` +
+        `<span class="payload">${JSON.stringify(data, null, 2)}</span>`;
+      tasksDiv.appendChild(div);
+      tasksDiv.scrollTop = tasksDiv.scrollHeight;
+      document.getElementById('taskInput').value = '';
+    };
+    // --- Visualization of task flow ---
+    const visualization = document.getElementById('visualization');
+    function renderTaskFlow() {
+      // Get all .task elements and their types
+      const taskEls = Array.from(document.querySelectorAll('.task'));
+      if (taskEls.length === 0) { visualization.innerHTML = ''; return; }
+      // Build a simple flow: each task is a node, arrows between
+      let html = '<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px;overflow-x:auto;">';
+      taskEls.forEach((el, i) => {
+        const type = el.querySelector('.type')?.textContent || '';
+        const color = type.includes('HOPE') ? '#7ed957' : type.includes('HUMAN') ? '#f7b731' : '#e0e6ef';
+        html += `<div style='min-width:80px;min-height:48px;padding:8px 12px;border-radius:10px;background:#23293a;border:2px solid ${color};color:${color};font-weight:bold;text-align:center;'>${type}</div>`;
+        if (i < taskEls.length - 1) html += `<span style='font-size:2em;color:#888;'>→</span>`;
+      });
+      html += '</div>';
+      visualization.innerHTML = html;
+    }
+    // Re-render on new task
+    const observer = new MutationObserver(renderTaskFlow);
+    observer.observe(document.getElementById('tasks'), { childList: true });
+    // Initial render
+    renderTaskFlow();
+    // PWA/app install logic
+    let deferredPrompt;
+    const installBanner = document.getElementById('installBanner');
+    const installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBanner.style.display = 'block';
+    });
+    if (installBtn) {
+      installBtn.onclick = async () => {
+        installBanner.style.display = 'none';
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          deferredPrompt = null;
+        }
+      };
+    }
+    window.addEventListener('appinstalled', () => {
+      installBanner.style.display = 'none';
+    });
+    // Register service worker for offline/app experience
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/appPackage/manifest.json', { scope: '/' });
+    }
+  </script>
+</body>
+</html>

@@ -1,36 +1,30 @@
-const { tool } = require("@langchain/core/tools");
+// No-OpenAI version - Native implementation without LangChain
 
-const dateTool = tool(
-  async () => {
+const dateTool = {
+  name: "Date",
+  description: "Get the current date",
+  execute: async () => {
     const d = new Date();
     console.log("************Getting the date", d);
     return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
-  },
-  {
-    name: "Date",
-    description: "Get the current date",
   }
-);
+};
 
-const todayTool = tool(
-  async () => {
+const todayTool = {
+  name: "Today", 
+  description: "Get the current date",
+  execute: async () => {
     return new Date().toDateString();
-  },
-  {
-    name: "Today",
-    description: "Get the current date",
   }
-);
+};
 
-const nowTool = tool(
-  async () => {
+const nowTool = {
+  name: "Now",
+  description: "Get the current date and time in the local time zone", 
+  execute: async () => {
     return new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
-  },
-  {
-    name: "Now",
-    description: "Get the current date and time in the local time zone",
   }
-);
+};
 
 module.exports = {
   dateTool,

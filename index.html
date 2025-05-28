@@ -1,5 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hexperiment Labs - SIR Control Interface</title>
     <style>
@@ -29,6 +30,7 @@
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
             backdrop-filter: blur(10px);
             border: 1px solid rgba(0, 255, 255, 0.2);
         }
@@ -36,6 +38,7 @@
         .header h1 {
             font-size: 2.5rem;
             background: linear-gradient(45deg, #00ffff, #0066cc);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
@@ -132,6 +135,11 @@
             margin-bottom: 10px;
         }
 
+        .metric-value-passive { color: #00ff00; }
+        .metric-value-active { color: #ffaa00; }
+        .metric-value-anomaly { color: #00ff00; }
+        .metric-value-accuracy { color: #00ffff; }
+
         .metric-description {
             color: #a0a0a0;
             font-size: 0.9rem;
@@ -163,12 +171,20 @@
             border-radius: 4px;
         }
 
+        .progress-fill-w78 { width: 78%; }
+        .progress-fill-w92 { width: 92%; }
+        .progress-fill-w65 { width: 65%; }
+        .progress-fill-w97 { width: 97%; }
+        .progress-fill-w84 { width: 84%; }
+        .progress-fill-w100 { width: 100%; }
+
         /* Visualization Styles */
         .visualization-container {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             padding: 20px;
             border: 1px solid rgba(0, 255, 255, 0.2);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
             backdrop-filter: blur(10px);
             margin-bottom: 20px;
         }
@@ -245,6 +261,68 @@
             font-weight: bold;
         }
 
+        .people-scenario {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 15px;
+            padding: 24px;
+            border: 1px solid rgba(0,255,255,0.15);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .person-card {
+            background: rgba(0,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            min-width: 180px;
+            box-shadow: 0 2px 12px #00ffff22;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .person-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff 0%, #0066cc 100%);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            color: #fff;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+        }
+
+        .person-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #00ffff;
+        }
+
+        .person-role {
+            color: #a0a0a0;
+            font-size: 0.95em;
+            margin-bottom: 6px;
+        }
+
+        .person-status {
+            font-size: 0.95em;
+            color: #7ed957;
+        }
+
+        .scenario-description {
+            flex: 1 1 320px;
+            color: #e0e0e0;
+            font-size: 1.1em;
+            margin-left: 24px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -270,6 +348,8 @@
             height: 100%;
             font-size: 1.2rem;
             color: #00ffff;
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            backdrop-filter: blur(10px);
         }
 
         .spinner {
@@ -288,6 +368,7 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="public/js/sir-dashboard.js"></script>
 </head>
 <body>
     <div class="container">
@@ -309,10 +390,10 @@
                         <span class="metric-title">System Status</span>
                         <div class="status-indicator status-active"></div>
                     </div>
-                    <div class="metric-value" style="color: #00ff00;">PASSIVE MODE</div>
+                    <div class="metric-value metric-value-passive">PASSIVE MODE</div>
                     <div class="metric-description">SIR operating in observation phase</div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 78%;"></div>
+                        <div class="progress-fill progress-fill-w78"></div>
                     </div>
                 </div>
 
@@ -321,10 +402,10 @@
                         <span class="metric-title">Simulation Cycles</span>
                         <div class="status-indicator status-active"></div>
                     </div>
-                    <div class="metric-value" id="simulation-cycles">2,847</div>
+                    <div class="metric-value">2,847</div>
                     <div class="metric-description">Real-world environment simulations completed</div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 92%;"></div>
+                        <div class="progress-fill progress-fill-w92"></div>
                     </div>
                 </div>
 
@@ -333,10 +414,10 @@
                         <span class="metric-title">Data Points Collected</span>
                         <div class="status-indicator status-active"></div>
                     </div>
-                    <div class="metric-value" id="data-points">1.2M</div>
+                    <div class="metric-value">1.2M</div>
                     <div class="metric-description">Behavioral patterns and environmental factors</div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 65%;"></div>
+                        <div class="progress-fill progress-fill-w65"></div>
                     </div>
                 </div>
 
@@ -345,10 +426,10 @@
                         <span class="metric-title">Learning Accuracy</span>
                         <div class="status-indicator status-active"></div>
                     </div>
-                    <div class="metric-value" style="color: #00ffff;">97.3%</div>
+                    <div class="metric-value metric-value-accuracy">97.3%</div>
                     <div class="metric-description">Pattern recognition and prediction accuracy</div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 97%;"></div>
+                        <div class="progress-fill progress-fill-w97"></div>
                     </div>
                 </div>
 
@@ -357,10 +438,10 @@
                         <span class="metric-title">Environmental Factors</span>
                         <div class="status-indicator status-active"></div>
                     </div>
-                    <div class="metric-value" id="env-factors">156</div>
+                    <div class="metric-value">156</div>
                     <div class="metric-description">Unique environmental conditions analyzed</div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 84%;"></div>
+                        <div class="progress-fill progress-fill-w84"></div>
                     </div>
                 </div>
 
@@ -369,11 +450,36 @@
                         <span class="metric-title">Anomaly Detection</span>
                         <div class="status-indicator status-active"></div>
                     </div>
-                    <div class="metric-value" style="color: #00ff00;">0</div>
+                    <div class="metric-value metric-value-anomaly">0</div>
                     <div class="metric-description">No anomalies detected in current cycle</div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%;"></div>
+                        <div class="progress-fill progress-fill-w100"></div>
                     </div>
+                </div>
+            </div>
+
+            <div class="people-scenario">
+                <div class="person-card">
+                    <div class="person-avatar">👩‍🔬</div>
+                    <div class="person-name">Dr. Mira Novak</div>
+                    <div class="person-role">Biologist</div>
+                    <div class="person-status">Active in Lab</div>
+                </div>
+                <div class="person-card">
+                    <div class="person-avatar">🧑‍🚀</div>
+                    <div class="person-name">Alex Kim</div>
+                    <div class="person-role">Field Researcher</div>
+                    <div class="person-status">Exploring Wetlands</div>
+                </div>
+                <div class="person-card">
+                    <div class="person-avatar">👨‍💻</div>
+                    <div class="person-name">Samir Patel</div>
+                    <div class="person-role">Data Scientist</div>
+                    <div class="person-status">Analyzing Data</div>
+                </div>
+                <div class="scenario-description">
+                    <strong>Scenario:</strong> <br>
+                    <span>In this environment, a multidisciplinary team collaborates to monitor and enhance the health of a wetland ecosystem. Real-time data from sensors and field observations are visualized, with each person contributing unique expertise. The dashboard reflects not only environmental metrics but also the status and activity of each team member, providing a holistic, life-centric view of the scenario.</span>
                 </div>
             </div>
         </div>
@@ -458,6 +564,9 @@
             wireframeMode = false, particlesEnabled = true, currentEnvironment = 0;
         
         window.threeJSInitialized = false;
+
+        // Placeholder for geomaap data (replace with real data loading logic)
+        let geomaapData = Array.from({length: 100}, (_, i) => ({ id: i, value: Math.random() })); // Example: 100 data points
 
         function init3DScene() {
             const container = document.getElementById('threejs-container');
@@ -609,8 +718,9 @@
                 neuralNetwork.push(layerNodes);
             });
 
-            // Create floating data entities
-            for (let i = 0; i < 30; i++) {
+            // Create floating data entities based on geomaapData length
+            const illusionCount = geomaapData.length;
+            for (let i = 0; i < illusionCount; i++) {
                 const geometry = new THREE.TetrahedronGeometry(0.8, 0);
                 const material = new THREE.MeshPhongMaterial({ 
                     color: new THREE.Color().setHSL(Math.random(), 0.8, 0.6),
@@ -619,13 +729,11 @@
                     emissive: new THREE.Color().setHSL(Math.random(), 0.5, 0.1)
                 });
                 const entity = new THREE.Mesh(geometry, material);
-                
                 entity.position.set(
                     (Math.random() - 0.5) * 200,
                     Math.random() * 100 + 10,
                     (Math.random() - 0.5) * 200
                 );
-                
                 entity.castShadow = true;
                 entity.userData = {
                     velocity: new THREE.Vector3(
@@ -637,9 +745,51 @@
                         Math.random() * 0.02,
                         Math.random() * 0.02,
                         Math.random() * 0.02
-                    )
+                    ),
+                    geomaap: geomaapData[i] // Attach data for future use
                 };
-                
+                scene.add(entity);
+                entities.push(entity);
+            }
+
+            // Assign personas to neural nodes (SIR agent modeling)
+            assignPersonasToEntities(entities);
+        }
+
+        // Function to update illusions when geomaap data changes
+        function updateIllusionsFromGeomaap(newData) {
+            geomaapData = newData;
+            // Remove old illusions
+            entities.forEach(e => { if (e.geometry && e.geometry.type === 'TetrahedronGeometry') scene.remove(e); });
+            // Add new illusions
+            for (let i = 0; i < geomaapData.length; i++) {
+                const geometry = new THREE.TetrahedronGeometry(0.8, 0);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: new THREE.Color().setHSL(Math.random(), 0.8, 0.6),
+                    transparent: true,
+                    opacity: 0.7,
+                    emissive: new THREE.Color().setHSL(Math.random(), 0.5, 0.1)
+                });
+                const entity = new THREE.Mesh(geometry, material);
+                entity.position.set(
+                    (Math.random() - 0.5) * 200,
+                    Math.random() * 100 + 10,
+                    (Math.random() - 0.5) * 200
+                );
+                entity.castShadow = true;
+                entity.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.5,
+                        (Math.random() - 0.5) * 0.2,
+                        (Math.random() - 0.5) * 0.5
+                    ),
+                    rotationVelocity: new THREE.Vector3(
+                        Math.random() * 0.02,
+                        Math.random() * 0.02,
+                        Math.random() * 0.02
+                    ),
+                    geomaap: geomaapData[i]
+                };
                 scene.add(entity);
                 entities.push(entity);
             }
@@ -826,6 +976,56 @@
             }
         }
 
+        // Enhanced MoE-based Ego Drive Persona Generator
+        function PersonaGenerator(drives) {
+            this.drives = drives || [
+                { name: 'curiosity', expert: 'Explorer', weight: 0 },
+                { name: 'survival', expert: 'Survivor', weight: 0 },
+                { name: 'social', expert: 'Collaborator', weight: 0 },
+                { name: 'achievement', expert: 'Achiever', weight: 0 },
+                { name: 'order', expert: 'Organizer', weight: 0 },
+                { name: 'chaos', expert: 'Disruptor', weight: 0 }
+            ];
+        }
+
+        PersonaGenerator.prototype.generate = function() {
+            // Assign random weights (sum to 1)
+            let weights = [];
+            let total = 0;
+            for (let i = 0; i < this.drives.length; i++) {
+                let w = Math.random();
+                weights.push(w);
+                total += w;
+            }
+            // Normalize
+            weights = weights.map(w => w / total);
+            // Assign to persona
+            let persona = { egoProfile: [] };
+            for (let i = 0; i < this.drives.length; i++) {
+                persona.egoProfile.push({
+                    name: this.drives[i].name,
+                    expert: this.drives[i].expert,
+                    weight: weights[i]
+                });
+            }
+            // Optionally, add a dominant drive
+            persona.dominantDrive = persona.egoProfile.reduce((a, b) => a.weight > b.weight ? a : b);
+            return persona;
+        };
+
+        // Attach persona to each neural node entity
+        function assignPersonasToEntities(entities) {
+            const generator = new PersonaGenerator();
+            entities.forEach(entity => {
+                if (entity.userData && entity.userData.originalPosition) {
+                    entity.userData.persona = generator.generate();
+                }
+            });
+        }
+
+        // In createNeuralNetwork, after creating all entities:
+        // assignPersonasToEntities(entities);
+
         function setupMouseControls(container) {
             let mouseX = 0, mouseY = 0;
             let targetX = 0, targetY = 0;
@@ -845,6 +1045,27 @@
                 requestAnimationFrame(updateCameraPosition);
             }
             updateCameraPosition();
+
+            // Add click event to inspect persona
+            container.addEventListener('click', (event) => {
+                // Raycast to find intersected neural node
+                const rect = container.getBoundingClientRect();
+                const mouse = new THREE.Vector2(
+                    ((event.clientX - rect.left) / container.clientWidth) * 2 - 1,
+                    -((event.clientY - rect.top) / container.clientHeight) * 2 + 1
+                );
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(entities);
+                if (intersects.length > 0) {
+                    const obj = intersects[0].object;
+                    if (obj.userData && obj.userData.persona) {
+                        console.log('SIR Persona:', obj.userData.persona);
+                        alert('Dominant Drive: ' + obj.userData.persona.dominantDrive.name + '\n' +
+                            obj.userData.persona.egoProfile.map(d => `${d.expert}: ${(d.weight*100).toFixed(1)}%`).join('\n'));
+                    }
+                }
+            });
         }
 
         function animate() {
@@ -1003,6 +1224,20 @@
                 simTime.textContent = `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}:${newSeconds.toString().padStart(2, '0')}`;
             }
         }, 2000);
+
+        // Ensure all hyperlinks open in a new tab and are accessible
+        // This script will run after DOM is loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('a[href]').forEach(link => {
+                // Only update if not already set
+                if (!link.hasAttribute('target')) {
+                    link.setAttribute('target', '_blank');
+                }
+                if (!link.hasAttribute('rel')) {
+                    link.setAttribute('rel', 'noopener noreferrer');
+                }
+            });
+        });
     </script>
 
 

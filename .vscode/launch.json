@@ -139,6 +139,39 @@
                 "--remote-debugging-port=9223",
                 "--no-first-run"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run Script: lmstudio:interface",
+            "program": "${workspaceFolder}/Start-Lmstudio.js",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "runtimeExecutable": "node",
+            "env": {},
+            "args": []
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run Script: lmstudio:interface (Manual)",
+            "program": "${workspaceFolder}/Start-Lmstudio.js",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "runtimeExecutable": "node",
+            "env": {},
+            "args": ["--manual"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run Script: lmstudio:interface (Auto)",
+            "program": "${workspaceFolder}/Start-Lmstudio.js",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "runtimeExecutable": "node",
+            "env": {},
+            "args": ["--auto"]
         }
     ],
     "compounds": [
