@@ -52,10 +52,42 @@ The system uses a microservices architecture with:
 - **Health Monitoring**: Built-in health checks
 - **Development Workflow**: Volume mounting for live code updates
 
+### Container Communication Flow
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   LM Studio     │    │  H3X Protocol   │    │   MCP Servers   │
+│   (External)    │◄──►│     Server      │◄──►│   (External)    │
+│   Port: 1234    │    │   Port: XXXX    │    │  Various Ports  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         ▲                        ▲                        ▲
+         │                        │                        │
+         │              ┌─────────▼─────────┐              │
+         └─────────────►│   H3X Main Server │◄─────────────┘
+                        │    Port: XXXX     │
+                        │  (SIR Interface)  │
+                        └───────────────────┘
+
+Communication Protocols:
+• LM Studio ↔ Protocol Server: HTTP/REST API (Language Model requests)
+• Protocol Server ↔ MCP Servers: Model Context Protocol (Tool/Resource access)
+• H3X Server ↔ Protocol Server: Internal API (System coordination)
+• External Access: Web UI through H3X Server (Port 4978)
+```
+
+**Key Features:**
+
+- **No Azure Dependencies**: Pure local container architecture
+- **Protocol-Based Communication**: Standard HTTP/REST and MCP protocols
+- **Service Isolation**: Each component runs in its own container
+- **Health Monitoring**: Automated health checks across all services
+- **Development-Friendly**: Live reload and debugging support
+
 ## 📊 Monitoring
 
 Check system status:
-```bash
+
+```bashbash
 # View service status
 docker-compose ps
 

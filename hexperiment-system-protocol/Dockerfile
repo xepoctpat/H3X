@@ -17,31 +17,39 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o main .
 
 # Final stage - minimal image
 FROM alpine:latest
 
-# Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates
+# Install ca-certificates and tini for signal handling
+RUN apk --no-cache add ca-certificates tini \
+    && rm -rf /var/cache/apk/*
 
-WORKDIR /root/
+# Create non-root user for security (no shell, no home, locked password)
+RUN addgroup -g 1000 -S appuser \
+    && adduser -u 1000 -S -D -H -G appuser -s /sbin/nologin appuser
+
+WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/main .
 
-# Create static directory for web files
-RUN mkdir -p static
+# Change ownership to non-root user
+RUN chown -R appuser:appuser /app
 
-# Copy static files if they exist
-COPY static ./static
+# Switch to non-root user
+USER appuser
 
-# Expose port
-EXPOSE 8080
+# Expose application port (change as needed)
+EXPOSE 8081
 
-# Health check
+# Health check endpoint (customize path/port as needed)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8081/api/health || exit 1
 
-# Run the application
+# Use tini for proper signal handling (recommended for containers)
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Run the application (change binary name if needed)
 CMD ["./main"]

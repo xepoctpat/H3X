@@ -7,6 +7,7 @@
     <meta name="description" content="H3X Cortex Current Real-time Interface - Neural intention processing with real-time symbolic outcomes">
     
     <title>H3X Cortex Current - Real-time Neural Interface</title>
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <link rel="stylesheet" href="css/cortex-current-realtime-styles.css">
     <link rel="manifest" href="manifest.json">
 </head>
@@ -43,7 +44,7 @@
                     <div class="input-group">
                         <label for="intentInput">Desired Outcome Pattern:</label>
                         <div class="smart-input">
-                            <input type="text" id="intentInput" 
+                            <input type="text" id="intent-input" 
                                    placeholder="Enter your intention (e.g., 'Increase energy', 'Start creative project', 'Focus deeply')..."
                                    autocomplete="off">
                             <div class="input-suggestions" id="suggestions"></div>
@@ -53,7 +54,7 @@
                     <div class="intention-controls">
                         <div class="intensity-control">
                             <label for="intensitySlider">Intention Intensity:</label>
-                            <input type="range" id="intensitySlider" min="1" max="10" value="5">
+                            <input type="range" id="intensity-slider" min="1" max="10" value="5" title="Adjust intention intensity from 1 to 10">
                             <span class="intensity-value">5</span>
                         </div>
                         
@@ -67,7 +68,7 @@
                         </div>
                     </div>
                     
-                    <button id="generateBtn" class="neural-button primary">
+                    <button id="generate-btn" class="neural-button primary">
                         <span class="button-symbol">⬡</span>
                         Process Neural Intention
                         <span class="processing-indicator"></span>
@@ -79,7 +80,7 @@
             <section class="panel realtime-output">
                 <h2>🌊 Real-time Neural Flow</h2>
                 <div class="output-container">
-                    <div class="central-symbol" id="centralSymbol">
+                    <div class="central-symbol" id="central-symbol">
                         <div class="symbol-core">⬡</div>
                         <div class="symbol-rings">
                             <div class="ring ring-1"></div>
@@ -91,14 +92,14 @@
                     <div class="output-sections">
                         <div class="symbolic-output">
                             <h3>Symbolic Manifestation</h3>
-                            <div id="symbolicResult" class="result-display">
+                            <div id="symbolic-result" class="result-display">
                                 Awaiting neural intention input...
                             </div>
                         </div>
                         
                         <div class="analytical-output">
                             <h3>Neural Analysis</h3>
-                            <div id="analyticalResult" class="result-display">
+                            <div id="analytical-result" class="result-display">
                                 Pattern recognition standby...
                             </div>
                         </div>
@@ -106,8 +107,8 @@
                         <div class="confidence-meter">
                             <h4>Reality Synchronization</h4>
                             <div class="confidence-bar">
-                                <div class="confidence-fill" id="confidenceFill"></div>
-                                <span class="confidence-text" id="confidenceText">80%</span>
+                                <div class="confidence-fill" id="confidence-fill"></div>
+                                <span class="confidence-text" id="confidence-text">80%</span>
                             </div>
                         </div>
                     </div>
@@ -119,11 +120,11 @@
                 <h2>📊 Intention History</h2>
                 <div class="history-container">
                     <div class="history-controls">
-                        <button class="history-btn" id="clearHistory">Clear History</button>
-                        <button class="history-btn" id="exportHistory">Export Session</button>
+                        <button class="history-btn" id="clear-history">Clear History</button>
+                        <button class="history-btn" id="export-history">Export Session</button>
                     </div>
                     
-                    <div class="history-list" id="historyList">
+                    <div class="history-list" id="history-list">
                         <div class="history-item sample">
                             <div class="history-header">
                                 <span class="history-time">14:23:45</span>
@@ -142,32 +143,32 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <h4>Total Intentions</h4>
-                        <span class="metric-value" id="totalIntentions">0</span>
+                        <span class="metric-value" id="total-intentions">0</span>
                         <span class="metric-unit">processed</span>
                     </div>
                     
                     <div class="metric-card">
                         <h4>Average Confidence</h4>
-                        <span class="metric-value" id="avgConfidence">80</span>
+                        <span class="metric-value" id="avg-confidence">80</span>
                         <span class="metric-unit">%</span>
                     </div>
                     
                     <div class="metric-card">
                         <h4>Neural Coherence</h4>
-                        <span class="metric-value" id="neuralCoherence">94</span>
+                        <span class="metric-value" id="neural-coherence">94</span>
                         <span class="metric-unit">%</span>
                     </div>
                     
                     <div class="metric-card">
                         <h4>Reality Sync</h4>
-                        <span class="metric-value sync-indicator" id="realitySync">●</span>
+                        <span class="metric-value sync-indicator" id="reality-sync">●</span>
                         <span class="metric-unit">active</span>
                     </div>
                 </div>
                 
                 <div class="pattern-analysis">
                     <h4>Pattern Recognition</h4>
-                    <div class="pattern-display" id="patternDisplay">
+                    <div class="pattern-display" id="pattern-display">
                         <div class="pattern-wave"></div>
                         <div class="pattern-nodes"></div>
                     </div>

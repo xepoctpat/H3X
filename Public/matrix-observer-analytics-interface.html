@@ -12,13 +12,13 @@
     <header class="analytics-header">
       <h1>📊 MATRIX-OBSERVER Analytics Engine</h1>
       <div class="analysis-mode">
-        <select id="analysisMode">
+        <select id="analysis-mode">
           <option value="realtime">Real-time Analysis</option>
           <option value="historical">Historical Data</option>
           <option value="predictive">Predictive Modeling</option>
           <option value="pattern">Pattern Recognition</option>
         </select>
-        <button id="refreshData" class="refresh-btn">🔄 Refresh</button>
+        <button id="refresh-data" class="refresh-btn">🔄 Refresh</button>
       </div>
     </header>
     
@@ -30,22 +30,22 @@
             <div class="metric-icon">🧠</div>
             <h3>Neural Activity</h3>
             <div id="neural-metrics" class="metric-content">
-              <div class="metric-value" id="activeNodes">127</div>
+              <div class="metric-value" id="active-nodes">127</div>
               <div class="metric-label">Active Nodes</div>
-              <div class="metric-trend positive" id="neuralTrend">↗ +12%</div>
+              <div class="metric-trend positive" id="neural-trend">↗ +12%</div>
             </div>
-            <div class="metric-chart" id="neuralChart"></div>
+            <div class="metric-chart" id="neural-chart"></div>
           </div>
           
           <div class="metric-card pattern">
             <div class="metric-icon">🔍</div>
             <h3>Pattern Analysis</h3>
             <div id="pattern-metrics" class="metric-content">
-              <div class="metric-value" id="patternsDetected">5</div>
+              <div class="metric-value" id="patterns-detected">5</div>
               <div class="metric-label">Patterns Detected</div>
-              <div class="metric-trend positive" id="patternTrend">↗ 3 new</div>
+              <div class="metric-trend positive" id="pattern-trend">↗ 3 new</div>
             </div>
-            <div class="metric-chart" id="patternChart"></div>
+            <div class="metric-chart" id="pattern-chart"></div>
           </div>
           
           <div class="metric-card performance">
@@ -54,20 +54,20 @@
             <div id="performance-metrics" class="metric-content">
               <div class="metric-value" id="efficiency">98.7%</div>
               <div class="metric-label">Efficiency</div>
-              <div class="metric-trend stable" id="performanceTrend">→ stable</div>
+              <div class="metric-trend stable" id="performance-trend">→ stable</div>
             </div>
-            <div class="metric-chart" id="performanceChart"></div>
+            <div class="metric-chart" id="performance-chart"></div>
           </div>
           
           <div class="metric-card integration">
             <div class="metric-icon">🔗</div>
             <h3>AI Integration</h3>
             <div id="integration-metrics" class="metric-content">
-              <div class="metric-value" id="aiConnections">4</div>
+              <div class="metric-value" id="ai-connections">4</div>
               <div class="metric-label">Active Connections</div>
-              <div class="metric-trend positive" id="integrationTrend">↗ LMStudio</div>
+              <div class="metric-trend positive" id="integration-trend">↗ LMStudio</div>
             </div>
-            <div class="metric-chart" id="integrationChart"></div>
+            <div class="metric-chart" id="integration-chart"></div>
           </div>
         </div>
       </div>
@@ -83,17 +83,17 @@
           </div>
           
           <div class="chart-display">
-            <div id="networkChart" class="chart active">
-              <svg width="100%" height="300" id="networkSvg"></svg>
+            <div id="network-chart" class="chart active">
+              <svg width="100%" height="300" id="network-svg"></svg>
             </div>
-            <div id="flowChart" class="chart">
+            <div id="flow-chart" class="chart">
               <div class="flow-visualization">Data flow visualization will appear here</div>
             </div>
-            <div id="heatmapChart" class="chart">
-              <div class="heatmap-grid" id="heatmapGrid"></div>
+            <div id="heatmap-chart" class="chart">
+              <div class="heatmap-grid" id="heatmap-grid"></div>
             </div>
-            <div id="timelineChart" class="chart">
-              <div class="timeline-container" id="timelineContainer"></div>
+            <div id="timeline-chart" class="chart">
+              <div class="timeline-container" id="timeline-container"></div>
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@
         <div class="pattern-analysis">
           <div class="detected-patterns">
             <h3>Detected Patterns</h3>
-            <div id="patternList" class="pattern-list">
+            <div id="pattern-list" class="pattern-list">
               <div class="pattern-item">
                 <span class="pattern-type">Workflow</span>
                 <span class="pattern-confidence">94%</span>
@@ -125,9 +125,9 @@
           
           <div class="pattern-controls">
             <h3>Analysis Controls</h3>
-            <button id="scanPatterns" class="analysis-btn">🔍 Scan for New Patterns</button>
-            <button id="exportPatterns" class="analysis-btn">📊 Export Analysis</button>
-            <button id="scheduleAnalysis" class="analysis-btn">⏰ Schedule Analysis</button>
+            <button id="scan-patterns" class="analysis-btn">🔍 Scan for New Patterns</button>
+            <button id="export-patterns" class="analysis-btn">📊 Export Analysis</button>
+            <button id="schedule-analysis" class="analysis-btn">⏰ Schedule Analysis</button>
           </div>
         </div>
       </div>
@@ -135,17 +135,17 @@
       <div class="activity-log">
         <h2>Real-time Activity Log</h2>
         <div class="log-controls">
-          <select id="logLevel">
+          <select id="log-level">
             <option value="all">All Events</option>
             <option value="info">Info Only</option>
             <option value="warning">Warnings</option>
             <option value="error">Errors</option>
           </select>
-          <button id="clearLog" class="log-btn">🗑️ Clear</button>
-          <button id="exportLog" class="log-btn">📁 Export</button>
+          <button id="clear-log" class="log-btn">🗑️ Clear</button>
+          <button id="export-log" class="log-btn">📁 Export</button>
         </div>
         
-        <div id="activityLog" class="log-display">
+        <div id="activity-log" class="log-display">
           <div class="log-entry info">[2025-05-28 16:47:23] MATRIX-OBSERVER Analytics Engine initialized</div>
           <div class="log-entry info">[2025-05-28 16:47:24] Neural network analysis started</div>
           <div class="log-entry info">[2025-05-28 16:47:25] Pattern recognition active</div>

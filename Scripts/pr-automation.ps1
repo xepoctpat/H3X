@@ -55,7 +55,7 @@ function Get-ProjectStatus {
     
     $commitsAhead = git rev-list --count "$TargetBranch..$CurrentBranch" 2>$null
     if ($commitsAhead) {
-        Write-Info "Commits ahead of $TargetBranch: $commitsAhead"
+        Write-Info "Commits ahead of ${TargetBranch}: $commitsAhead"
     }
     
     # Docker services status

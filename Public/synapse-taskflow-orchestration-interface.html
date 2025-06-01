@@ -23,7 +23,7 @@
   <div class="orchestration-container">
     <header class="orchestration-header">
       <h1>⚡ SYNAPSE-TASKFLOW Orchestration Engine</h1>
-      <div id="connectionStatus" class="connection-status">
+      <div id="connection-status" class="connection-status">
         <span class="status-dot connecting"></span>
         <span>Connecting to orchestration engine...</span>
       </div>
@@ -65,14 +65,14 @@
       
       <div class="canvas-area">
         <div class="canvas-toolbar">
-          <button id="newWorkflow" class="toolbar-btn">➕ New</button>
-          <button id="saveWorkflow" class="toolbar-btn">💾 Save</button>
-          <button id="runWorkflow" class="toolbar-btn primary">▶️ Run</button>
-          <button id="pauseWorkflow" class="toolbar-btn">⏸️ Pause</button>
-          <button id="stopWorkflow" class="toolbar-btn">⏹️ Stop</button>
+          <button id="new-workflow" class="toolbar-btn">➕ New</button>
+          <button id="save-workflow" class="toolbar-btn">💾 Save</button>
+          <button id="run-workflow" class="toolbar-btn primary">▶️ Run</button>
+          <button id="pause-workflow" class="toolbar-btn">⏸️ Pause</button>
+          <button id="stop-workflow" class="toolbar-btn">⏹️ Stop</button>
         </div>
         
-        <div id="workflowCanvas" class="workflow-canvas">
+        <div id="workflow-canvas" class="workflow-canvas">
           <div class="canvas-placeholder">
             <p>🎯 Drag components from the sidebar to build your workflow</p>
             <p>Or select a template to get started quickly</p>
@@ -82,13 +82,13 @@
       
       <div class="properties-panel">
         <h3>Properties</h3>
-        <div id="componentProperties" class="properties-content">
+        <div id="component-properties" class="properties-content">
           <p>Select a component to view its properties</p>
         </div>
         
         <div class="execution-status">
           <h3>Execution Status</h3>
-          <div id="executionLog" class="execution-log">
+          <div id="execution-log" class="execution-log">
             <div class="log-entry info">[READY] Workflow engine initialized</div>
           </div>
         </div>
@@ -98,8 +98,8 @@
     <div class="quick-actions">
       <div class="action-group">
         <h3>Quick Task Creation</h3>
-        <input id="quickTaskInput" placeholder="Describe a task to automate..." size="40">
-        <select id="quickTaskType">
+        <input id="quick-task-input" placeholder="Describe a task to automate..." size="40">
+        <select id="quick-task-type">
           <option value="ai_assistant">AI Assistant</option>
           <option value="data_processing">Data Processing</option>
           <option value="content_generation">Content Generation</option>
@@ -107,7 +107,7 @@
           <option value="monitoring">System Monitoring</option>
           <option value="notification">Notification System</option>
         </select>
-        <button id="createQuickTask">⚡ Create & Deploy</button>
+        <button id="create-quick-task">⚡ Create & Deploy</button>
       </div>
     </div>
     

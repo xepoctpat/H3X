@@ -1,0 +1,4 @@
+# A gitignored place holder file for local runtime configurations
+clientId=
+clientSecret=
+OPENAI_API_KEY=
