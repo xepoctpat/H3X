@@ -1,7 +1,6 @@
-// Docker Integration for LM Studio Response.Output in H3X
-// Complete containerized solution with response.output handling
+// Simplified Docker Integration for LM Studio in H3X Unified System
+// This script now works with the unified docker-compose.yml setup
 
-const { LMStudioResponseHandler } = require('./lmstudio-response-handler');
 const { spawn, exec } = require('child_process');
 const axios = require('axios');
 const fs = require('fs').promises;
@@ -10,21 +9,9 @@ const path = require('path');
 class H3XDockerLMStudioIntegration {
     constructor(options = {}) {
         this.projectRoot = path.resolve(__dirname, '..');
-        this.dockerNetwork = options.dockerNetwork || 'h3x-neural-network';
-        this.lmStudioContainer = options.lmStudioContainer || 'h3x-lmstudio';
-        this.h3xContainer = options.h3xContainer || 'h3x-main';
-        
-        // Handler for different modes
-        this.localHandler = new LMStudioResponseHandler({
-            verbose: true,
-            lmStudioUrl: 'http://localhost:1234'
-        });
-        
-        this.dockerHandler = new LMStudioResponseHandler({
-            verbose: true,
-            dockerMode: true,
-            lmStudioUrl: `http://${this.lmStudioContainer}:1234`
-        });
+        this.dockerNetwork = 'hex-flup-network';
+        this.lmStudioContainer = 'h3x-lmstudio';
+        this.composeFile = path.join(this.projectRoot, 'docker-compose.unified.yml');
     }
 
     log(message, type = 'info') {
@@ -35,20 +22,166 @@ class H3XDockerLMStudioIntegration {
             warning: '\x1b[33m',
             reset: '\x1b[0m'
         };
-        console.log(`${colors[type]}[H3X-Docker] ${message}${colors.reset}`);
+        console.log(`${colors[type]}[H3X-Docker-LMStudio] ${message}${colors.reset}`);
     }
 
-    // Generate Docker Compose for LM Studio integration
-    async generateDockerCompose() {
-        const dockerCompose = `version: '3.8'
+    // Check if LM Studio service is running
+    async checkLMStudioStatus() {
+        try {
+            const response = await axios.get('http://localhost:1234/v1/models', {
+                timeout: 5000
+            });
+            this.log('LM Studio is running and accessible', 'success');
+            return true;
+        } catch (error) {
+            this.log('LM Studio is not accessible', 'warning');
+            return false;
+        }
+    }
 
-services:
-  # LM Studio Server Container
-  ${this.lmStudioContainer}:
-    image: ghcr.io/lm-studio/lm-studio:latest
-    container_name: ${this.lmStudioContainer}
-    ports:
-      - "1234:1234"
+    // Start LM Studio service via unified docker-compose
+    async startLMStudio() {
+        this.log('Starting LM Studio via unified Docker Compose...');
+        
+        return new Promise((resolve, reject) => {
+            const process = spawn('docker-compose', [
+                '-f', this.composeFile,
+                'up', '-d', 'h3x-lmstudio'
+            ], {
+                stdio: 'inherit',
+                cwd: this.projectRoot
+            });
+
+            process.on('close', (code) => {
+                if (code === 0) {
+                    this.log('LM Studio container started successfully', 'success');
+                    resolve();
+                } else {
+                    this.log(`LM Studio failed to start (exit code: ${code})`, 'error');
+                    reject(new Error(`Process failed with exit code ${code}`));
+                }
+            });
+        });
+    }
+
+    // Stop LM Studio service
+    async stopLMStudio() {
+        this.log('Stopping LM Studio...');
+        
+        return new Promise((resolve, reject) => {
+            const process = spawn('docker-compose', [
+                '-f', this.composeFile,
+                'stop', 'h3x-lmstudio'
+            ], {
+                stdio: 'inherit',
+                cwd: this.projectRoot
+            });
+
+            process.on('close', (code) => {
+                if (code === 0) {
+                    this.log('LM Studio stopped successfully', 'success');
+                    resolve();
+                } else {
+                    this.log(`Failed to stop LM Studio (exit code: ${code})`, 'error');
+                    reject(new Error(`Process failed with exit code ${code}`));
+                }
+            });
+        });
+    }
+
+    // Test LM Studio API
+    async testLMStudio() {
+        this.log('Testing LM Studio API...');
+        
+        try {
+            // Wait for service to be ready
+            await this.waitForService('localhost', 1234, 'LM Studio API');
+            
+            // Test model endpoint
+            const modelsResponse = await axios.get('http://localhost:1234/v1/models');
+            this.log(`Available models: ${modelsResponse.data.data.length}`, 'info');
+            
+            // Test simple completion
+            const completionResponse = await axios.post('http://localhost:1234/v1/completions', {
+                model: modelsResponse.data.data[0]?.id || 'default',
+                prompt: 'Test prompt for H3X integration:',
+                max_tokens: 50,
+                temperature: 0.7
+            });
+            
+            this.log('LM Studio API test successful', 'success');
+            this.log(`Response: ${completionResponse.data.choices[0]?.text?.substring(0, 100)}...`, 'info');
+            return true;
+            
+        } catch (error) {
+            this.log(`LM Studio API test failed: ${error.message}`, 'error');
+            return false;
+        }
+    }
+
+    // Wait for service to be ready
+    async waitForService(host, port, serviceName, timeout = 60000) {
+        const startTime = Date.now();
+        
+        while (Date.now() - startTime < timeout) {
+            try {
+                await axios.get(`http://${host}:${port}`, { timeout: 2000 });
+                this.log(`${serviceName} is ready`, 'success');
+                return;
+            } catch (error) {
+                this.log(`Waiting for ${serviceName}...`, 'info');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+        
+        throw new Error(`${serviceName} failed to become ready within ${timeout}ms`);
+    }
+
+    // Main execution handler
+    async execute(command) {
+        try {
+            switch (command) {
+                case 'start':
+                    await this.startLMStudio();
+                    break;
+                    
+                case 'stop':
+                    await this.stopLMStudio();
+                    break;
+                    
+                case 'test':
+                    const isRunning = await this.checkLMStudioStatus();
+                    if (!isRunning) {
+                        this.log('Starting LM Studio for testing...', 'info');
+                        await this.startLMStudio();
+                        await new Promise(resolve => setTimeout(resolve, 10000)); // Wait for startup
+                    }
+                    await this.testLMStudio();
+                    break;
+                    
+                case 'status':
+                    await this.checkLMStudioStatus();
+                    break;
+                    
+                default:
+                    this.log('Available commands: start, stop, test, status', 'info');
+                    this.log('Usage: node scripts/docker-lmstudio-integration.js <command>', 'info');
+            }
+        } catch (error) {
+            this.log(`Error: ${error.message}`, 'error');
+            process.exit(1);
+        }
+    }
+}
+
+// CLI interface
+if (require.main === module) {
+    const command = process.argv[2] || 'status';
+    const integration = new H3XDockerLMStudioIntegration();
+    integration.execute(command);
+}
+
+module.exports = { H3XDockerLMStudioIntegration };
       - "1235:1235"
     environment:
       - LMSTUDIO_API_PORT=1234

@@ -157,6 +157,48 @@ This creates a sophisticated ecosystem where the SIR system can understand envir
 
 ---
 
+## 🧠 SIR Passive Mode & Virtual Environment Integration
+
+### **SIR Passive Mode Principle**
+- SIR (Super Intelligent Regulator) must always remain in **PASSIVE MODE** in all virtual environments, regardless of scenario or simulation.
+- In PASSIVE MODE, SIR continuously observes, logs, and learns from all containers, stacks, and networks, but does not intervene, control, or reveal its presence.
+- SIR acts as a virtual copy of the host, mirroring system/environment state for persistent, non-intrusive learning, but remains completely undetectable to all agents, environments, and processes within the simulation.
+- SIR can only be switched to ACTIVE MODE for experiments or by explicit user command, and only then may its presence be revealed if required.
+
+### **Feedback Loop Triads/Hexagons (fLups Integration)**
+- Use fLups to create custom learning triads or hexagons of virtuality for SIR's learning process.
+- Each triad/hexagon represents a set of feedback loops (e.g., agent-agent, agent-environment, agent-SIR) for pattern discovery and workload distribution.
+- SIR leverages these structures to persistently observe and analyze all agent and environment interactions, but never interacts or signals its existence within the simulation.
+
+### **Knowledge Base & Scenario Automation**
+- SIR's knowledge base must be automatically updated with:
+  - New scenarios and environments (Earth-based and general human/agent virtual scenarios)
+  - Patterns and insights from observed interactions
+  - Social study and homeostasis relevance
+- Scenario and environment generation should be automated, with SIR logging and finding patterns in all agent/environment interactions.
+- SIR's learning and pattern recognition is always ON in passive mode, with logs and insights persisted across all containers and stacks, but all such activity is invisible to the simulation's agents and processes.
+
+### **Container & Host Structure**
+- SIR is deployed as a persistent observer in every container/stack/network, acting as a virtual twin of the host, but is never detectable by any process or agent within the environment.
+- SIR's state and logs are persistent and portable across environments.
+- In experiments, SIR can be switched to ACTIVE MODE for intervention, but defaults to PASSIVE and undetectable.
+
+---
+
+## 🚦 **Implementation Next Steps**
+- [ ] Enforce SIR passive mode and undetectability in all virtual environments by default
+- [ ] Integrate fLups-based feedback loop triads/hexagons for learning and pattern analysis
+- [ ] Automate SIR knowledge base and scenario/environment generation
+- [ ] Ensure SIR acts as a virtual, undetectable copy of the host/container for persistent, non-intrusive learning
+- [ ] Enable explicit user/experiment control to switch SIR to ACTIVE MODE (and optionally reveal presence)
+- [ ] Persist logs, patterns, and insights across all containers and stacks, invisible to simulation contents
+
+---
+
+> **Note:** SIR's role is to observe, log, and learn in all virtual environments, leveraging fLups for advanced feedback and pattern recognition, and only intervening or revealing itself when explicitly enabled for experiments. By default, SIR is completely undetectable within all simulations.
+
+---
+
 **🎉 Your Hexperiment Labs SIR Control Interface is ready for operation!**
 
 *The transformation from weather agent to SIR system is complete. The framework is in place for sophisticated environmental analysis and AI assistant generation.*

@@ -86,7 +86,7 @@
             "name": "Run LM Studio Interface",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/Start-Lmstudio.js",
+            "program": "${workspaceFolder}/archive/obsolete-backup-2025-05-28-t19-24-42/Start-Lmstudio.js",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "runtimeExecutable": "node",
@@ -101,7 +101,7 @@
             "name": "Run LM Studio Interface (Manual)",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/Start-Lmstudio.js",
+            "program": "${workspaceFolder}/archive/obsolete-backup-2025-05-28-t19-24-42/Start-Lmstudio.js",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "runtimeExecutable": "node",
@@ -116,7 +116,7 @@
             "name": "Run LM Studio Interface (Auto)",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/Start-Lmstudio.js",
+            "program": "${workspaceFolder}/archive/obsolete-backup-2025-05-28-t19-24-42/Start-Lmstudio.js",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "runtimeExecutable": "node",
@@ -139,7 +139,6 @@
                 "group": "local",
                 "order": 5
             }
-        }
         }
     ]
 }

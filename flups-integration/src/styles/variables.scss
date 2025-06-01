@@ -1,0 +1,96 @@
+// H3X Color Palette
+$h3x-primary: #00ff88;
+$h3x-secondary: #88ffaa;
+$h3x-accent: #ff8800;
+$h3x-warning: #ffaa00;
+$h3x-error: #ff4444;
+$h3x-success: #00ff44;
+
+// Neutral Colors
+$h3x-bg-primary: #0a0a0a;
+$h3x-bg-secondary: #1a1a1a;
+$h3x-bg-tertiary: #2a2a2a;
+$h3x-text-primary: #ffffff;
+$h3x-text-secondary: #cccccc;
+$h3x-text-muted: #888888;
+
+// Hexagonal Theme Colors
+$hex-vertex: #00ffff;
+$hex-edge: #0088ff;
+$hex-face: rgba(0, 255, 136, 0.3);
+$hex-highlight: #ffff00;
+$hex-selection: rgba(255, 255, 0, 0.5);
+
+// Typography
+$font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-family-mono: 'Courier New', monospace;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
+
+// Borders
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-width: 1px;
+$border-width-thick: 2px;
+
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+$shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+
+// Transitions
+$transition-fast: 0.15s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// Z-Index
+$z-dropdown: 1000;
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-popover: 1060;
+$z-tooltip: 1070;
+
+// Grid & Layout
+$container-max-width: 1200px;
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+// Animation
+$animation-duration-fast: 0.2s;
+$animation-duration-normal: 0.4s;
+$animation-duration-slow: 0.8s;
+
+// 3D Visualization
+$canvas-bg: $h3x-bg-primary;
+$canvas-border: $h3x-primary;
+$model-ambient: 0.4;
+$model-directional: 0.6;
+$camera-fov: 75;
+$camera-near: 0.1;
+$camera-far: 1000;

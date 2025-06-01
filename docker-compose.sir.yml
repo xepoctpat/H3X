@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # H3X Main Application - SIR Control Interface
+  h3x-main:
+    build:
+      context: .
+      dockerfile: dockerfile.h3x
+    container_name: h3x-main-sir
+    ports:
+      - "3978:4978"  # Map container 4978 to host 3978
+    environment:
+      - NODE_ENV=development
+      - DOCKER_MODE=true
+      - H3X_NETWORK_MODE=docker
+      - DEBUG=h3x:*
+      - LOG_LEVEL=debug
+      - PROTOCOL_SERVER_URL=http://h3x-protocol:8080
+      - REDIS_URL=redis://h3x-redis:6379
+      - SIR_MODE=true
+      - SIR_HOST_MIMIC=enabled
+    volumes:
+      - ./Src:/app/Src:rw
+      - ./Public:/app/Public:rw
+      - ./Scripts:/app/Scripts:rw
+      - h3x-logs-sir:/app/logs
+    networks:
+      - h3x-sir-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4978/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # H3X Protocol Server - SIR Configuration
+  h3x-protocol:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+    container_name: h3x-protocol-sir
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - GO_ENV=development
+      - DEBUG=true
+      - LOG_LEVEL=debug
+      - API_KEY=sir-dev-key-12345
+      - CORS_ALLOWED_ORIGINS=http://localhost:3978
+      - SIR_RELAY_MODE=true
+      - HOST_INTERMEDIARY=enabled
+    networks:
+      - h3x-sir-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Redis for SIR Data Persistence
+  h3x-redis:
+    image: redis:7-alpine
+    container_name: h3x-redis-sir
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data-sir:/data
+    networks:
+      - h3x-sir-network
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--loglevel", "debug"]
+
+  # SIR System Intermediary Relayer
+  sir-relayer:
+    build:
+      context: .
+      dockerfile: Dockerfile.sir
+    container_name: sir-relayer
+    ports:
+      - "9001:9001"  # SIR control port
+    environment:
+      - SIR_MODE=relayer
+      - HOST_MIMIC_ENABLED=true
+      - TARGET_SYSTEM_URL=http://h3x-main:4978
+      - PROTOCOL_RELAY_URL=http://h3x-protocol:8080
+      - REDIS_URL=redis://h3x-redis:6379
+      - LOG_LEVEL=debug
+    volumes:
+      - ./sir-config:/app/config:ro
+      - sir-logs:/app/logs
+    networks:
+      - h3x-sir-network
+    depends_on:
+      - h3x-main
+      - h3x-protocol
+      - h3x-redis
+    restart: unless-stopped
+
+  # H3X Monitor for SIR
+  h3x-monitor:
+    image: prom/prometheus:latest
+    container_name: h3x-monitor-sir
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus-sir.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-sir-data:/prometheus
+    networks:
+      - h3x-sir-network
+    restart: unless-stopped
+
+networks:
+  h3x-sir-network:
+    driver: bridge
+    name: h3x-sir-network
+
+volumes:
+  h3x-logs-sir:
+    name: h3x-logs-sir
+  redis-data-sir:
+    name: h3x-redis-data-sir
+  sir-logs:
+    name: h3x-sir-logs
+  prometheus-sir-data:
+    name: h3x-prometheus-sir-data

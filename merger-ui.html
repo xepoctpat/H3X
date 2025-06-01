@@ -1,0 +1,291 @@
+<!-- merger-ui.html: UI for controlling and visualizing H3Xbase-merger.js state/config -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H3Xbase Merger Control UI</title>
+  <style>
+    body { font-family: sans-serif; background: #f7f7fa; margin: 0; padding: 0; }
+    .merger-ui-container { max-width: 600px; margin: 2em auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2em; }
+    h2 { margin-top: 0; }
+    .config-group { margin-bottom: 1.5em; }
+    label { display: block; margin-bottom: 0.5em; }
+    input[type="checkbox"] { margin-right: 0.5em; }
+    .state-log { background: #f0f0f5; border-radius: 4px; padding: 1em; font-size: 0.95em; max-height: 200px; overflow-y: auto; }
+    button { margin-top: 1em; }
+    /* --- Graph/Loop UI Styles --- */
+    .graph-flex { display: flex; gap: 2em; align-items: flex-start; }
+    .graph-canvas { background:#f9f9fc; border:1px solid #ccc; border-radius:8px; }
+    .graph-btns { margin-top:1em; }
+    .graph-btns label { display:inline-block; margin-left:1em; margin-bottom:0; }
+    .graph-select { margin-top:1em; }
+    .graph-slider { margin-top:1em; }
+    .graph-slider-thick { margin-top:0.5em; }
+    .graph-table { width:100%; border-collapse:collapse; }
+    .graph-table th { background:#f0f0f5; }
+    .graph-metrics { flex: 1; }
+    .archived-section { margin-top:2em; background:#f8f8fc; border-radius:6px; padding:1em; }
+    .triad-status { margin-top:1em; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="merger-ui-container">
+    <h2>H3Xbase Merger Control UI</h2>
+    <form id="merger-config-form">
+      <div class="config-group">
+        <label><input type="checkbox" id="timeAggregation"> Time Aggregation</label>
+        <label><input type="checkbox" id="logDiffs"> Diff Logging</label>
+        <label><input type="checkbox" id="proofSync"> Proof Sync</label>
+        <label><input type="checkbox" id="verbose"> Verbose Logging</label>
+      </div>
+      <button type="button" onclick="saveConfig()">Save Config</button>
+      <button type="button" onclick="refreshState()">Refresh State</button>
+    </form>
+    <h3>Graph: Closed Loops (2D/3D)</h3>
+    <div class="graph-flex">
+      <div>
+        <canvas id="graphCanvas" width="320" height="320" class="graph-canvas"></canvas>
+        <div class="graph-btns">
+          <button type="button" onclick="addLoop()">Add Loop</button>
+          <button type="button" onclick="removeLoop()">Remove Loop</button>
+          <label>
+            <input type="checkbox" id="mode3d" onchange="toggle3D()"> 3D Mode (Volume)
+          </label>
+        </div>
+        <div class="graph-select">
+          <label>Selected Loop:
+            <select id="loopSelect" onchange="selectLoop()"></select>
+          </label>
+        </div>
+        <div class="graph-slider">
+          <label>Radius: <input type="range" id="radiusSlider" min="10" max="140" value="60" oninput="updateLoopMetric('radius', this.value)"></label>
+          <span id="radiusValue">60</span>
+        </div>
+        <div class="graph-slider-thick">
+          <label>Line Thickness: <input type="range" id="thicknessSlider" min="1" max="20" value="3" oninput="updateLoopMetric('thickness', this.value)"></label>
+          <span id="thicknessValue">3</span>
+        </div>
+        <div class="triad-status" id="triadStatus"></div>
+      </div>
+      <div class="graph-metrics">
+        <h4>Loop Metrics & Log</h4>
+        <table class="graph-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Radius</th><th>Thickness</th><th>Circumference</th><th>Volume</th><th>Last Measured</th>
+            </tr>
+          </thead>
+          <tbody id="loopLog"></tbody>
+        </table>
+        <div class="archived-section">
+          <h5>Archived Loops</h5>
+          <select id="archivedSelect" title="Select archived loop" onchange="showArchivedLog()"></select>
+          <div id="archivedLog"></div>
+        </div>
+      </div>
+    </div>
+    <h3>Merger State / Amendments</h3>
+    <div class="state-log" id="stateLog">Loading...</div>
+  </div>
+  <script>
+    // Fetch config and state from backend endpoints (to be implemented in Node.js)
+    async function loadConfig() {
+      const res = await fetch('merger-config.json');
+      const cfg = await res.json();
+      document.getElementById('timeAggregation').checked = !!cfg.timeAggregation;
+      document.getElementById('logDiffs').checked = !!(cfg.logDiffs || cfg.diffLogging);
+      document.getElementById('proofSync').checked = !!cfg.proofSync;
+      document.getElementById('verbose').checked = !!cfg.verbose;
+    }
+    async function saveConfig() {
+      const cfg = {
+        timeAggregation: document.getElementById('timeAggregation').checked,
+        logDiffs: document.getElementById('logDiffs').checked,
+        proofSync: document.getElementById('proofSync').checked,
+        verbose: document.getElementById('verbose').checked
+      };
+      await fetch('merger-config.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cfg)
+      });
+      alert('Config saved!');
+    }
+    async function refreshState() {
+      const res = await fetch('merger-state.json');
+      const state = await res.json();
+      const log = state.amendments.map((a, i) =>
+        `${i+1}. [${a.timestamp}] ${a.type} on ${a.file}: ${a.summary}`
+      ).join('\n');
+      document.getElementById('stateLog').textContent = log || 'No amendments yet.';
+    }
+    // --- Graph/Loop Logic ---
+    let loops = [];
+    let archivedLoops = [];
+    let selectedLoop = 0;
+    let is3D = false;
+    function addLoop() {
+      const now = new Date();
+      loops.push({
+        radius: 60,
+        thickness: 3,
+        created: now,
+        updated: now,
+        log: [],
+        traffic: []
+      });
+      selectedLoop = loops.length - 1;
+      updateLoopSelect();
+      logLoopChange('Created loop');
+      drawGraph();
+      updateLogTable();
+      updateTriadStatus();
+    }
+    function removeLoop() {
+      if (loops.length <= 3) {
+        alert('At least 3 loops (triad) must remain operational.');
+        return;
+      }
+      const removed = loops.splice(selectedLoop, 1)[0];
+      if (removed) {
+        archivedLoops.push(removed);
+        updateArchivedSelect();
+        selectedLoop = Math.max(0, selectedLoop - 1);
+        updateLoopSelect();
+        drawGraph();
+        updateLogTable();
+        updateTriadStatus();
+      }
+    }
+    function updateLoopSelect() {
+      const sel = document.getElementById('loopSelect');
+      sel.innerHTML = '';
+      loops.forEach((l, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `Loop ${i+1}`;
+        sel.appendChild(opt);
+      });
+      sel.value = selectedLoop;
+    }
+    function updateArchivedSelect() {
+      const sel = document.getElementById('archivedSelect');
+      sel.innerHTML = '';
+      archivedLoops.forEach((l, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `Archived ${i+1}`;
+        sel.appendChild(opt);
+      });
+      showArchivedLog();
+    }
+    function showArchivedLog() {
+      const idx = +document.getElementById('archivedSelect').value;
+      const logDiv = document.getElementById('archivedLog');
+      if (archivedLoops[idx]) {
+        logDiv.innerHTML = '<b>Log:</b><br>' + archivedLoops[idx].log.map(e => `${e.time}: ${e.action} (r=${e.radius}, t=${e.thickness})`).join('<br>');
+      } else {
+        logDiv.innerHTML = '<i>No archived loop selected.</i>';
+      }
+    }
+    function selectLoop() {
+      selectedLoop = +document.getElementById('loopSelect').value;
+      updateSliders();
+      drawGraph();
+    }
+    function updateSliders() {
+      if (loops[selectedLoop]) {
+        document.getElementById('radiusSlider').value = loops[selectedLoop].radius;
+        document.getElementById('radiusValue').textContent = loops[selectedLoop].radius;
+        document.getElementById('thicknessSlider').value = loops[selectedLoop].thickness;
+        document.getElementById('thicknessValue').textContent = loops[selectedLoop].thickness;
+      }
+    }
+    function updateLoopMetric(key, value) {
+      if (!loops[selectedLoop]) return;
+      value = +value;
+      loops[selectedLoop][key] = value;
+      loops[selectedLoop].updated = new Date();
+      updateSliders();
+      logLoopChange(`Changed ${key} to ${value}`);
+      drawGraph();
+      updateLogTable();
+      updateTriadStatus();
+    }
+    function toggle3D() {
+      is3D = document.getElementById('mode3d').checked;
+      updateLogTable();
+    }
+    function logLoopChange(action) {
+      const loop = loops[selectedLoop];
+      if (!loop) return;
+      const now = new Date();
+      loop.log.push({
+        action,
+        time: now.toLocaleString(),
+        radius: loop.radius,
+        thickness: loop.thickness,
+        circumference: (2 * Math.PI * loop.radius).toFixed(2),
+        volume: is3D ? (4/3 * Math.PI * Math.pow(loop.radius,3)).toFixed(2) : '',
+      });
+      // Simulate traffic: positive/negative for triad
+      loop.traffic.push({
+        time: now.toLocaleString(),
+        positive: Math.random().toFixed(3),
+        negative: (-Math.random()).toFixed(3)
+      });
+    }
+    function updateLogTable() {
+      const tbody = document.getElementById('loopLog');
+      tbody.innerHTML = '';
+      loops.forEach((l, i) => {
+        const circ = (2 * Math.PI * l.radius).toFixed(2);
+        const vol = is3D ? (4/3 * Math.PI * Math.pow(l.radius,3)).toFixed(2) : '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${l.radius}</td><td>${l.thickness}</td><td>${circ}</td><td>${vol}</td><td>${l.updated.toLocaleString()}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    function drawGraph() {
+      const ctx = document.getElementById('graphCanvas').getContext('2d');
+      ctx.clearRect(0,0,320,320);
+      loops.forEach((l, i) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(160, 160, l.radius, 0, 2*Math.PI);
+        ctx.lineWidth = l.thickness;
+        ctx.strokeStyle = i === selectedLoop ? '#0077ff' : '#888';
+        ctx.globalAlpha = i === selectedLoop ? 1 : 0.5;
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+    function updateTriadStatus() {
+      const triad = loops.slice(0,3);
+      let status = 'Triad operational: ';
+      if (triad.length < 3) {
+        status += 'NO (less than 3 loops)';
+      } else {
+        // Simple coupling check: all radii and thickness > 0
+        const coupled = triad.every(l => l.radius > 0 && l.thickness > 0);
+        status += coupled ? 'YES' : 'NO (invalid parameters)';
+        if (coupled) {
+          status += ` | Coupling: [${triad.map(l=>`r=${l.radius},t=${l.thickness}`).join(' | ')}]`;
+        }
+      }
+      document.getElementById('triadStatus').textContent = status;
+    }
+    // Initial load
+    loadConfig();
+    refreshState();
+    // Initialize with three loops for triad
+    window.onload = function() {
+      for(let i=0;i<3;i++) addLoop();
+      updateSliders();
+      updateArchivedSelect();
+      updateTriadStatus();
+    };
+  </script>
+</body>
+</html>

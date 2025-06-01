@@ -2,7 +2,7 @@
 
 /**
  * H3X Hexperiment Labs Setup Verification
- * Checks that the system is properly configured without Azure dependencies
+ * Checks that the system is properly configured
  */
 
 const fs = require('fs');
@@ -40,40 +40,25 @@ requiredFiles.forEach(file => {
     }
 });
 
-// Check package.json for Azure dependencies
+// Check package.json exists and has required scripts
 try {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     
-    // Check for Azure/Microsoft dependencies
-    const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
-    const azurePatterns = ['@microsoft/agents', '@azure', 'teamsfx', 'teams'];
-    
-    let azureDepsFound = false;
-    Object.keys(dependencies).forEach(dep => {
-        if (azurePatterns.some(pattern => dep.includes(pattern))) {
-            console.log(`⚠️  Azure dependency found: ${dep}`);
-            azureDepsFound = true;
-        }
-    });
-    
-    if (!azureDepsFound) {
-        console.log('✅ No Azure dependencies found in package.json');
-    }
-    
-    // Check for Azure scripts
+    // Check for essential scripts
     const scripts = packageJson.scripts || {};
-    const azureScriptPatterns = ['teamsfx', 'playground', 'teams'];
+    const requiredScripts = ['dev', 'start', 'standalone'];
     
-    let azureScriptsFound = false;
-    Object.keys(scripts).forEach(script => {
-        if (azureScriptPatterns.some(pattern => script.includes(pattern) || scripts[script].includes(pattern))) {
-            console.log(`⚠️  Azure script found: ${script}`);
-            azureScriptsFound = true;
+    let missingScripts = [];
+    requiredScripts.forEach(script => {
+        if (!scripts[script]) {
+            missingScripts.push(script);
         }
     });
     
-    if (!azureScriptsFound) {
-        console.log('✅ No Azure scripts found in package.json');
+    if (missingScripts.length === 0) {
+        console.log('✅ All required scripts found in package.json');
+    } else {
+        console.log(`⚠️  Missing required scripts: ${missingScripts.join(', ')}`);
     }
     
 } catch (error) {
@@ -110,7 +95,6 @@ console.log('='.repeat(50));
 
 if (allDirsExist && allFilesExist) {
     console.log('✅ Core structure verification: PASSED');
-    console.log('✅ Azure dependency cleanup: COMPLETED');
     console.log('✅ H3X system ready for standalone operation');
     console.log('\n🚀 You can start the system with:');
     console.log('   npm run standalone        (Local development)');

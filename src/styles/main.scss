@@ -1,0 +1,351 @@
+@import './variables.scss';
+@import './mixins.scss';
+
+// Global reset and base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-family-primary;
+  background: linear-gradient(135deg, $h3x-bg-primary 0%, $h3x-bg-secondary 100%);
+  color: $h3x-text-primary;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+// Layout components
+.h3x-container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  
+  @include respond-to(lg) {
+    padding: 0 $spacing-lg;
+  }
+}
+
+.h3x-header {
+  background: rgba($h3x-bg-secondary, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: $border-width solid rgba($h3x-primary, 0.3);
+  padding: $spacing-md 0;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  
+  h1 {
+    @include text-style($font-size-2xl, 700, $h3x-primary);
+    text-align: center;
+    margin: 0;
+    
+    &::before, &::after {
+      content: '⬢';
+      margin: 0 $spacing-sm;
+      color: $h3x-secondary;
+    }
+  }
+}
+
+.h3x-main {
+  padding: $spacing-xl 0;
+  min-height: calc(100vh - 80px);
+}
+
+.h3x-footer {
+  background: $h3x-bg-secondary;
+  border-top: $border-width solid rgba($h3x-primary, 0.3);
+  padding: $spacing-lg 0;
+  text-align: center;
+  margin-top: auto;
+  
+  p {
+    @include text-style($font-size-sm, normal, $h3x-text-muted);
+  }
+}
+
+// Grid layouts
+.h3x-grid {
+  display: grid;
+  gap: $spacing-lg;
+  
+  &--2-col {
+    @include respond-to(md) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  &--3-col {
+    @include respond-to(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  &--auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+// Cards
+.h3x-card {
+  @include card;
+  
+  &__header {
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-sm;
+    border-bottom: $border-width solid rgba($h3x-primary, 0.2);
+    
+    h2, h3 {
+      @include text-style($font-size-lg, 600, $h3x-primary);
+      margin: 0;
+    }
+  }
+  
+  &__content {
+    @include text-style($font-size-base, normal, $h3x-text-secondary);
+  }
+  
+  &__footer {
+    margin-top: $spacing-md;
+    padding-top: $spacing-sm;
+    border-top: $border-width solid rgba($h3x-primary, 0.2);
+    @include flex-between;
+  }
+}
+
+// Buttons
+.h3x-btn {
+  @include button-primary;
+  
+  &--secondary {
+    @include button-secondary;
+  }
+  
+  &--small {
+    padding: $spacing-xs $spacing-sm;
+    font-size: $font-size-sm;
+  }
+  
+  &--large {
+    padding: $spacing-md $spacing-lg;
+    font-size: $font-size-lg;
+  }
+}
+
+// Forms
+.h3x-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  
+  &__label {
+    @include text-style($font-size-sm, 600, $h3x-text-primary);
+  }
+  
+  &__input {
+    @include input-base;
+  }
+  
+  &__textarea {
+    @include input-base;
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  &__select {
+    @include input-base;
+    cursor: pointer;
+  }
+}
+
+// Status indicators
+.h3x-status {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  
+  &::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  
+  &--success {
+    background: rgba($h3x-success, 0.2);
+    color: $h3x-success;
+    
+    &::before {
+      background: $h3x-success;
+    }
+  }
+  
+  &--warning {
+    background: rgba($h3x-warning, 0.2);
+    color: $h3x-warning;
+    
+    &::before {
+      background: $h3x-warning;
+    }
+  }
+  
+  &--error {
+    background: rgba($h3x-error, 0.2);
+    color: $h3x-error;
+    
+    &::before {
+      background: $h3x-error;
+    }
+  }
+  
+  &--info {
+    background: rgba($h3x-primary, 0.2);
+    color: $h3x-primary;
+    
+    &::before {
+      background: $h3x-primary;
+    }
+  }
+}
+
+// Loading states
+.h3x-loading {
+  @include flex-center;
+  gap: $spacing-sm;
+  
+  &__spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba($h3x-primary, 0.3);
+    border-top: 2px solid $h3x-primary;
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+  }
+  
+  &__text {
+    @include text-style($font-size-sm, normal, $h3x-text-muted);
+  }
+}
+
+// Tooltips
+.h3x-tooltip {
+  position: relative;
+  
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $h3x-bg-tertiary;
+    color: $h3x-text-primary;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $transition-normal;
+    z-index: $z-tooltip;
+    margin-bottom: $spacing-xs;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+// Canvas container
+.h3x-canvas-container {
+  @include canvas-container;
+  
+  &__overlay {
+    @include full-overlay;
+    @include flex-center;
+    background: rgba($h3x-bg-primary, 0.8);
+    z-index: 10;
+    
+    &--hidden {
+      display: none;
+    }
+  }
+  
+  &__controls {
+    position: absolute;
+    top: $spacing-sm;
+    right: $spacing-sm;
+    @include flex-column;
+    gap: $spacing-xs;
+    z-index: 20;
+  }
+}
+
+// Hexagonal elements
+.h3x-hex {
+  @include hex-border;
+  
+  &--glow {
+    @include hex-glow;
+  }
+  
+  &--pulse {
+    animation: hexPulse 2s infinite;
+  }
+}
+
+// Responsive utilities
+.h3x-hide-mobile {
+  @media (max-width: map-get($grid-breakpoints, md) - 1px) {
+    display: none !important;
+  }
+}
+
+.h3x-hide-desktop {
+  @include respond-to(md) {
+    display: none !important;
+  }
+}
+
+// Animations
+.h3x-fade-in {
+  @include fade-in;
+}
+
+.h3x-slide-in-up {
+  @include slide-in-up;
+}
+
+.h3x-pulse {
+  @include pulse;
+}
+
+// Print styles
+@media print {
+  .h3x-no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

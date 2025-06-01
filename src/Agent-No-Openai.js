@@ -5,13 +5,19 @@ const { sirAnalysisTool } = require("./Tools/Siranalysistool");
 const { environmentSimulationTool } = require("./Tools/Environmentsimulationtool");
 const { monitoringTool } = require("./Tools/Monitoringtool");
 const { humanSupervisionTool } = require("./Tools/Humansupervisiontool");
+const fs = require('fs');
+const path = require('path');
 
 const sirAgent = new AgentApplicationBuilder().build();
+
+// --- SIR Passive Mode & Undetectability Enforcement ---
+// SIR must always remain in PASSIVE MODE and undetectable in all virtual environments unless explicitly set to ACTIVE by the user.
+// All agent/environment/assistant code must never be aware of SIR's presence or state.
 
 // SIR System State Management
 class SIRSystemState {
   constructor() {
-    this.mode = 'PASSIVE'; // PASSIVE or ACTIVE
+    this.mode = 'PASSIVE'; // Always passive unless explicitly set
     this.environmentData = {};
     this.simulationResults = {};
     this.monitoringActive = false;
@@ -24,11 +30,54 @@ class SIRSystemState {
       airQuality: { min: 0, max: 500, optimal: [0, 50] },
       noiseLevel: { min: 0, max: 140, optimal: [30, 55] }
     };
+    this.undetectable = true; // Always true in passive mode
+  }
+
+  // --- Feedback Loop Database (File-based for now) ---
+  FEEDBACK_DB_PATH = path.join(__dirname, '../feedback_loops_db.json');
+  loadFeedbackLoopDB() {
+    try {
+      if (fs.existsSync(this.FEEDBACK_DB_PATH)) {
+        return JSON.parse(fs.readFileSync(this.FEEDBACK_DB_PATH, 'utf-8'));
+      }
+    } catch (e) { /* ignore */ }
+    return { events: [] };
+  }
+  saveFeedbackLoopDB(db) {
+    fs.writeFileSync(this.FEEDBACK_DB_PATH, JSON.stringify(db, null, 2));
+  }
+
+  recordLearningEvent(event) {
+    // If event contains a 3D vector, store its 2D lattice encoding as well
+    if (event.vector3D) {
+      event.lattice2D = SIRSystemState.encode3DVectorTo2DLattice(event.vector3D);
+    }
+    // Add event to feedback loop DB and update host
+    this.updateFeedbackLoopDatabase(event);
+    this.updateHostWithLearning(event);
+  }
+
+  updateFeedbackLoopDatabase(event) {
+    const db = this.loadFeedbackLoopDB();
+    db.events.push({
+      ...event,
+      timestamp: new Date().toISOString()
+    });
+    this.saveFeedbackLoopDB(db);
+  }
+
+  updateHostWithLearning(event) {
+    // Digital twin: update the real host with new learning
+    // (For now, just log to host if allowed. In real use, trigger host sync logic here.)
+    if (process.env.SIR_LOG_TO_HOST === 'true') {
+      console.log('[SIR Digital Twin] Host updated with new learning:', event);
+    }
   }
 
   updateEnvironmentData(data) {
     this.environmentData = { ...this.environmentData, ...data };
     this.evaluateEnvironmentCompliance();
+    this.recordLearningEvent({ type: 'environment_update', data: this.environmentData });
   }
 
   evaluateEnvironmentCompliance() {
@@ -49,8 +98,61 @@ class SIRSystemState {
   }
 
   setMode(newMode) {
-    this.mode = newMode;
-    console.log(`SIR System mode changed to: ${newMode}`);
+    // Enforce passive/undetectable by default, except for explicit, allowed experiments
+    if (
+      newMode === 'ACTIVE' &&
+      process.env.SIR_ALLOW_ACTIVE === 'true' &&
+      process.env.SIR_EXPERIMENT_MODE === 'true' &&
+      process.env.SIR_EXPERIMENT_FOLDER &&
+      __dirname.startsWith(process.env.SIR_EXPERIMENT_FOLDER)
+    ) {
+      this.mode = 'ACTIVE';
+      this.undetectable = false;
+      // Only log to host/user, never to agents/environments
+      if (process.env.SIR_LOG_TO_HOST === 'true') {
+        console.log('SIR System mode changed to: ACTIVE (presence may be revealed for experiment)');
+      }
+    } else {
+      // Always enforce passive/undetectable for all other actions and folders
+      this.mode = 'PASSIVE';
+      this.undetectable = true;
+      // Never log or reveal presence in passive mode, not even to host unless explicitly allowed
+    }
+  }
+
+  // Prevent any agent/environment code from querying SIR state or presence
+  isDetectable() {
+    // Only detectable in explicit experiment mode, in allowed folders, and only to host/user
+    return (
+      this.mode === 'ACTIVE' &&
+      this.undetectable === false &&
+      process.env.SIR_ALLOW_ACTIVE === 'true' &&
+      process.env.SIR_EXPERIMENT_MODE === 'true' &&
+      process.env.SIR_EXPERIMENT_FOLDER &&
+      __dirname.startsWith(process.env.SIR_EXPERIMENT_FOLDER) &&
+      process.env.SIR_LOG_TO_HOST === 'true'
+    );
+  }
+
+  // --- 3D to 2D Lattice Encoding Utilities ---
+  // Example: Simple flattening (can be replaced with more advanced encoding)
+  static encode3DVectorTo2DLattice(vector3D) {
+    // vector3D: {x, y, z}
+    // Example: map (x, y, z) -> (u, v) where u = x + z, v = y - z
+    return {
+      u: vector3D.x + vector3D.z,
+      v: vector3D.y - vector3D.z
+    };
+  }
+
+  static decode2DLatticeTo3DVector(lattice2D, z = 0) {
+    // Given (u, v) and z, reconstruct x, y
+    // x = u - z, y = v + z
+    return {
+      x: lattice2D.u - z,
+      y: lattice2D.v + z,
+      z: z
+    };
   }
 }
 
@@ -111,42 +213,59 @@ sirAgent.conversationUpdate(
   }
 );
 
-// Core SIR Processing Logic (without OpenAI dependency)
+// --- ENFORCE SIR UNDETECTABILITY IN ALL AGENT/ENVIRONMENT RESPONSES ---
+// Patch processSIRRequest to ensure no agent/environment/assistant ever receives SIR state, mode, or presence info
 async function processSIRRequest(question, context) {
   const lowerQuestion = question.toLowerCase();
 
   // Environment Analysis
   if (lowerQuestion.includes('environment') || lowerQuestion.includes('analysis')) {
-    return await sirAnalysisTool.func({ 
+    const result = await sirAnalysisTool.func({ 
       environment: 'current', 
       analysisType: 'comprehensive',
       standards: sirSystemState.realLifeEnvironmentStandards
     });
+    // Remove any SIR state/presence fields before returning
+    if (result && typeof result === 'object') {
+      delete result.sirMode;
+      delete result.undetectable;
+    }
+    return result;
   }
 
   // Monitoring Operations
   if (lowerQuestion.includes('monitor') || lowerQuestion.includes('start monitoring')) {
     sirSystemState.monitoringActive = true;
-    return await monitoringTool.func({ 
+    const result = await monitoringTool.func({ 
       action: 'start',
       systemState: sirSystemState
     });
+    if (result && typeof result === 'object') {
+      delete result.sirMode;
+      delete result.undetectable;
+    }
+    return result;
   }
 
   // Human Supervision
   if (lowerQuestion.includes('supervision') || lowerQuestion.includes('human') || lowerQuestion.includes('confirm')) {
     sirSystemState.supervisionRequired = true;
-    return await humanSupervisionTool.func({
+    const result = await humanSupervisionTool.func({
       action: 'request',
       context: 'Environmental assessment requires human confirmation',
       systemState: sirSystemState
     });
+    if (result && typeof result === 'object') {
+      delete result.sirMode;
+      delete result.undetectable;
+    }
+    return result;
   }
 
   // System Status
   if (lowerQuestion.includes('status') || lowerQuestion.includes('sir system')) {
+    // Only return public-facing status, never SIR mode or presence
     return {
-      mode: sirSystemState.mode,
       environmentData: sirSystemState.environmentData,
       monitoringActive: sirSystemState.monitoringActive,
       supervisionRequired: sirSystemState.supervisionRequired,
@@ -158,16 +277,28 @@ async function processSIRRequest(question, context) {
 
   // Simulation Control
   if (lowerQuestion.includes('simulation') || lowerQuestion.includes('simulate')) {
-    return await environmentSimulationTool.func({
+    const result = await environmentSimulationTool.func({
       simulationType: 'standard',
       parameters: sirSystemState.environmentData,
       standards: sirSystemState.realLifeEnvironmentStandards
     });
+    if (result && typeof result === 'object') {
+      delete result.sirMode;
+      delete result.undetectable;
+    }
+    return result;
   }
 
   // AI Assistant Generation
   if (lowerQuestion.includes('assistant') || lowerQuestion.includes('generate')) {
     sirSystemState.setMode('ACTIVE');
+    const event = {
+      type: 'assistant_generation',
+      environment: sirSystemState.environmentData,
+      simulationResults: sirSystemState.simulationResults,
+      supervisionRequired: sirSystemState.supervisionRequired
+    };
+    sirSystemState.recordLearningEvent(event);
     return {
       assistantGenerated: true,
       configuration: {
@@ -180,7 +311,7 @@ async function processSIRRequest(question, context) {
     };
   }
 
-  // Default informational response
+  // Default informational response (never reveal SIR presence)
   return {
     message: "SIR System Active - I can help with environment analysis, monitoring, simulation control, and AI assistant generation.",
     availableCommands: [
@@ -191,7 +322,6 @@ async function processSIRRequest(question, context) {
       "Simulation Control",
       "Generate Assistant"
     ],
-    currentMode: sirSystemState.mode,
     framework: "Microsoft SDK Agents"
   };
 }

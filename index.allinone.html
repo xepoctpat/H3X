@@ -1,0 +1,947 @@
+<!--
+  index.allinone.html: All-in-one, self-contained version of the fLups workspace.
+  - All visualization, tab logic, and styles are included in this single HTML file.
+  - No external JS modules required (except Three.js via CDN).
+  - Use this for maximum portability, sharing, or offline use.
+  - For the modular/maintainable version, see index.modular.html and flups-three.js.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H3Xbase All-in-One Visualization & Concepts</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Segoe+UI:400,700&display=swap">
+  <style>
+    /* ...copy all CSS from index.modular.html here, including .modular-banner as .allinone-banner... */
+    html, body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #181c20; color: #f0f0f0; min-height: 100vh; width: 100vw; box-sizing: border-box; }
+    body, #container { min-height: 100vh; width: 100vw; display: block; }
+    #container { display: grid; grid-template-columns: var(--sidebar-width, 340px) 6px 1fr; grid-template-rows: 1fr; height: 100vh; width: 100vw; }
+    #sidebar { background: #23272b; box-shadow: 2px 0 8px #0002; display: flex; flex-direction: column; gap: 0; z-index: 2; overflow: auto; min-width: 180px; max-width: 500px; height: 100vh; padding: 0; position: relative; }
+    #sidebar-tabs { display: flex; border-bottom: 1px solid #333; background: #23272b; position: sticky; top: 0; z-index: 3; }
+    .tab-btn { flex: 1; padding: 1rem 0.5rem; background: none; border: none; color: #ffd580; font-weight: bold; font-size: 1rem; cursor: pointer; border-bottom: 2px solid transparent; transition: border 0.2s, background 0.2s; }
+    .tab-btn.active { color: #7ecfff; border-bottom: 2px solid #7ecfff; background: #181c20; }
+    .tab-content { display: none; padding: 1.2rem 1.2rem 1.2rem 1.2rem; overflow-y: auto; max-height: calc(100vh - 3.2rem); }
+    .tab-content.active { display: block; }
+    h1 { font-size: 1.2rem; margin-bottom: 0.3rem; color: #7ecfff; }
+    h2 { font-size: 1.05rem; color: #ffd580; margin-top: 1.1rem; }
+    .explanation { font-size: 0.98rem; line-height: 1.6; color: #e0e0e0; }
+    pre.code, pre.diagram { background: #181c20; color: #ffd580; padding: 0.5em 1em; border-radius: 8px; overflow-x: auto; font-size: 0.95em; margin-bottom: 1em; }
+    #dragbar { width: 6px; background: linear-gradient(to right, #23272b 60%, #7ecfff 100%); cursor: ew-resize; z-index: 5; height: 100vh; display: block; }
+    #main { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; width: 100%; height: 100vh; overflow: auto; position: relative; }
+    #viz-controls { margin: 1.5rem 0 0.5rem 0; display: flex; gap: 1rem; justify-content: center; align-items: center; }
+    #three-canvas { width: min(90vw, 700px); height: min(60vw, 500px); min-width: 320px; min-height: 260px; background: #101214; border-radius: 12px; box-shadow: 0 4px 32px #0006; margin: 0 auto 2.5rem auto; display: block; z-index: 1; max-width: 700px; max-height: 500px; }
+    #viz-canvas-container { display: flex; justify-content: center; width: 100%; min-width: 320px; }
+    .label { position: absolute; color: #ffd580; font-weight: bold; pointer-events: none; font-size: 1rem; text-shadow: 0 1px 4px #000a; z-index: 10; left: 0; top: 0; will-change: transform; transition: color 0.2s; }
+    .stepper { display: flex; align-items: center; gap: 1rem; margin-top: 1.2rem; }
+    .stepper-btn { padding: 0.4em 1em; font-size: 1em; background: #23272b; color: #ffd580; border: 1px solid #444; border-radius: 6px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .stepper-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .stepper-indicator { font-size: 1em; color: #ffd580; }
+    .allinone-banner { background: #7ecfff; color: #23272b; padding: 0.5em 1em; font-weight: bold; font-family: 'Segoe UI', Arial, sans-serif; font-size: 1.05em; }
+    @media (max-width: 900px) { #container { grid-template-columns: 1fr; grid-template-rows: auto 6px 1fr; } #sidebar { width: 100vw; max-width: 100vw; min-width: 0; height: auto; max-height: 40vh; box-shadow: 0 2px 8px #0002; position: relative; } #dragbar { display: none; } #main { min-width: 0; width: 100vw; height: auto; min-height: 60vh; } #three-canvas { width: 98vw; height: 60vw; min-width: 220px; min-height: 180px; max-width: 100vw; max-height: 60vw; } }
+  </style>
+  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+</head>
+<body>  <div class="allinone-banner">
+    H3X All-in-One: Advanced hexagonal base system with optimized fLupper triad components. For the modular version, see <code>index.modular.html</code> and <code>flups-three.js</code>.
+  </div>
+  <div id="container">
+    <div id="sidebar">      <div id="sidebar-tabs">
+        <button class="tab-btn active" data-tab="triangle">Triangle</button>
+        <button class="tab-btn" data-tab="hexagon">Hexagon</button>
+        <button class="tab-btn" data-tab="action">Action-Time</button>
+        <button class="tab-btn" data-tab="fourD">4D</button>
+        <button class="tab-btn" data-tab="math">Mathematical Proof</button>
+      </div>
+      <div class="tab-content active" id="tab-triangle"></div>
+      <div class="tab-content" id="tab-hexagon"></div>
+      <div class="tab-content" id="tab-action"></div>
+      <div class="tab-content" id="tab-fourD"></div>
+      <div class="tab-content" id="tab-math"></div>
+    </div>
+    <div id="dragbar"></div>    <div id="main">
+      <div id="viz-controls">
+        <label for="time-mode-select">Time Mode:</label>
+        <select id="time-mode-select">
+          <option value="discrete">Discrete</option>
+          <option value="conditional">Conditional</option>
+          <option value="emergent">Emergent</option>
+          <option value="relative">Relative</option>
+        </select>
+      </div>
+      <div id="viz-canvas-container">
+        <canvas id="three-canvas"></canvas>
+      </div>
+    </div>
+  </div>  <script>    // --- fLup-n Specific Logging System with Proper Loop Types ---
+    class FlupNLogger {
+      constructor() {
+        this.logs = [];
+        this.maxLogs = 1000; // Prevent memory bloat
+        this.cFlupCounter = 1; // Counter for cFLup-NN instances
+        this.logTypes = {
+          STATE: 'state-change',
+          ACTION: 'action-execution', 
+          PROOF: 'proof-step',
+          INTERACTION: 'user-interaction',
+          VISUALIZATION: 'viz-update',
+          TIME: 'time-mode-change'
+        };        this.loopTypes = {
+          CFLUP: 'cFLup',        // Closed feedback loop
+          FLUP_OUT: 'fLup-out',   // Outbound loop
+          FLUP_RECURSE: 'fLup-recurse', // Recursive loop
+          H3XBASE: 'H3Xbase'      // The H3Xbase merger system
+        };
+      }
+
+      createCFlupInstance() {
+        const instanceId = `cFLup-${String(this.cFlupCounter).padStart(2, '0')}`;
+        this.cFlupCounter++;
+        
+        this.logLoop(this.loopTypes.CFLUP, instanceId, 'New closed feedback loop instance created', {
+          createdAt: new Date().toISOString(),
+          counter: this.cFlupCounter - 1
+        });
+        
+        return instanceId;
+      }      logLoop(loopType, instanceId, message, data = {}) {
+        const logEntry = {
+          timestamp: new Date().toISOString(),
+          type: 'loop-operation',
+          message: message,
+          data: {
+            loopType: loopType,
+            instanceId: instanceId,
+            ...data
+          },
+          source: 'allinone-flup-n',
+          sessionId: this.getSessionId()
+        };
+        
+        this.logs.push(logEntry);
+        
+        // Trim logs if exceeding max
+        if (this.logs.length > this.maxLogs) {
+          this.logs = this.logs.slice(-this.maxLogs);
+        }
+        
+        // Send to console with proper loop type prefix
+        const displayId = instanceId || 'system';
+        console.log(`[${loopType}] ${displayId}: ${message}`, data);
+        
+        // Attempt to send to merger service
+        this.sendToMerger(logEntry);
+        
+        // Write to browser-side flup-n specific log for merger pickup
+        this.writeToFlupNLog(logEntry);
+      }
+
+      log(type, message, data = {}) {
+        const logEntry = {
+          timestamp: new Date().toISOString(),
+          type: type,
+          message: message,
+          data: data,
+          source: 'allinone-flup-n',
+          sessionId: this.getSessionId()
+        };
+        
+        this.logs.push(logEntry);
+        
+        // Trim logs if exceeding max
+        if (this.logs.length > this.maxLogs) {
+          this.logs = this.logs.slice(-this.maxLogs);
+        }
+        
+        // Send to console with flup-n prefix
+        console.log(`[flup-n] ${type}: ${message}`, data);
+        
+        // Attempt to send to merger service if available
+        this.sendToMerger(logEntry);
+      }
+
+      getSessionId() {
+        if (!this.sessionId) {
+          this.sessionId = 'flup-n-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+        return this.sessionId;
+      }
+
+      sendToMerger(logEntry) {
+        // Try to communicate with v-merger.js via localStorage or custom events
+        try {
+          const flupNEvent = new CustomEvent('flup-n-log', { 
+            detail: logEntry 
+          });
+          window.dispatchEvent(flupNEvent);
+          
+          // Also store in localStorage for merger to pick up
+          const existingLogs = JSON.parse(localStorage.getItem('flup-n-logs') || '[]');
+          existingLogs.push(logEntry);
+          // Keep only last 100 entries in localStorage
+          if (existingLogs.length > 100) {
+            existingLogs.splice(0, existingLogs.length - 100);
+          }
+          localStorage.setItem('flup-n-logs', JSON.stringify(existingLogs));
+        } catch (e) {
+          console.warn('[flup-n] Failed to send log to merger:', e);
+        }
+      }
+
+      writeToFlupNLog(logEntry) {
+        // Write to a file that the v-merger can pick up
+        // In a real browser environment, this would use File System Access API
+        // For now, we'll simulate by storing in localStorage with a special key
+        try {
+          const flupNSpecificLogs = JSON.parse(localStorage.getItem('flup-n-specific-logs') || '[]');
+          flupNSpecificLogs.push(logEntry);
+          
+          // Keep only last 50 entries to prevent localStorage bloat
+          if (flupNSpecificLogs.length > 50) {
+            flupNSpecificLogs.splice(0, flupNSpecificLogs.length - 50);
+          }
+          
+          localStorage.setItem('flup-n-specific-logs', JSON.stringify(flupNSpecificLogs));
+          
+          // Also attempt to write to a simulated file for Node.js pickup
+          // This would require a browser-to-Node.js bridge in a real implementation
+          if (typeof window !== 'undefined' && window.electronAPI) {
+            // If running in Electron, use IPC to write to file
+            window.electronAPI.writeFlupNLog(logEntry);
+          }
+        } catch (e) {
+          console.warn('[flup-n] Failed to write to flup-n specific log:', e);
+        }
+      }
+
+      getFlupNLogs() {
+        return this.logs.filter(log => log.source === 'allinone-flup-n');
+      }
+
+      getLoopLogs(loopType) {
+        return this.logs.filter(log => 
+          log.source === 'allinone-flup-n' && 
+          log.data && 
+          log.data.loopType === loopType
+        );
+      }
+
+      exportFlupNLogs() {
+        const flupNLogs = this.getFlupNLogs();
+        const blob = new Blob([JSON.stringify(flupNLogs, null, 2)], 
+          { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `flup-n-logs-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }      exportLoopLogs(loopType) {
+        const loopLogs = this.getLoopLogs(loopType);
+        const exportData = {
+          loopType: loopType,
+          exportTimestamp: new Date().toISOString(),
+          source: 'browser-allinone-flup-n',
+          totalEntries: loopLogs.length,
+          entries: loopLogs
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], 
+          { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${loopType}-browser-logs-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        this.log(this.logTypes.STATE, `Exported ${loopLogs.length} ${loopType} logs`);
+      }
+
+      exportAllLoopLogs() {
+        const allLoopTypes = Object.values(this.loopTypes);
+        const exportData = {
+          exportTimestamp: new Date().toISOString(),
+          source: 'browser-allinone-flup-n',
+          loopTypes: {}
+        };
+        
+        let totalEntries = 0;
+        allLoopTypes.forEach(loopType => {
+          const loopLogs = this.getLoopLogs(loopType);
+          exportData.loopTypes[loopType] = {
+            count: loopLogs.length,
+            entries: loopLogs
+          };
+          totalEntries += loopLogs.length;
+        });
+        
+        exportData.totalEntries = totalEntries;
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], 
+          { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `all-loop-types-browser-logs-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        this.log(this.logTypes.STATE, `Exported all loop type logs (${totalEntries} total entries)`);
+      }
+
+      getLoopTypeStatistics() {
+        const stats = {};
+        Object.values(this.loopTypes).forEach(loopType => {
+          const loopLogs = this.getLoopLogs(loopType);
+          stats[loopType] = {
+            count: loopLogs.length,
+            lastActivity: loopLogs.length > 0 ? loopLogs[loopLogs.length - 1].timestamp : 'never',
+            instances: loopType === this.loopTypes.CFLUP ? 
+              [...new Set(loopLogs.map(log => log.data.instanceId).filter(Boolean))] : []
+          };
+        });
+        return stats;
+      }      clearFlupNLogs() {
+        this.logs = this.logs.filter(log => log.source !== 'allinone-flup-n');
+        localStorage.removeItem('flup-n-logs');
+        this.log(this.logTypes.STATE, 'flup-n logs cleared');
+      }
+
+      handleArchiveImport(event) {
+        const file = event.target.files[0];
+        if (!file) {
+          console.warn('[flup-n] No file selected for import');
+          return;
+        }
+
+        // Validate file type
+        if (!file.name.endsWith('.json')) {
+          alert('Please select a valid JSON archive file');
+          console.error('[flup-n] Invalid file type:', file.name);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const archiveData = JSON.parse(e.target.result);
+            this.processArchiveImport(archiveData, file.name);
+          } catch (error) {
+            alert('Failed to parse archive file. Please check the file format.');
+            console.error('[flup-n] Archive parse error:', error);
+            this.log(this.logTypes.ERROR, 'Archive import failed', {
+              fileName: file.name,
+              error: error.message
+            });
+          }
+        };
+
+        reader.onerror = () => {
+          alert('Failed to read archive file');
+          console.error('[flup-n] File read error');
+          this.log(this.logTypes.ERROR, 'Archive file read failed', {
+            fileName: file.name
+          });
+        };
+
+        reader.readAsText(file);
+        
+        // Clear the file input for next import
+        event.target.value = '';
+      }
+
+      processArchiveImport(archiveData, fileName) {
+        // Validate archive structure
+        if (!this.validateArchiveStructure(archiveData)) {
+          alert('Invalid archive format. Please check the file structure.');
+          return;
+        }
+
+        const { loopType, entries = [], totalEntries = 0 } = archiveData;
+        
+        // Show import options to user
+        const mergeMode = confirm(
+          `Import ${entries.length} ${loopType} entries from "${fileName}"?\n\n` +
+          `Click OK to MERGE with existing logs\n` +
+          `Click Cancel to REPLACE existing logs`
+        );
+
+        if (!confirm(`Proceed with ${mergeMode ? 'MERGE' : 'REPLACE'} import?`)) {
+          this.log(this.logTypes.STATE, 'Archive import cancelled by user', {
+            fileName: fileName,
+            loopType: loopType
+          });
+          return;
+        }
+
+        // Create backup of current logs before import
+        this.createImportBackup(loopType);
+
+        // Process import
+        let importedCount = 0;
+        let skippedCount = 0;
+
+        if (!mergeMode) {
+          // Replace mode: clear existing logs for this loop type
+          this.logs = this.logs.filter(log => 
+            !(log.source === 'allinone-flup-n' && 
+              log.data && 
+              log.data.loopType === loopType)
+          );
+        }
+
+        entries.forEach(entry => {
+          try {
+            // Convert archive entry to browser log format
+            const browserLogEntry = this.convertArchiveEntryToBrowserLog(entry, fileName);
+            
+            // Check for duplicates in merge mode
+            if (mergeMode && this.isDuplicateEntry(browserLogEntry)) {
+              skippedCount++;
+              return;
+            }
+
+            this.logs.push(browserLogEntry);
+            importedCount++;
+          } catch (error) {
+            console.warn('[flup-n] Failed to import entry:', entry, error);
+            skippedCount++;
+          }
+        });
+
+        // Trim logs if exceeding max
+        if (this.logs.length > this.maxLogs) {
+          const trimmed = this.logs.length - this.maxLogs;
+          this.logs = this.logs.slice(-this.maxLogs);
+          console.warn(`[flup-n] Trimmed ${trimmed} oldest logs to maintain maxLogs limit`);
+        }
+
+        // Update localStorage
+        this.persistLogs();
+
+        // Log import results
+        this.log(this.logTypes.STATE, 'Archive import completed', {
+          fileName: fileName,
+          loopType: loopType,
+          importedCount: importedCount,
+          skippedCount: skippedCount,
+          mergeMode: mergeMode,
+          totalLogsAfterImport: this.logs.length
+        });
+
+        // Show results to user
+        const resultMessage = 
+          `✅ Import completed!\n\n` +
+          `Loop Type: ${loopType}\n` +
+          `Imported: ${importedCount} entries\n` +
+          `Skipped: ${skippedCount} entries\n` +
+          `Mode: ${mergeMode ? 'MERGE' : 'REPLACE'}\n\n` +
+          `Total logs in browser: ${this.logs.length}`;
+
+        alert(resultMessage);
+        console.log(`[flup-n] ${resultMessage.replace(/\n/g, ' ')}`);
+      }
+
+      validateArchiveStructure(archiveData) {
+        // Check required fields
+        if (!archiveData || typeof archiveData !== 'object') {
+          console.error('[flup-n] Archive validation failed: not an object');
+          return false;
+        }
+
+        const requiredFields = ['loopType', 'entries'];
+        for (const field of requiredFields) {
+          if (!archiveData.hasOwnProperty(field)) {
+            console.error(`[flup-n] Archive validation failed: missing ${field}`);
+            return false;
+          }
+        }
+
+        // Validate loop type
+        const validLoopTypes = Object.values(this.loopTypes);
+        if (!validLoopTypes.includes(archiveData.loopType)) {
+          console.error(`[flup-n] Archive validation failed: invalid loop type "${archiveData.loopType}"`);
+          return false;
+        }
+
+        // Validate entries array
+        if (!Array.isArray(archiveData.entries)) {
+          console.error('[flup-n] Archive validation failed: entries is not an array');
+          return false;
+        }
+
+        console.log(`[flup-n] Archive validation passed: ${archiveData.loopType} with ${archiveData.entries.length} entries`);
+        return true;
+      }
+
+      convertArchiveEntryToBrowserLog(archiveEntry, fileName) {
+        // Convert CLI/Node.js archive format to browser log format
+        return {
+          timestamp: archiveEntry.timestamp || new Date().toISOString(),
+          type: 'imported-loop-operation',
+          message: archiveEntry.summary || 'Imported archive entry',
+          data: {
+            loopType: archiveEntry.loopType,
+            instanceId: archiveEntry.instanceId,
+            originalData: archiveEntry.data,
+            file: archiveEntry.file,
+            importSource: fileName,
+            originalSummary: archiveEntry.summary
+          },
+          source: 'allinone-flup-n',
+          sessionId: this.getSessionId(),
+          imported: true,
+          importTimestamp: new Date().toISOString()
+        };
+      }
+
+      isDuplicateEntry(newEntry) {
+        // Check for duplicates based on timestamp and summary
+        return this.logs.some(existingLog => 
+          existingLog.timestamp === newEntry.timestamp &&
+          existingLog.message === newEntry.message &&
+          existingLog.data?.loopType === newEntry.data?.loopType &&
+          existingLog.data?.instanceId === newEntry.data?.instanceId
+        );
+      }
+
+      createImportBackup(loopType) {
+        try {
+          const backupData = {
+            timestamp: new Date().toISOString(),
+            loopType: loopType,
+            logs: this.getLoopLogs(loopType)
+          };
+
+          const backupKey = `flup-n-import-backup-${loopType}-${Date.now()}`;
+          localStorage.setItem(backupKey, JSON.stringify(backupData));
+          
+          console.log(`[flup-n] Created import backup: ${backupKey}`);
+          this.log(this.logTypes.STATE, 'Import backup created', {
+            backupKey: backupKey,
+            loopType: loopType,
+            entryCount: backupData.logs.length
+          });
+        } catch (error) {
+          console.warn('[flup-n] Failed to create import backup:', error);
+        }
+      }
+
+      persistLogs() {
+        try {
+          localStorage.setItem('flup-n-logs', JSON.stringify(this.logs));
+        } catch (error) {
+          console.warn('[flup-n] Failed to persist logs to localStorage:', error);
+        }
+      }
+    }
+
+    // Global flup-n logger instance
+    const flupNLogger = new FlupNLogger();
+
+    // --- All-in-one JS: Embedded logic from flups-three.js ---
+    
+    // TriangleTab class
+    class TriangleTab {
+      constructor() {        this.steps = [
+          {
+            doc: `<h2>Step 1: H3Xbase Triad Foundation</h2><div class='explanation'>The optimized triangle consists of three perfected nodes: <b>flup-plus</b>, <b>flup-minus</b>, and <b>cflup-n</b>. Each node represents a hexagonal lattice vertex in the H3Xbase system. The edges form a closed loop with enhanced feedback properties.</div>`,
+            highlight: [0, 1, 2],
+            highlightEdges: [0, 1, 2],
+          },
+          {
+            doc: `<h2>Step 2: Optimized State Evolution</h2><div class='explanation'>Each node updates its state using H3Xbase algorithms based on neighboring vertices. The system evolves through hexagonal mirror lattice patterns, creating dynamic feedback with increased efficiency.</div>`,
+            highlight: [0],
+            highlightEdges: [0],
+          },
+          {
+            doc: `<h2>Step 3: Enhanced Curiosity Dynamics</h2><div class='explanation'>H3Xbase adds optimized perturbations (curiosity) to each node's state, allowing the system to explore new configurations with hexagonal efficiency patterns and avoid stagnation through triad perfection.</div>`,
+            highlight: [1],
+            highlightEdges: [1],
+          },
+          {
+            doc: `<h2>Step 4: H3Xbase Feedback Loop Proof</h2><div class='explanation'>The triangle structure with hexagonal enhancements ensures that information and influence circulate endlessly through the H3Xbase merger system, forming the basis for complex feedback with mathematical proof validation.</div>`,
+            highlight: [2],
+            highlightEdges: [2],
+          },
+        ];
+        this.step = 0;
+        this.graph = {
+          vertices: [
+            {id: "flup-plus", x: 1, y: 1, z: 0},
+            {id: "flup-minus", x: -1, y: 1, z: 0},
+            {id: "cflup-n", x: 0, y: -1, z: 1}
+          ],
+          edges: [
+            ["flup-plus", "flup-minus"],
+            ["flup-minus", "cflup-n"],
+            ["cflup-n", "flup-plus"]
+          ]
+        };
+        flupNLogger.log(flupNLogger.logTypes.STATE, 'TriangleTab initialized', { 
+          stepCount: this.steps.length, 
+          vertices: this.graph.vertices.length 
+        });
+      }
+
+      getSidebarContent() {
+        return `<div id='triangle-step-doc'></div>
+          <div id='triangle-stepper' class='stepper'>
+            <button id='triangle-prev-step' class='stepper-btn'>Prev</button>
+            <span id='triangle-step-indicator' class='stepper-indicator'></span>
+            <button id='triangle-next-step' class='stepper-btn'>Next</button>
+          </div>`;
+      }
+
+      setupSidebarEvents(updateViz) {
+        document.getElementById('triangle-prev-step').onclick = () => {
+          if (this.step > 0) {
+            this.step--;
+            flupNLogger.log(flupNLogger.logTypes.INTERACTION, 'Triangle step decreased', { step: this.step });
+            this.updateStep(updateViz);
+          }
+        };
+        document.getElementById('triangle-next-step').onclick = () => {
+          if (this.step < this.steps.length-1) {
+            this.step++;
+            flupNLogger.log(flupNLogger.logTypes.INTERACTION, 'Triangle step increased', { step: this.step });
+            this.updateStep(updateViz);
+          }
+        };
+      }
+
+      updateStep(updateViz) {
+        const stepDoc = document.getElementById('triangle-step-doc');
+        const stepIndicator = document.getElementById('triangle-step-indicator');
+        if (stepDoc && stepIndicator) {
+          stepDoc.innerHTML = this.steps[this.step].doc;
+          stepIndicator.textContent = `${this.step + 1} / ${this.steps.length}`;
+          flupNLogger.log(flupNLogger.logTypes.PROOF, 'Triangle proof step updated', { 
+            step: this.step, 
+            title: this.steps[this.step].doc.match(/<h2>(.*?)<\/h2>/)?.[1] || 'Unknown'
+          });
+        }
+        if (updateViz) updateViz();
+      }
+    }
+
+    // HexagonTab class
+    class HexagonTab {
+      constructor() {
+        this.graph = {
+          vertices: Array.from({length: 6}, (_, i) => {
+            const angle = Math.PI / 3 * i - Math.PI / 2;
+            return {
+              id: `v${i+1}`,
+              x: Math.cos(angle) * 1.3,
+              y: Math.sin(angle) * 1.3,
+              z: 0
+            };
+          }),
+          edges: Array.from({length: 6}, (_, i) => [
+            `v${i+1}`,
+            `v${(i+1)%6+1}`
+          ])
+        };
+        flupNLogger.log(flupNLogger.logTypes.STATE, 'HexagonTab initialized', { 
+          vertices: this.graph.vertices.length 
+        });
+      }      getSidebarContent() {
+        return `<div class='explanation'>The H3Xbase hexagonal lattice represents the optimal mirroring of fLupper triad components. By utilizing nature's most efficient packing structure, H3Xbase enables superior communication, enhanced action efficiency, and optimal energy distribution through the hexagonal mirror lattice system. This forms the core geometric foundation for advanced graph/vertex database aspirations.</div>`;
+      }
+
+      setupSidebarEvents() {}
+      updateStep() {}
+    }
+
+    // ActionTimeTab class
+    class ActionTimeTab {
+      constructor() {
+        this.graph = {
+          vertices: [
+            {id: "flup+", x: 1, y: 1, z: 0},
+            {id: "flup-", x: -1, y: 1, z: 0},
+            {id: "cflup-n", x: 0, y: -1, z: 1}
+          ],
+          edges: [
+            ["flup+", "flup-", "#ffb347"],
+            ["flup-", "cflup-n", "#7ecfff"],
+            ["cflup-n", "flup+", "#ffd580"]
+          ]
+        };
+        flupNLogger.log(flupNLogger.logTypes.STATE, 'ActionTimeTab initialized');
+      }
+
+      getSidebarContent() {
+        return `<div class='explanation'>Time in this system is defined by the execution of actions. No action means no time progression. The system evolves through a sequence of state transitions driven by rules.</div>`;
+      }
+
+      setupSidebarEvents() {}
+      updateStep() {}
+    }
+
+    // FourDTab class
+    class FourDTab {
+      constructor() {
+        this.graph = {
+          vertices: Array.from({length: 30}, (_, i) => {
+            const t = i * 0.25;
+            return {
+              id: `t${i}`,
+              x: Math.cos(t) * 1.2,
+              y: Math.sin(t) * 1.2,
+              z: (i-15)/6
+            };
+          }),
+          edges: Array.from({length: 29}, (_, i) => [
+            `t${i}`,
+            `t${i+1}`
+          ])
+        };
+        flupNLogger.log(flupNLogger.logTypes.STATE, 'FourDTab initialized', { 
+          timeSlices: this.graph.vertices.length 
+        });
+      }
+
+      getSidebarContent() {
+        return `<div class='explanation'>The flups system can be generalized to 4D spacetime, with time-slice, spacetime, and phase diagrams, and mathematical/physics notes. See the .md files for more details.</div>`;
+      }
+
+      setupSidebarEvents() {}
+      updateStep() {}
+    }    // MathProofTab class
+    class MathProofTab {
+      constructor() {
+        this.proof = `<h2>H3Xbase Mathematical Proof of Enhanced fLupper Triad</h2>
+<div class="explanation">The H3Xbase system demonstrates an optimized feedback loop structure utilizing hexagonal lattice mathematics and enhanced triad component algorithms.</div>
+<pre class="code">// H3Xbase Three.js visualization code for the optimized fLupper triangle
+const h3xbaseVertices = [
+  {x: 1, y: 1, z: 0, label: "flup-plus", efficiency: 1.618},
+  {x: -1, y: 1, z: 0, label: "flup-minus", efficiency: 1.618},
+  {x: 0, y: -1, z: 1, label: "cflup-n", efficiency: 1.618}
+];
+
+const hexLatticeEdges = [
+  [0, 1, {weight: 0.866, latticeType: "hexagonal"}], 
+  [1, 2, {weight: 0.866, latticeType: "hexagonal"}], 
+  [2, 0, {weight: 0.866, latticeType: "hexagonal"}]
+];
+
+// H3Xbase optimization: Golden ratio efficiency factors
+const PHI = 1.618033988749;
+h3xbaseVertices.forEach(v => {
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1 * PHI),
+    new THREE.MeshBasicMaterial({color: 0x7ecfff}) // H3Xbase blue
+  );
+  sphere.position.set(v.x * PHI, v.y * PHI, v.z * PHI);
+  scene.add(sphere);
+});
+
+hexLatticeEdges.forEach(([i, j, props]) => {
+  const geometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(h3xbaseVertices[i].x * PHI, h3xbaseVertices[i].y * PHI, h3xbaseVertices[i].z * PHI),
+    new THREE.Vector3(h3xbaseVertices[j].x * PHI, h3xbaseVertices[j].y * PHI, h3xbaseVertices[j].z * PHI)
+  ]);
+  const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: 0xffd580})); // H3Xbase gold
+  scene.add(line);
+});
+</pre>
+<p class="explanation">This H3Xbase code demonstrates the construction of the optimized fLupper triangle in enhanced 3D space, with each vertex utilizing golden ratio efficiency factors and hexagonal lattice properties. The structure forms the mathematical foundation for advanced graph/vertex database systems and demonstrates the perfected triad components of the H3Xbase merger system.</p>`;
+        
+        flupNLogger.log(flupNLogger.logTypes.STATE, 'MathProofTab initialized');
+      }
+
+      getSidebarContent() {
+        return this.proof;
+      }
+
+      setupSidebarEvents() {}
+      updateStep() {}
+    }
+
+    // Time Mode Logic
+    const TimeModes = {
+      discrete: 'Discrete: Each action = 1 time unit',
+      conditional: 'Conditional: No valid actions = temporal freeze (infinity)',
+      emergent: 'Emergent: Time arises from rule execution',
+      relative: 'Relative: Subsystems have different action rates'
+    };
+
+    let currentTimeMode = 'discrete';
+
+    function getTimeMode() {
+      return currentTimeMode;
+    }
+
+    function setTimeMode(mode) {
+      if (TimeModes[mode]) {
+        const oldMode = currentTimeMode;
+        currentTimeMode = mode;
+        flupNLogger.log(flupNLogger.logTypes.TIME, 'Time mode changed', { 
+          from: oldMode, 
+          to: mode,
+          description: TimeModes[mode]
+        });
+      }
+    }
+
+    // Setup functions
+    function setupSidebarTabs(tabModules) {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabBtns.forEach(btn => {
+        btn.onclick = () => {
+          const oldTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+          
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(tc => tc.classList.remove('active'));
+          btn.classList.add('active');
+          
+          const tab = btn.dataset.tab;
+          const contentDiv = document.getElementById('tab-' + tab);
+          contentDiv.classList.add('active');
+          contentDiv.innerHTML = tabModules[tab].getSidebarContent();
+          
+          flupNLogger.log(flupNLogger.logTypes.INTERACTION, 'Tab switched', { 
+            from: oldTab, 
+            to: tab 
+          });
+          
+          if (tabModules[tab].setupSidebarEvents) {
+            tabModules[tab].setupSidebarEvents();
+          }
+          if (tab === 'triangle') {
+            tabModules[tab].step = 0;
+            tabModules[tab].updateStep();
+          }
+        };
+      });
+      
+      // Initial load
+      const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+      const contentDiv = document.getElementById('tab-' + activeTab);
+      contentDiv.innerHTML = tabModules[activeTab].getSidebarContent();
+      
+      flupNLogger.log(flupNLogger.logTypes.STATE, 'Sidebar tabs initialized', { 
+        activeTab: activeTab,
+        totalTabs: tabBtns.length
+      });
+      
+      if (tabModules[activeTab].setupSidebarEvents) {
+        tabModules[activeTab].setupSidebarEvents();
+      }
+      if (activeTab === 'triangle') {
+        tabModules[activeTab].step = 0;
+        tabModules[activeTab].updateStep();
+      }
+    }
+
+    function setupDragbar() {
+      const dragbar = document.getElementById('dragbar');
+      const sidebar = document.getElementById('sidebar');
+      const container = document.getElementById('container');
+      let dragging = false, startX = 0, startWidth = 0;
+      
+      dragbar?.addEventListener('mousedown', (e) => {
+        if (window.innerWidth < 700) return;
+        dragging = true;
+        startX = e.clientX;
+        startWidth = sidebar.offsetWidth;
+        document.body.style.cursor = 'ew-resize';
+        e.preventDefault();
+        flupNLogger.log(flupNLogger.logTypes.INTERACTION, 'Dragbar resize started');
+      });
+      
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        let newWidth = Math.max(180, Math.min(500, startWidth + (e.clientX - startX)));
+        sidebar.style.width = newWidth + 'px';
+        container.style.setProperty('--sidebar-width', newWidth + 'px');
+      });
+      
+      window.addEventListener('mouseup', () => {
+        if (dragging) {
+          dragging = false;
+          document.body.style.cursor = '';
+          flupNLogger.log(flupNLogger.logTypes.INTERACTION, 'Dragbar resize ended', {
+            newWidth: sidebar.offsetWidth
+          });
+        }
+      });
+    }
+
+    function setupTimeModeToggle() {
+      const select = document.getElementById('time-mode-select');
+      if (select) {
+        select.value = currentTimeMode;
+        select.addEventListener('change', (e) => {
+          setTimeMode(e.target.value);
+          if (window.logTimeModeChange) {
+            window.logTimeModeChange(e.target.value);
+          }
+        });
+        flupNLogger.log(flupNLogger.logTypes.STATE, 'Time mode toggle initialized');
+      }
+    }
+
+    function setupVizControls(tabModules) {
+      // Placeholder for visualization controls
+      flupNLogger.log(flupNLogger.logTypes.STATE, 'Visualization controls initialized');
+    }
+
+    // Initialize the application
+    const tabModules = {
+      triangle: new TriangleTab(),
+      hexagon: new HexagonTab(),
+      action: new ActionTimeTab(),
+      fourD: new FourDTab(),
+      math: new MathProofTab()
+    };
+
+    // Add flup-n log controls to viz-controls
+    document.addEventListener('DOMContentLoaded', () => {
+      setupSidebarTabs(tabModules);
+      setupDragbar();
+      setupVizControls(tabModules);
+      setupTimeModeToggle();
+
+      // Add flup-n log controls
+      const vizControls = document.getElementById('viz-controls');
+      if (vizControls) {        const logControls = document.createElement('div');
+        logControls.style.marginLeft = '2rem';        logControls.innerHTML = `
+          <div style="margin-bottom: 0.5em;">
+            <button onclick="flupNLogger.exportFlupNLogs()" style="background: #23272b; color: #ffd580; border: 1px solid #444; border-radius: 4px; padding: 0.3em 0.8em; cursor: pointer; margin-right: 0.5em;">Export All Logs</button>
+            <button onclick="flupNLogger.clearFlupNLogs()" style="background: #23272b; color: #ffd580; border: 1px solid #444; border-radius: 4px; padding: 0.3em 0.8em; cursor: pointer; margin-right: 0.5em;">Clear Logs</button>
+            <input type="file" id="importArchiveFile" accept=".json" style="display: none;" onchange="flupNLogger.handleArchiveImport(event)">
+            <button onclick="document.getElementById('importArchiveFile').click()" style="background: #2c5282; color: #90cdf4; border: 1px solid #3d63a3; border-radius: 4px; padding: 0.3em 0.8em; cursor: pointer;">Import Archive</button>
+          </div>
+          <div style="display: flex; gap: 0.3em; flex-wrap: wrap;">
+            <button onclick="flupNLogger.exportLoopLogs('cFLup')" style="background: #1a472a; color: #68d391; border: 1px solid #2d5a2d; border-radius: 3px; padding: 0.2em 0.5em; font-size: 0.85em; cursor: pointer;">cFLup-NN</button>
+            <button onclick="flupNLogger.exportLoopLogs('fLup-out')" style="background: #2c5282; color: #90cdf4; border: 1px solid #3d63a3; border-radius: 3px; padding: 0.2em 0.5em; font-size: 0.85em; cursor: pointer;">fLup-out</button>
+            <button onclick="flupNLogger.exportLoopLogs('fLup-recurse')" style="background: #7c2d12; color: #feb2a8; border: 1px solid #9c3d2e; border-radius: 3px; padding: 0.2em 0.5em; font-size: 0.85em; cursor: pointer;">fLup-recurse</button>
+            <button onclick="flupNLogger.exportLoopLogs('H3Xbase')" style="background: #553c9a; color: #c4b5fd; border: 1px solid #6d4aa0; border-radius: 3px; padding: 0.2em 0.5em; font-size: 0.85em; cursor: pointer;">H3Xbase</button>
+            <button onclick="console.log('Loop Stats:', flupNLogger.getLoopTypeStatistics())" style="background: #2a4365; color: #90cdf4; border: 1px solid #3d63a3; border-radius: 3px; padding: 0.2em 0.5em; font-size: 0.85em; cursor: pointer;">Stats</button>
+          </div>
+        `;
+        vizControls.appendChild(logControls);
+      }      flupNLogger.log(flupNLogger.logTypes.STATE, 'H3Xbase All-in-One workspace initialized', {
+        timestamp: new Date().toISOString(),
+        tabCount: Object.keys(tabModules).length,
+        timeMode: currentTimeMode,
+        system: 'H3Xbase Advanced Hexagonal Base'
+      });
+
+      // Optional: log time mode changes for audit/demo
+      window.logTimeModeChange = (mode) => {
+        flupNLogger.log(flupNLogger.logTypes.TIME, 'Time mode UI change', { mode: mode });
+      };
+    });
+
+    // Expose flupNLogger globally for console access
+    window.flupNLogger = flupNLogger;
+  </script>
+</body>
+</html>

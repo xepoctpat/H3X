@@ -94,6 +94,31 @@
                 "focus": false,
                 "panel": "shared"
             }
+        },
+        {
+            "label": "Start Iteration Controller",
+            "type": "shell",
+            "command": "npm run iterate",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated"
+            },
+            "isBackground": true
+        },
+        {
+            "label": "Scan for Azure Dependencies",
+            "type": "shell",
+            "command": "npm run scan:azure",
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated"
+            }
         }
     ]
 }

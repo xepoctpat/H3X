@@ -1,0 +1,39 @@
+{
+  "images": [
+    {
+      "name": "H3X Frontend Application",
+      "path": "./images/h3x-frontend.tar",
+      "tag": "h3x-frontend:latest"
+    },
+    {
+      "name": "H3X Backend API Server",
+      "path": "./images/h3x-backend.tar",
+      "tag": "h3x-backend:latest"
+    },
+    {
+      "name": "H3X WebSocket Server",
+      "path": "./images/h3x-websocket.tar",
+      "tag": "h3x-websocket:latest"
+    },
+    {
+      "name": "H3X Custom Database",
+      "path": "./images/h3x-mongodb.tar",
+      "tag": "h3x-mongodb:custom"
+    }
+  ],
+  "registryImages": [
+    "node:18-alpine",
+    "nginx:alpine",
+    "mongo:6.0",
+    "redis:7-alpine",
+    "prom/prometheus:latest",
+    "grafana/grafana:latest",
+    "your-registry.com/h3x/frontend:latest",
+    "your-registry.com/h3x/backend:latest"
+  ],
+  "settings": {
+    "defaultRegistry": "docker.io",
+    "compressionEnabled": true,
+    "verifyAfterImport": true
+  }
+}
