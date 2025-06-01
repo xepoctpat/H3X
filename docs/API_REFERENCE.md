@@ -73,4 +73,4 @@ const result = await client.generate({
 
 ---
 
-*Generated: 2025-06-01T06:28:17.265Z*
+*Generated: 2025-06-01T06:34:18.237Z*
