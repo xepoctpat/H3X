@@ -12,8 +12,7 @@ const fs = require('fs');
 
 class BabillonHealthChecker {
     constructor() {
-        this.services = [
-            { name: 'Web Interface', url: 'http://localhost:3000/health', timeout: 5000 },
+        this.services = [            { name: 'Web Interface', url: 'http://localhost:3000/health', timeout: 5000 },
             { name: 'API Server', url: 'http://localhost:3001/health', timeout: 5000 },
             { name: 'Agents Controller', url: 'http://localhost:3002/health', timeout: 5000 },
             { name: 'H3X Server', url: 'http://localhost:4978/api/health', timeout: 5000 },
@@ -21,7 +20,7 @@ class BabillonHealthChecker {
             { name: 'LMStudio AI', url: 'http://localhost:1234/v1/models', timeout: 10000 },
             { name: 'SIR Controller', url: 'http://localhost:9001/health', timeout: 5000 },
             { name: 'MongoDB', url: 'http://localhost:27017', timeout: 3000, expectError: true },
-            { name: 'Redis', url: 'http://localhost:6379', timeout: 3000, expectError: true },
+            { name: 'Redis', url: 'http://localhost:6380', timeout: 3000, expectError: true },
             { name: 'PostgreSQL', url: 'http://localhost:5432', timeout: 3000, expectError: true },
             { name: 'Prometheus', url: 'http://localhost:9090/api/v1/query?query=up', timeout: 5000 },
             { name: 'Grafana', url: 'http://localhost:3001/api/health', timeout: 5000 },

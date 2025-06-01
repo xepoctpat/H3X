@@ -268,13 +268,12 @@ services:
       retries: 5
       start_period: 40s
     restart: unless-stopped
-
   # Redis Cache & Message Broker (Enhanced)
   babillon-redis:
     image: redis:7-alpine
     container_name: babillon-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     command: redis-server --appendonly yes
     volumes:
       - babillon_redis_data:/data

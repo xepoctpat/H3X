@@ -11,11 +11,10 @@ const execAsync = promisify(exec);
 
 class BabillonHealthChecker {
     constructor() {
-        this.services = [
-            { name: 'babillon-web', port: 3000, endpoint: 'http://localhost:3000' },
+        this.services = [            { name: 'babillon-web', port: 3000, endpoint: 'http://localhost:3000' },
             { name: 'babillon-api', port: 3001, endpoint: 'http://localhost:3001/api/health' },
             { name: 'babillon-mongodb', port: 27017 },
-            { name: 'babillon-redis', port: 6379 },
+            { name: 'babillon-redis', port: 6380 },
             { name: 'babillon-prometheus', port: 9090, endpoint: 'http://localhost:9090' }
         ];
         this.results = [];
@@ -106,11 +105,9 @@ class BabillonHealthChecker {
             }
         } catch (error) {
             console.log(`  ❌ MongoDB: Connection error - ${error.message}`);
-        }
-
-        // Test Redis
+        }        // Test Redis
         try {
-            const redisCommand = 'docker exec babillon-redis redis-cli ping';
+            const redisCommand = 'docker exec babillon-redis redis-cli -p 6379 ping';
             const { stdout } = await execAsync(redisCommand);
             const isHealthy = stdout.trim() === 'PONG';
             console.log(`  ${isHealthy ? '✅' : '❌'} Redis: ${isHealthy ? 'Connected' : 'Connection failed'}`);
@@ -135,11 +132,9 @@ class BabillonHealthChecker {
             console.log(`  ${hasData ? '✅' : '⚠️'} MongoDB: ${hasData ? 'Data present' : 'No data found'}`);
         } catch (error) {
             console.log(`  ❌ MongoDB data check failed: ${error.message}`);
-        }
-
-        try {
+        }        try {
             // Check Redis keys
-            const redisCommand = 'docker exec babillon-redis redis-cli dbsize';
+            const redisCommand = 'docker exec babillon-redis redis-cli -p 6379 dbsize';
             const { stdout } = await execAsync(redisCommand);
             const keyCount = parseInt(stdout.trim());
             const hasData = keyCount > 0;
