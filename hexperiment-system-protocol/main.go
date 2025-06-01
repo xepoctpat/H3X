@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -71,9 +72,48 @@ type Usage struct {
 }
 
 // WebSocket upgrader
-var upgrader = websocket.Upgrader{
+var 
+
+upgrader = websocket.Ada{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true // Allow all origins for development
+		// Get allowed origins from environment
+		allowedOrigins := os.Getenv("WEBSOCKET_ALLOWED_ORIGINS")
+		
+		// Development mode: allow all origins
+		if allowedOrigins == "" || allowedOrigins == "*" {
+			log.Println("[WebSocket] WARNING: Allowing all origins. Set WEBSOCKET_ALLOWED_ORIGINS in production!")
+			return true
+		}
+		
+		// Production mode: check against allowed origins
+		origin := r.Header.Get("Origin")
+		if origin == "" {
+			// No origin header, could be non-browser client
+			return true
+		}
+		
+		// Check if origin is in allowed list
+		allowedList := strings.Split(allowedOrigins, ",")
+		for _, allowed := range allowedList {
+			if strings.TrimSpace(allowed) == origin {
+				return true
+			}
+		}
+		
+		log.Printf("[WebSocket] Rejected connection from origin: %s", origin)
+		return false
+	},
+	// Enable compression
+	EnableCompression: true,
+	// Handle protocol negotiation
+	Subprotocols: []string{"hexperiment-v2", "hexperiment-v1"},
+	// Error handler
+	Error: func(w http.ResponseWriter, r *http.Request, status int, reason error) {
+		log.Printf("[WebSocket] Upgrade error - Status: %d, Reason: %v", status, reason)
+		w.WriteHeader(status)
+		w.Write([]byte(fmt.Sprintf(`{"error": "WebSocket upgrade failed: %v"}`, reason)))
 	},
 }
 
@@ -114,8 +154,9 @@ var communicationStyles = []string{
 	"formal and professional", "creative and metaphorical", "logical and structured",
 }
 
+// Load environment variables
 func main() {
-	// Load environment variables
+
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using default values")
 	}
@@ -146,6 +187,10 @@ func main() {
 
 	// Static files (if needed)
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+
+	// Proxy handlers
+	r.HandleFunc("/api/github", githubProxyHandler).Methods("GET")
+	r.HandleFunc("/api/huggingface", huggingfaceProxyHandler).Methods("POST")
 
 	// Start WebSocket message broadcaster
 	go handleMessages()
@@ -189,7 +234,6 @@ func apiKeyAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiKey := os.Getenv("API_KEY")
 		if apiKey == "" {
-			// If not set, allow all (for dev), but warn
 			log.Println("[SECURITY WARNING] API_KEY not set. All requests are allowed. Set API_KEY in production!")
 			next.ServeHTTP(w, r)
 			return
@@ -207,6 +251,80 @@ func apiKeyAuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// --- Minimal GitHub API proxy (secure, no secrets in code) ---
+func githubProxyHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	githubToken := os.Getenv("GITHUB_TOKEN")
+	if githubToken == "" {
+		http.Error(w, "GITHUB_TOKEN not set", http.StatusForbidden)
+		return
+	}
+	// Only allow safe GET requests to public API endpoints
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	path := r.URL.Query().Get("path")
+	if path == "" || strings.Contains(path, "..") {
+		http.Error(w, "Invalid path", http.StatusBadRequest)
+		return
+	}
+	apiURL := "https://api.github.com" + path
+	req, err := http.NewRequest("GET", apiURL, nil)
+	if err != nil {
+		http.Error(w, "Request error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Authorization", "Bearer "+githubToken)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		http.Error(w, "GitHub API error", http.StatusBadGateway)
+		return
+	}
+	defer resp.Body.Close()
+	w.WriteHeader(resp.StatusCode)
+	io.Copy(w, resp.Body)
+}
+
+// --- Minimal HuggingFace API proxy (secure, no secrets in code) ---
+func huggingfaceProxyHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	hfToken := os.Getenv("HUGGINGFACE_TOKEN")
+	if hfToken == "" {
+		http.Error(w, "HUGGINGFACE_TOKEN not set", http.StatusForbidden)
+		return
+	}
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	model := r.URL.Query().Get("model")
+	if model == "" || strings.Contains(model, "..") {
+		http.Error(w, "Invalid model", http.StatusBadRequest)
+		return
+	}
+	apiURL := "https://api-inference.huggingface.co/models/" + model
+	req, err := http.NewRequest("POST", apiURL, r.Body)
+	if err != nil {
+		http.Error(w, "Request error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Authorization", "Bearer "+hfToken)
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		http.Error(w, "HuggingFace API error", http.StatusBadGateway)
+		return
+	}
+	defer resp.Body.Close()
+	w.WriteHeader(resp.StatusCode)
+	io.Copy(w, resp.Body)
+}
+
+// --- Protocol handler ---
 func protocolHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -240,6 +358,7 @@ func protocolHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// --- Status handler ---
 func statusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := map[string]interface{}{

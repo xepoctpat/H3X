@@ -13,5 +13,6 @@
             "title": "H3X",
             "path": "[[workspace]]"
         }
-    ]
+    ],
+    "docwriter.style": "Auto-detect"
 }

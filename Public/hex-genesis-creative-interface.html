@@ -23,7 +23,7 @@
           <button class="tab-btn" data-tab="voice">Voice Input</button>
         </div>
         
-        <form id="imagineForm">
+        <form id="imagine-form">
           <div class="tab-content active" id="text-tab">
             <label for="imagination">Creative Prompt:</label>
             <textarea id="imagination" rows="6" required placeholder="Describe your creative vision, story, or idea..."></textarea>
@@ -31,17 +31,18 @@
           
           <div class="tab-content" id="json-tab">
             <label for="jsonInput">JSON Schema:</label>
-            <textarea id="jsonInput" rows="6" placeholder='{ "type": "story", "genre": "sci-fi", "length": "short", "style": "narrative" }'></textarea>
+            <textarea id="json-input" rows="6" placeholder='{ "type": "story", "genre": "sci-fi", "length": "short", "style": "narrative" }'></textarea>
           </div>
           
           <div class="tab-content" id="voice-tab">
             <label>Voice Input:</label>
-            <button type="button" id="voiceBtn">🎤 Start Recording</button>
-            <div id="voiceStatus">Click to start voice input</div>
+            <button type="button" id="voice-btn">🎤 Start Recording</button>
+            <div id="voice-status">Click to start voice input</div>
           </div>
           
           <div class="controls">
-            <select id="creativeMode">
+            <label for="creative-mode">Creative Mode:</label>
+            <select id="creative-mode">
               <option value="story">Story Generation</option>
               <option value="brainstorm">Idea Brainstorming</option>
               <option value="design">Design Concepts</option>
@@ -73,15 +74,15 @@
           <div id="analytics" class="analytics-display">
             <div class="metric">
               <span class="label">Creativity Score:</span>
-              <span id="creativityScore">--</span>
+              <span id="creativity-score">--</span>
             </div>
             <div class="metric">
               <span class="label">Complexity:</span>
-              <span id="complexityLevel">--</span>
+              <span id="complexity-level">--</span>
             </div>
             <div class="metric">
               <span class="label">Processing Time:</span>
-              <span id="processingTime">--</span>
+              <span id="processing-time">--</span>
             </div>
           </div>
         </div>
@@ -89,10 +90,10 @@
     </div>
     
     <div class="action-bar">
-      <button id="saveBtn" class="action-btn">💾 Save</button>
-      <button id="shareBtn" class="action-btn">🔗 Share</button>
-      <button id="exportBtn" class="action-btn">📤 Export</button>
-      <button id="resetBtn" class="action-btn">🔄 Reset</button>
+      <button id="save-btn" class="action-btn">💾 Save</button>
+      <button id="share-btn" class="action-btn">🔗 Share</button>
+      <button id="export-btn" class="action-btn">📤 Export</button>
+      <button id="reset-btn" class="action-btn">🔄 Reset</button>
     </div>
     
     <footer class="interface-footer">
