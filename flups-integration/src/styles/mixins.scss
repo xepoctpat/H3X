@@ -1,0 +1,257 @@
+// H3X Mixins for modern styling
+
+// Responsive breakpoints
+@mixin respond-to($breakpoint) {
+  @if map-has-key($grid-breakpoints, $breakpoint) {
+    @media (min-width: map-get($grid-breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn "Unknown breakpoint: #{$breakpoint}";
+  }
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Grid utilities
+@mixin grid-center {
+  display: grid;
+  place-items: center;
+}
+
+@mixin grid-template($columns, $rows: auto) {
+  display: grid;
+  grid-template-columns: $columns;
+  grid-template-rows: $rows;
+}
+
+// Typography
+@mixin text-style($size, $weight: normal, $color: $h3x-text-primary) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+  font-family: $font-family-primary;
+}
+
+@mixin mono-text($size: $font-size-base) {
+  font-family: $font-family-mono;
+  font-size: $size;
+}
+
+// Button styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $border-radius-md;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-normal;
+  text-decoration: none;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background: linear-gradient(135deg, $h3x-primary, $h3x-secondary);
+  color: $h3x-bg-primary;
+  
+  &:hover:not(:disabled) {
+    box-shadow: $shadow-glow;
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background: transparent;
+  color: $h3x-primary;
+  border: $border-width solid $h3x-primary;
+  
+  &:hover:not(:disabled) {
+    background: $h3x-primary;
+    color: $h3x-bg-primary;
+  }
+}
+
+// Card styles
+@mixin card {
+  background: $h3x-bg-secondary;
+  border: $border-width solid rgba($h3x-primary, 0.3);
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-md;
+  transition: all $transition-normal;
+  
+  &:hover {
+    border-color: rgba($h3x-primary, 0.6);
+    box-shadow: $shadow-lg;
+  }
+}
+
+// Form styles
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  background: $h3x-bg-tertiary;
+  border: $border-width solid rgba($h3x-primary, 0.3);
+  border-radius: $border-radius-md;
+  color: $h3x-text-primary;
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  transition: border-color $transition-normal;
+  
+  &:focus {
+    outline: none;
+    border-color: $h3x-primary;
+    box-shadow: 0 0 0 2px rgba($h3x-primary, 0.2);
+  }
+  
+  &::placeholder {
+    color: $h3x-text-muted;
+  }
+}
+
+// Animation mixins
+@mixin fade-in($duration: $animation-duration-normal) {
+  animation: fadeIn $duration ease-in-out;
+}
+
+@mixin slide-in-up($duration: $animation-duration-normal) {
+  animation: slideInUp $duration ease-out;
+}
+
+@mixin pulse($color: $h3x-primary) {
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 20px rgba($color, 0.4);
+}
+
+// Utility mixins
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin full-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@mixin glass-effect {
+  background: rgba($h3x-bg-secondary, 0.8);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: $border-width solid rgba($h3x-primary, 0.2);
+}
+
+// Hexagonal specific mixins
+@mixin hex-border {
+  border: $border-width-thick solid $hex-edge;
+  box-shadow: 
+    0 0 10px rgba($hex-edge, 0.3),
+    inset 0 0 10px rgba($hex-edge, 0.1);
+}
+
+@mixin hex-glow($color: $hex-vertex) {
+  box-shadow: 
+    0 0 20px rgba($color, 0.5),
+    0 0 40px rgba($color, 0.3),
+    0 0 60px rgba($color, 0.1);
+}
+
+// 3D Canvas mixins
+@mixin canvas-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border: $border-width solid $canvas-border;
+  border-radius: $border-radius-lg;
+  background: $canvas-bg;
+  overflow: hidden;
+  
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+// Animation keyframes
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes hexPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba($hex-vertex, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba($hex-vertex, 0.8);
+  }
+}

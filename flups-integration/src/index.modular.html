@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H3X Modular - Advanced Hexagonal Base System</title>
+  <style>
+    /* H3X Modular Core Styles */
+    :root {
+      --h3x-blue: #7ecfff;
+      --h3x-gold: #ffd580;
+      --h3x-dark: #181c20;
+      --h3x-gray: #23272b;
+      --h3x-accent: #ff6b6b;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--h3x-dark);
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .modular-banner {
+      background: linear-gradient(90deg, var(--h3x-blue), var(--h3x-gold));
+      color: var(--h3x-dark);
+      padding: 0.8em 1em;
+      font-weight: bold;
+      font-size: 1.1em;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .modular-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      grid-gap: 1.5rem;
+      min-height: calc(100vh - 80px);
+    }
+
+    .modular-sidebar {
+      background: var(--h3x-gray);
+      border-radius: 8px;
+      padding: 1.5rem;
+      height: fit-content;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .modular-main {
+      background: var(--h3x-gray);
+      border-radius: 8px;
+      padding: 1.5rem;
+      min-height: 600px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .section-title {
+      color: var(--h3x-blue);
+      font-size: 1.2em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--h3x-blue);
+    }
+
+    .control-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .control-group label {
+      display: block;
+      color: var(--h3x-gold);
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .control-button {
+      background: var(--h3x-blue);
+      color: var(--h3x-dark);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+      margin: 0.25rem;
+      width: 100%;
+    }
+
+    .control-button:hover {
+      background: var(--h3x-gold);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(126, 207, 255, 0.3);
+    }
+
+    .control-button.secondary {
+      background: var(--h3x-gray);
+      color: var(--h3x-gold);
+      border: 1px solid #444;
+    }
+
+    .control-button.secondary:hover {
+      background: var(--h3x-gold);
+      color: var(--h3x-dark);
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .status-online { background: #68d391; }
+    .status-offline { background: #feb2a8; }
+    .status-unknown { background: #e2e8f0; }
+
+    .tab-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #444;
+    }
+
+    .tab-button {
+      background: transparent;
+      border: none;
+      color: #888;
+      padding: 0.8rem 1.2rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      color: var(--h3x-blue);
+      border-bottom-color: var(--h3x-blue);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .h3x-canvas {
+      width: 100%;
+      height: 400px;
+      background: var(--h3x-dark);
+      border: 1px solid #444;
+      border-radius: 6px;
+      margin: 1rem 0;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .metric-card {
+      background: rgba(126, 207, 255, 0.1);
+      padding: 1rem;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.5em;
+      color: var(--h3x-blue);
+      font-weight: bold;
+    }
+
+    .metric-label {
+      color: #ccc;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+      .modular-container {
+        grid-template-columns: 1fr;
+        grid-gap: 1rem;
+      }
+      
+      .modular-sidebar {
+        order: 2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="modular-banner">
+    🔷 H3X Modular: Advanced hexagonal base system with modular architecture and external JS components
+  </div>
+
+  <div class="modular-container">
+    <!-- Sidebar Controls -->
+    <div class="modular-sidebar">
+      <div class="section-title">🎛️ H3X Controls</div>
+      
+      <div class="control-group">
+        <label>System Status</label>
+        <div id="system-status">
+          <div><span class="status-indicator status-unknown"></span>H3X Merger: <span id="merger-status">Checking...</span></div>
+          <div><span class="status-indicator status-unknown"></span>UI Server: <span id="ui-status">Checking...</span></div>
+          <div><span class="status-indicator status-unknown"></span>Logs: <span id="log-status">Checking...</span></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Loop Management</label>
+        <button class="control-button" onclick="h3xModular.createCFlup()">Create cFLup Instance</button>
+        <button class="control-button secondary" onclick="h3xModular.listCFlups()">List cFLup Instances</button>
+        <button class="control-button secondary" onclick="h3xModular.exportArchive()">Export Archive</button>
+      </div>
+
+      <div class="control-group">
+        <label>Visualization Modes</label>
+        <button class="control-button secondary" onclick="h3xModular.toggleMode('hexagon')">Hexagon Mode</button>
+        <button class="control-button secondary" onclick="h3xModular.toggleMode('triad')">Triad Mode</button>
+        <button class="control-button secondary" onclick="h3xModular.toggleMode('4d')">4D Mode</button>
+      </div>
+
+      <div class="control-group">
+        <label>Quick Actions</label>
+        <button class="control-button secondary" onclick="h3xModular.refreshSystem()">Refresh System</button>
+        <button class="control-button secondary" onclick="h3xModular.openControl()">Open Control UI</button>
+        <button class="control-button secondary" onclick="h3xModular.showHelp()">Show Help</button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="modular-main">
+      <div class="tab-container">
+        <button class="tab-button active" onclick="h3xModular.switchTab('overview')">Overview</button>
+        <button class="tab-button" onclick="h3xModular.switchTab('hexagon')">Hexagon</button>
+        <button class="tab-button" onclick="h3xModular.switchTab('triad')">Triad</button>
+        <button class="tab-button" onclick="h3xModular.switchTab('4d')">4D Space</button>
+        <button class="tab-button" onclick="h3xModular.switchTab('logs')">Logs</button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div id="tab-overview" class="tab-content active">
+        <div class="section-title">📊 H3X System Overview</div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="cflup-count">0</div>
+            <div class="metric-label">cFLup Instances</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="amendment-count">0</div>
+            <div class="metric-label">Total Amendments</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="archive-count">0</div>
+            <div class="metric-label">Archive Files</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="uptime">0s</div>
+            <div class="metric-label">Session Time</div>
+          </div>
+        </div>
+
+        <canvas id="overview-canvas" class="h3x-canvas"></canvas>
+        
+        <div class="section-title">Recent Activity</div>
+        <div id="recent-activity">
+          <p>H3X Modular system initialized. Ready for hexagonal base operations.</p>
+        </div>
+      </div>
+
+      <!-- Hexagon Tab -->
+      <div id="tab-hexagon" class="tab-content">
+        <div class="section-title">🔷 Hexagonal Lattice System</div>
+        <canvas id="hexagon-canvas" class="h3x-canvas"></canvas>
+        <div id="hexagon-controls">
+          <button class="control-button secondary" onclick="h3xModular.hexagon.addNode()">Add Node</button>
+          <button class="control-button secondary" onclick="h3xModular.hexagon.optimize()">Optimize Lattice</button>
+        </div>
+      </div>
+
+      <!-- Triad Tab -->
+      <div id="tab-triad" class="tab-content">
+        <div class="section-title">🔺 fLupper Triad Components</div>
+        <canvas id="triad-canvas" class="h3x-canvas"></canvas>
+        <div id="triad-controls">
+          <button class="control-button secondary" onclick="h3xModular.triad.balance()">Balance Triad</button>
+          <button class="control-button secondary" onclick="h3xModular.triad.enhance()">Enhance Efficiency</button>
+        </div>
+      </div>
+
+      <!-- 4D Tab -->
+      <div id="tab-4d" class="tab-content">
+        <div class="section-title">🌌 4D Space Visualization</div>
+        <canvas id="fourd-canvas" class="h3x-canvas"></canvas>
+        <div id="fourd-controls">
+          <button class="control-button secondary" onclick="h3xModular.fourd.rotate()">Rotate 4D</button>
+          <button class="control-button secondary" onclick="h3xModular.fourd.project()">Project to 3D</button>
+        </div>
+      </div>
+
+      <!-- Logs Tab -->
+      <div id="tab-logs" class="tab-content">
+        <div class="section-title">📝 System Logs</div>
+        <div id="log-output" style="background: #000; color: #0f0; padding: 1rem; border-radius: 4px; font-family: monospace; height: 400px; overflow-y: auto;">
+          [H3X] Modular system initialized<br>
+          [H3X] Loading external components...<br>
+          [H3X] Ready for operations<br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load external H3X modular components -->
+  <script src="h3x-modular.js"></script>
+</body>
+</html>
