@@ -2,8 +2,7 @@
 
 version: '3.8'
 
-services:
-  # Main web server for the agentic interface
+services:  # Main web server for the agentic interface
   babillon-web:
     build:
       context: .
@@ -11,7 +10,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./Public:/app/public
+      - ./public:/app/public
       - ./proof:/app/proof
     environment:
       - NODE_ENV=development

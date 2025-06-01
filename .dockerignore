@@ -43,6 +43,7 @@ Devtools/
 *.docx
 *.pdf
 *.html
+!sir-control-interface.html
 LICENSE
 README.md
 
@@ -64,7 +65,6 @@ archive/
 infra/
 scripts/
 docs/
-public/
 
 # IDE and editor files
 **/.DS_Store

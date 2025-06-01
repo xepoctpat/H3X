@@ -10,8 +10,8 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 # Copy application files
-COPY Public/ ./public/
-COPY index.modular.html ./
+COPY public/ ./public/
+COPY sir-control-interface.html ./index.html
 COPY proof/ ./proof/
 
 # Create a simple Express server for serving static files
@@ -20,12 +20,18 @@ const path = require("path"); \
 const app = express(); \
 const PORT = process.env.PORT || 3000; \
 \
+app.use(express.json()); \
+app.use("/public", express.static("public")); \
 app.use("/Public", express.static("public")); \
 app.use("/proof", express.static("proof")); \
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.modular.html"))); \
+\
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html"))); \
+app.get("/sir", (req, res) => res.sendFile(path.join(__dirname, "public/sir-epidemic-dashboard.html"))); \
+app.get("/dashboard", (req, res) => res.sendFile(path.join(__dirname, "public/sir-epidemic-dashboard.html"))); \
 \
 app.listen(PORT, "0.0.0.0", () => { \
   console.log(`Babillon web interface running on port ${PORT}`); \
+  console.log(`SIR Epidemic Dashboard available at http://localhost:${PORT}/sir`); \
 });' > server.js
 
 # Expose port

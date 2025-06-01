@@ -1,0 +1,17 @@
+{
+  "id": "sir_1748794041276_4tpxct8nv",
+  "type": "sir",
+  "parameters": {
+    "beta": 0.3,
+    "gamma": 0.1,
+    "sigma": 0.2,
+    "population": 10000,
+    "initialInfected": 10,
+    "vaccinationRate": 0,
+    "vaccineEfficacy": 0.95
+  },
+  "scenario": "sir",
+  "duration": 100,
+  "created": "2025-06-01T16:07:21.276Z",
+  "status": "completed"
+}

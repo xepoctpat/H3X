@@ -1,0 +1,437 @@
+# Babillon Unified System - Enterprise-Grade Containerized Architecture
+# Integrating H3X, SIR, and fLups components into the Babillon ecosystem
+
+version: '3.8'
+
+services:
+  # ================================
+  # REVERSE PROXY & LOAD BALANCER
+  # ================================
+  babillon-nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: babillon-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - babillon-web
+      - babillon-api
+      - babillon-h3x-server
+      - babillon-frontend
+    networks:
+      - babillon-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ================================
+  # CORE BABILLON SERVICES
+  # ================================
+  # Enhanced Babillon Web Interface
+  babillon-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon
+    container_name: babillon-web
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./public:/app/public
+      - ./proof:/app/proof
+      - ./src:/app/src:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - API_URL=http://babillon-api:3001
+      - H3X_SERVER_URL=http://babillon-h3x-server:4978
+      - PROTOCOL_SERVER_URL=http://babillon-protocol:8080
+      - REDIS_URL=redis://babillon-redis:6379
+      - MONGODB_URL=mongodb://babillon-mongodb:27017/babillon
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-api:
+        condition: service_started
+      babillon-protocol:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Enhanced Babillon API Server
+  babillon-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon-api
+    container_name: babillon-api
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./proof:/app/data/proof
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATA_PATH=/app/data
+      - MONGODB_URL=mongodb://babillon-mongodb:27017/babillon
+      - REDIS_URL=redis://babillon-redis:6379
+      - H3X_SERVER_URL=http://babillon-h3x-server:4978
+      - PROTOCOL_SERVER_URL=http://babillon-protocol:8080
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-mongodb:
+        condition: service_healthy
+      babillon-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # Enhanced Babillon Agent Controller
+  babillon-agents:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon-agents
+    container_name: babillon-agents
+    ports:
+      - "3002:3002"
+      - "3003:3003"
+    volumes:
+      - ./agents:/app/agents
+      - ./proof:/app/data/proof
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - WEBSOCKET_PORT=3003
+      - API_URL=http://babillon-api:3001
+      - WEB_URL=http://babillon-web:3000
+      - H3X_SERVER_URL=http://babillon-h3x-server:4978
+      - REDIS_URL=redis://babillon-redis:6379
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-api
+      - babillon-redis
+    restart: unless-stopped
+
+  # ================================
+  # H3X INTEGRATION SERVICES
+  # ================================
+  # H3X Protocol Server
+  babillon-protocol:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+    container_name: babillon-protocol
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=info
+      - BABILLON_MODE=true
+    networks:
+      - babillon-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  # H3X Main Server Integration
+  babillon-h3x-server:
+    build:
+      context: .
+      dockerfile: dockerfile.h3x
+    container_name: babillon-h3x-server
+    ports:
+      - "4978:4978"
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+      - ./scripts:/app/scripts:ro
+      - ./flups-integration:/app/flups-integration:ro
+    environment:
+      - NODE_ENV=production
+      - BABILLON_MODE=true
+      - PROTOCOL_SERVER_URL=http://babillon-protocol:8080
+      - MONGODB_URL=mongodb://babillon-mongodb:27017/babillon
+      - REDIS_URL=redis://babillon-redis:6379
+      - API_URL=http://babillon-api:3001
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-protocol:
+        condition: service_healthy
+      babillon-mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ================================
+  # fLUPS INTEGRATION
+  # ================================
+  # fLups Frontend Application
+  babillon-frontend:
+    build:
+      context: ./flups-integration
+      dockerfile: Dockerfile
+    container_name: babillon-frontend
+    ports:
+      - "3005:80"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://babillon-backend:3007
+      - WS_URL=ws://babillon-websocket:3008
+      - H3X_SERVER_URL=http://babillon-h3x-server:4978
+      - BABILLON_MODE=true
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-backend
+      - babillon-websocket
+    restart: unless-stopped
+
+  # fLups Backend API Server
+  babillon-backend:
+    image: node:18-alpine
+    working_dir: /app
+    command: node flups-integration/src/backend/h3x-api-server.js
+    container_name: babillon-backend
+    ports:
+      - "3007:3007"
+    environment:
+      - NODE_ENV=production
+      - DB_URL=mongodb://babillon-mongodb:27017/babillon
+      - REDIS_URL=redis://babillon-redis:6379
+      - H3X_SERVER_URL=http://babillon-h3x-server:4978
+      - PROTOCOL_SERVER_URL=http://babillon-protocol:8080
+      - BABILLON_MODE=true
+    volumes:
+      - ./flups-integration/src/backend:/app/flups-integration/src/backend
+      - ./package.json:/app/package.json
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-mongodb:
+        condition: service_healthy
+      babillon-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # fLups WebSocket Server
+  babillon-websocket:
+    image: node:18-alpine
+    working_dir: /app
+    command: node flups-integration/src/backend/h3x-websocket-server.js
+    container_name: babillon-websocket
+    ports:
+      - "3008:3008"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://babillon-redis:6379
+      - H3X_SERVER_URL=http://babillon-h3x-server:4978
+      - BABILLON_MODE=true
+    volumes:
+      - ./flups-integration/src/backend:/app/flups-integration/src/backend
+      - ./package.json:/app/package.json
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # ================================
+  # DATABASE SERVICES
+  # ================================
+  # MongoDB Database (Enhanced from PostgreSQL)
+  babillon-mongodb:
+    image: mongo:6.0
+    container_name: babillon-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=babillon
+      - MONGO_INITDB_ROOT_PASSWORD=babillon-secure-password
+      - MONGO_INITDB_DATABASE=babillon
+    volumes:
+      - babillon_mongodb_data:/data/db
+    networks:
+      - babillon-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/babillon --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  # Redis Cache & Message Broker (Enhanced)
+  babillon-redis:
+    image: redis:7-alpine
+    container_name: babillon-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - babillon_redis_data:/data
+    networks:
+      - babillon-network
+    restart: unless-stopped
+
+  # PostgreSQL (Maintained for legacy compatibility)
+  babillon-postgres:
+    image: postgres:15-alpine
+    container_name: babillon-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=babillon
+      - POSTGRES_USER=babillon_user
+      - POSTGRES_PASSWORD=babillon_pass
+    volumes:
+      - babillon_postgres_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - babillon-network
+    restart: unless-stopped
+
+  # ================================
+  # MONITORING & OBSERVABILITY
+  # ================================
+  # Prometheus Monitoring
+  babillon-prometheus:
+    image: prom/prometheus:latest
+    container_name: babillon-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - babillon_prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - babillon-network
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  babillon-grafana:
+    image: grafana/grafana:latest
+    container_name: babillon-grafana
+    ports:
+      - "3009:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=babillon-admin
+    volumes:
+      - babillon_grafana_data:/var/lib/grafana
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-prometheus
+    restart: unless-stopped
+
+  # ================================
+  # REAL-TIME DATA & FEEDBACK LOOPS
+  # ================================
+  # Real-Time Data Ingestion - Weather (simplified for initial deployment)
+  babillon-data-weather:
+    image: node:18-alpine
+    working_dir: /app
+    command: sh -c "npm install axios && node -e \"console.log('Weather data service placeholder - ready')\""
+    container_name: babillon-data-weather
+    environment:
+      - REDIS_URL=redis://babillon-redis:6379
+      - UPDATE_INTERVAL=300
+      - BABILLON_MODE=true
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # Real-Time Data Ingestion - Financial (simplified for initial deployment)
+  babillon-data-financial:
+    image: node:18-alpine
+    working_dir: /app
+    command: sh -c "npm install axios && node -e \"console.log('Financial data service placeholder - ready')\""
+    container_name: babillon-data-financial
+    environment:
+      - REDIS_URL=redis://babillon-redis:6379
+      - UPDATE_INTERVAL=60
+      - BABILLON_MODE=true
+    networks:
+      - babillon-network
+    depends_on:
+      babillon-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # ================================
+  # SIR SYSTEM INTEGRATION
+  # ================================
+  # SIR Control Interface
+  babillon-sir-controller:
+    build:
+      context: .
+      dockerfile: Dockerfile.sir
+    container_name: babillon-sir-controller
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=production
+      - SIR_MODE=true
+      - BABILLON_MODE=true
+      - HOST_MIMIC_ENABLED=true
+      - TARGET_SYSTEM_URL=http://babillon-h3x-server:4978
+      - PROTOCOL_RELAY_URL=http://babillon-protocol:8080
+      - REDIS_URL=redis://babillon-redis:6379
+      - LOG_LEVEL=info
+    volumes:
+      - ./sir-config:/app/config:ro
+      - babillon_sir_logs:/app/logs
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-h3x-server
+      - babillon-protocol
+      - babillon-redis
+    restart: unless-stopped
+
+# ================================
+# VOLUMES
+# ================================
+volumes:
+  # Legacy compatibility
+  babillon_db_data:
+    name: babillon-postgres-data
+  babillon_cache_data:
+    name: babillon-redis-data
+  
+  # Enhanced storage
+  babillon_mongodb_data:
+    name: babillon-mongodb-data
+  babillon_redis_data:
+    name: babillon-redis-data
+  babillon_postgres_data:
+    name: babillon-postgres-data
+  babillon_prometheus_data:
+    name: babillon-prometheus-data
+  babillon_grafana_data:
+    name: babillon-grafana-data
+  babillon_sir_logs:
+    name: babillon-sir-logs
+
+# ================================
+# NETWORKS
+# ================================
+networks:
+  babillon-network:
+    driver: bridge
+    name: babillon-unified-network
