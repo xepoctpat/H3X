@@ -2,7 +2,7 @@
 
 All notable changes to H3X-fLups.
 
-## [2.0.492] - 2025-06-01
+## [2.0.500] - 2025-06-01
 
 ### Added
 - Enhanced documentation generation
