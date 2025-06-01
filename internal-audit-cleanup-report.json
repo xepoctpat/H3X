@@ -1,11 +1,17 @@
 {
-  "timestamp": "2025-06-01T19:00:15.214Z",
+  "timestamp": "2025-06-01T19:00:15.373Z",
   "stats": {
     "filesScanned": 440,
     "issuesFound": 277,
-    "fixesApplied": 0
+    "fixesApplied": 178
   },
-  "issues": {
+  "fixesSummary": {
+    "brokenReferences": 62,
+    "obsoleteFiles": 57,
+    "inconsistentNaming": 119,
+    "configurationIssues": 0
+  },
+  "details": {
     "brokenReferences": [
       {
         "type": "package_script",
@@ -2005,13 +2011,5 @@
       }
     ],
     "packageIssues": []
-  },
-  "recommendations": [
-    "Update package.json scripts",
-    "Archive obsolete files",
-    "Fix broken references",
-    "Standardize naming",
-    "Clean up dead code",
-    "Consolidate configurations"
-  ]
+  }
 }

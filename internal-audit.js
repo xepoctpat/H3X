@@ -542,6 +542,146 @@ class H3XInternalAudit {
         
         this.log('Manual review recommended before applying fixes', 'warning');
     }
+
+    async cleanupWorkspace() {
+        this.log('Starting workspace cleanup based on audit results...', 'info');
+        
+        // Fix broken references
+        if (this.issues.brokenReferences.length > 0) {
+            this.log(`Fixing ${this.issues.brokenReferences.length} broken references...`, 'fix');
+            for (const ref of this.issues.brokenReferences) {
+                try {
+                    // Fix import paths or file references
+                    this.fixReference(ref);
+                    this.stats.fixesApplied++;
+                } catch (error) {
+                    this.log(`Failed to fix reference in ${ref.file}: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Remove obsolete files
+        if (this.issues.obsoleteFiles.length > 0) {
+            this.log(`Removing ${this.issues.obsoleteFiles.length} obsolete files...`, 'fix');
+            for (const file of this.issues.obsoleteFiles) {
+                try {
+                    // Backup file before deletion
+                    const backupDir = path.join(this.config.rootDir, 'cleanup-backup');
+                    if (!fs.existsSync(backupDir)) {
+                        fs.mkdirSync(backupDir, { recursive: true });
+                    }
+                    
+                    const backupPath = path.join(backupDir, path.basename(file));
+                    fs.copyFileSync(file, backupPath);
+                    
+                    // Delete the file
+                    fs.unlinkSync(file);
+                    this.log(`Removed obsolete file: ${file}`, 'success');
+                    this.stats.fixesApplied++;
+                } catch (error) {
+                    this.log(`Failed to remove file ${file}: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Fix inconsistent naming
+        if (this.issues.inconsistentNaming.length > 0) {
+            this.log(`Fixing ${this.issues.inconsistentNaming.length} naming inconsistencies...`, 'fix');
+            for (const item of this.issues.inconsistentNaming) {
+                try {
+                    // Rename files to follow consistent naming convention
+                    const newPath = this.getStandardizedName(item.file);
+                    fs.renameSync(item.file, newPath);
+                    this.log(`Renamed ${item.file} to ${newPath}`, 'success');
+                    this.stats.fixesApplied++;
+                } catch (error) {
+                    this.log(`Failed to rename ${item.file}: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Fix configuration issues
+        if (this.issues.configurationIssues.length > 0) {
+            this.log(`Fixing ${this.issues.configurationIssues.length} configuration issues...`, 'fix');
+            for (const issue of this.issues.configurationIssues) {
+                try {
+                    this.fixConfigurationIssue(issue);
+                    this.stats.fixesApplied++;
+                } catch (error) {
+                    this.log(`Failed to fix configuration in ${issue.file}: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        // Generate cleanup report
+        this.generateCleanupReport();
+        
+        this.log(`Cleanup completed. Applied ${this.stats.fixesApplied} fixes.`, 'success');
+    }
+    
+    fixReference(ref) {
+        const content = fs.readFileSync(ref.file, 'utf8');
+        const fixed = content.replace(ref.pattern, ref.replacement);
+        fs.writeFileSync(ref.file, fixed);
+        this.log(`Fixed reference in ${ref.file}`, 'success');
+    }
+    
+    getStandardizedName(filePath) {
+        const dir = path.dirname(filePath);
+        const ext = path.extname(filePath);
+        const baseName = path.basename(filePath, ext);
+        
+        // Convert to kebab-case for files
+        const standardized = baseName
+            .replace(/([a-z])([A-Z])/g, '$1-$2')
+            .replace(/\s+/g, '-')
+            .toLowerCase();
+            
+        return path.join(dir, standardized + ext);
+    }
+    
+    fixConfigurationIssue(issue) {
+        if (issue.type === 'json') {
+            const content = JSON.parse(fs.readFileSync(issue.file, 'utf8'));
+            
+            // Apply the fix
+            let obj = content;
+            const parts = issue.path.split('.');
+            const lastPart = parts.pop();
+            
+            for (const part of parts) {
+                if (!obj[part]) obj[part] = {};
+                obj = obj[part];
+            }
+            
+            obj[lastPart] = issue.value;
+            
+            // Write back the fixed config
+            fs.writeFileSync(issue.file, JSON.stringify(content, null, 2));
+            this.log(`Fixed ${issue.path} in ${issue.file}`, 'success');
+        } else if (issue.type === 'yaml') {
+            // For YAML files we'd use a YAML parser
+            this.log(`YAML fixes not yet implemented`, 'warning');
+        }
+    }
+    
+    generateCleanupReport() {
+        const report = {
+            timestamp: new Date().toISOString(),
+            stats: this.stats,
+            fixesSummary: {
+                brokenReferences: this.issues.brokenReferences.length,
+                obsoleteFiles: this.issues.obsoleteFiles.length,
+                inconsistentNaming: this.issues.inconsistentNaming.length,
+                configurationIssues: this.issues.configurationIssues.length
+            },
+            details: this.issues
+        };
+        
+        const reportPath = path.join(this.config.rootDir, 'internal-audit-cleanup-report.json');
+        fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+        this.log(`Cleanup report written to ${reportPath}`, 'success');
+    }
 }
 
 // Main execution
@@ -549,11 +689,41 @@ async function main() {
     const audit = new H3XInternalAudit();
     
     const args = process.argv.slice(2);
-    if (args.includes('--fix')) {
-        await audit.scanWorkspace();
-        await audit.applyAutomaticFixes();
-    } else {
-        await audit.scanWorkspace();
+    const command = args[0] || 'scan';
+    
+    switch (command) {
+        case 'scan':
+            await audit.scanWorkspace();
+            break;
+        case 'fix':
+            await audit.scanWorkspace();
+            await audit.applyAutomaticFixes();
+            break;
+        case 'cleanup':
+            await audit.scanWorkspace();
+            await audit.cleanupWorkspace();
+            break;
+        case 'help':
+        default:
+            if (command !== 'help') {
+                console.log(`Unknown command: ${command}\n`);
+            }
+            console.log(`
+H3X-fLups Internal Audit Tool
+
+Usage:
+  node internal-audit.js [command]
+
+Commands:
+  scan                 - Scan workspace and report issues (default)
+  fix                  - Scan workspace and apply automatic fixes
+  cleanup              - Perform full workspace cleanup based on audit results
+  help                 - Show this help message
+
+Options:
+  --verbose           - Show detailed logging
+  --output=<file>     - Write report to file
+            `);
     }
 }
 
