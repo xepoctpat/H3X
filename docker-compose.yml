@@ -1,0 +1,38 @@
+services:
+  h3x-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.h3x
+    ports:
+      - "3979:3978"
+    environment:
+      - NODE_ENV=production
+      - PORT=3978
+      - LMSTUDIO_URL=http://lmstudio:1234
+      - PROTOCOL_SERVER_URL=http://protocol-server:8080
+    volumes:
+      - ./Public:/app/Public
+      - ./Src:/app/Src
+    depends_on:
+      - protocol-server
+    networks:
+      - h3x-network
+    restart: unless-stopped
+
+  protocol-server:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - PORT=8080
+      - DEBUG=true
+      - LOG_LEVEL=info
+    networks:
+      - h3x-network
+    restart: unless-stopped
+
+networks:
+  h3x-network:
+    driver: bridge

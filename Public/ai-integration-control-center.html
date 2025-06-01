@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 AI Integration Control Center | H3X Neural Framework</title>
+    <link rel="stylesheet" href="css/ai-integration-control-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="neural-container">
+        <!-- Header -->
+        <header class="control-header">
+            <div class="header-content">
+                <h1><i class="fas fa-brain"></i> AI Integration Control Center</h1>
+                <div class="system-status">
+                    <span class="status-indicator" id="systemStatus">INITIALIZING</span>
+                    <button class="emergency-reset" id="emergencyReset">🚨 EMERGENCY RESET</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Control Grid -->
+        <div class="control-grid">
+            <!-- Azure M365 Connection Panel -->
+            <section class="control-panel azure-panel">
+                <div class="panel-header">
+                    <h2><i class="fab fa-microsoft"></i> Azure M365 Bot Connection</h2>
+                    <div class="connection-status" id="azureStatus">DISCONNECTED</div>
+                </div>
+                <div class="panel-content">
+                    <div class="requirement-section">
+                        <h3>🔧 Connection Requirements</h3>
+                        <div class="requirements-grid">
+                            <div class="requirement-item" data-status="pending">
+                                <i class="fas fa-subscription"></i>
+                                <span>Azure Subscription</span>
+                                <button class="setup-btn" onclick="setupAzureSubscription()">Setup</button>
+                            </div>
+                            <div class="requirement-item" data-status="pending">
+                                <i class="fas fa-robot"></i>
+                                <span>Azure Bot Service</span>
+                                <button class="setup-btn" onclick="setupBotService()">Setup</button>
+                            </div>
+                            <div class="requirement-item" data-status="pending">
+                                <i class="fas fa-cloud"></i>
+                                <span>Azure App Service</span>
+                                <button class="setup-btn" onclick="setupAppService()">Setup</button>
+                            </div>
+                            <div class="requirement-item" data-status="pending">
+                                <i class="fas fa-key"></i>
+                                <span>App Registration</span>
+                                <button class="setup-btn" onclick="setupAppRegistration()">Setup</button>
+                            </div>
+                            <div class="requirement-item" data-status="pending">
+                                <i class="fas fa-users"></i>
+                                <span>Teams App Manifest</span>
+                                <button class="setup-btn" onclick="setupTeamsManifest()">Setup</button>
+                            </div>
+                            <div class="requirement-item" data-status="pending">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Managed Identity</span>
+                                <button class="setup-btn" onclick="setupManagedIdentity()">Setup</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="azure-controls">
+                        <h3>⚙️ Azure Configuration</h3>
+                        <div class="config-form">
+                            <div class="form-group">
+                                <label>Subscription ID:</label>
+                                <input type="text" id="subscriptionId" placeholder="Enter Azure Subscription ID">
+                                <button onclick="validateSubscription()">Validate</button>
+                            </div>
+                            <div class="form-group">
+                                <label>Resource Group:</label>
+                                <input type="text" id="resourceGroup" placeholder="H3X-Neural-Resources">
+                                <button onclick="createResourceGroup()">Create</button>
+                            </div>
+                            <div class="form-group">
+                                <label>Bot Name:</label>
+                                <input type="text" id="botName" placeholder="H3X-Neural-Bot">
+                                <button onclick="registerBot()">Register</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deployment-section">
+                        <h3>🚀 Deployment Controls</h3>
+                        <div class="deployment-buttons">
+                            <button class="deploy-btn" onclick="provisionResources()">
+                                <i class="fas fa-cloud-upload-alt"></i> Provision Azure Resources
+                            </button>
+                            <button class="deploy-btn" onclick="deployBot()">
+                                <i class="fas fa-rocket"></i> Deploy M365 Bot
+                            </button>
+                            <button class="deploy-btn" onclick="validateDeployment()">
+                                <i class="fas fa-check-circle"></i> Validate Deployment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Docker Integration Panel -->
+            <section class="control-panel docker-panel">
+                <div class="panel-header">
+                    <h2><i class="fab fa-docker"></i> Docker Container Integration</h2>
+                    <div class="connection-status" id="dockerStatus">DETECTING</div>
+                </div>
+                <div class="panel-content">
+                    <div class="container-discovery">
+                        <h3>🔍 Available Containers</h3>
+                        <div class="container-list" id="containerList">
+                            <div class="container-item">
+                                <i class="fas fa-brain"></i>
+                                <span>LMStudio Container</span>
+                                <div class="container-actions">
+                                    <button onclick="connectContainer('lmstudio')">Connect</button>
+                                    <button onclick="configureContainer('lmstudio')">Configure</button>
+                                </div>
+                            </div>
+                            <div class="container-item">
+                                <i class="fas fa-database"></i>
+                                <span>Vector Database</span>
+                                <div class="container-actions">
+                                    <button onclick="connectContainer('vectordb')">Connect</button>
+                                    <button onclick="configureContainer('vectordb')">Configure</button>
+                                </div>
+                            </div>
+                            <div class="container-item">
+                                <i class="fas fa-cogs"></i>
+                                <span>AI Pipeline</span>
+                                <div class="container-actions">
+                                    <button onclick="connectContainer('pipeline')">Connect</button>
+                                    <button onclick="configureContainer('pipeline')">Configure</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="docker-controls">
+                        <h3>🐳 Container Management</h3>
+                        <div class="control-buttons">
+                            <button class="docker-btn" onclick="scanContainers()">
+                                <i class="fas fa-search"></i> Scan for Containers
+                            </button>
+                            <button class="docker-btn" onclick="createNetwork()">
+                                <i class="fas fa-network-wired"></i> Create AI Network
+                            </button>
+                            <button class="docker-btn" onclick="orchestrateContainers()">
+                                <i class="fas fa-layer-group"></i> Orchestrate Stack
+                            </button>
+                            <button class="docker-btn" onclick="cloneDatabase()">
+                                <i class="fas fa-database"></i> Clone DB
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="docker-compose-section">
+                        <h3>📋 Docker Compose Configuration</h3>
+                        <textarea id="dockerCompose" placeholder="Docker Compose YAML will be generated here..."></textarea>
+                        <div class="compose-actions">
+                            <button onclick="generateCompose()">Generate Compose</button>
+                            <button onclick="launchStack()">Launch Stack</button>
+                            <button onclick="resetStack()">Reset Stack</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LMStudio Integration Panel -->
+            <section class="control-panel lmstudio-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-microchip"></i> LMStudio Integration</h2>
+                    <div class="connection-status" id="lmstudioStatus">CONNECTED</div>
+                </div>
+                <div class="panel-content">
+                    <div class="lmstudio-config">
+                        <h3>🔧 LMStudio Configuration</h3>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <label>Server URL:</label>
+                                <input type="text" id="lmstudioUrl" value="http://localhost:1234" readonly title="LMStudio server URL" placeholder="LMStudio server URL">
+                                <button onclick="testLMStudioConnection()">Test</button>
+                            </div>
+                            <div class="config-item">
+                                <label>Model:</label>
+                                <select id="selectedModel" title="Select AI model" aria-label="Model">
+                                    <option value="">Select Model...</option>
+                                </select>
+                                <button onclick="loadModels()">Refresh</button>
+                            </div>
+                            <div class="config-item">
+                                <label>Temperature:</label>
+                                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7" title="Set temperature (randomness)" aria-label="Temperature">
+                                <span id="tempValue">0.7</span>
+                            </div>
+                            <div class="config-item">
+                                <label>Max Tokens:</label>
+                                <input type="number" id="maxTokens" value="2048" min="1" max="8192" title="Maximum tokens for AI response" placeholder="Max tokens">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-integration-test">
+                        <h3>🧪 AI Integration Test</h3>
+                        <div class="test-interface">
+                            <textarea id="testPrompt" placeholder="Enter test prompt for AI integration..."></textarea>
+                            <div class="test-controls">
+                                <button onclick="sendTestPrompt()">Send Test</button>
+                                <button onclick="clearTest()">Clear</button>
+                            </div>
+                            <div class="test-response" id="testResponse"></div>
+                        </div>
+                    </div>
+
+                    <div class="integration-mapping">
+                        <h3>🔗 Integration Mapping</h3>
+                        <div class="mapping-grid">
+                            <div class="mapping-item">
+                                <span>M365 → LMStudio</span>
+                                <button class="map-btn" data-status="inactive" onclick="toggleMapping('m365-lm')">Activate</button>
+                            </div>
+                            <div class="mapping-item">
+                                <span>Docker → LMStudio</span>
+                                <button class="map-btn" data-status="inactive" onclick="toggleMapping('docker-lm')">Activate</button>
+                            </div>
+                            <div class="mapping-item">
+                                <span>H3X Neural → LMStudio</span>
+                                <button class="map-btn" data-status="active" onclick="toggleMapping('h3x-lm')">Active</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Reset Panel -->
+            <section class="control-panel reset-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-redo-alt"></i> System Reset Controls</h2>
+                    <div class="reset-status" id="resetStatus">READY</div>
+                </div>
+                <div class="panel-content">
+                    <div class="reset-categories">
+                        <h3>🔄 Reset Categories</h3>
+                        <div class="reset-options">
+                            <div class="reset-option">
+                                <input type="checkbox" id="resetAzure" checked>
+                                <label for="resetAzure">
+                                    <i class="fab fa-microsoft"></i> Azure Connections
+                                </label>
+                            </div>
+                            <div class="reset-option">
+                                <input type="checkbox" id="resetDocker" checked>
+                                <label for="resetDocker">
+                                    <i class="fab fa-docker"></i> Docker Containers
+                                </label>
+                            </div>
+                            <div class="reset-option">
+                                <input type="checkbox" id="resetLMStudio" checked>
+                                <label for="resetLMStudio">
+                                    <i class="fas fa-microchip"></i> LMStudio Config
+                                </label>
+                            </div>
+                            <div class="reset-option">
+                                <input type="checkbox" id="resetNeural" checked>
+                                <label for="resetNeural">
+                                    <i class="fas fa-brain"></i> Neural Interfaces
+                                </label>
+                            </div>
+                            <div class="reset-option">
+                                <input type="checkbox" id="resetDatabase">
+                                <label for="resetDatabase">
+                                    <i class="fas fa-database"></i> Database (Destructive)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reset-actions">
+                        <h3>⚡ Reset Actions</h3>
+                        <div class="action-buttons">
+                            <button class="reset-btn soft" onclick="performSoftReset()">
+                                <i class="fas fa-refresh"></i> Soft Reset
+                            </button>
+                            <button class="reset-btn medium" onclick="performMediumReset()">
+                                <i class="fas fa-power-off"></i> Medium Reset
+                            </button>
+                            <button class="reset-btn hard" onclick="performHardReset()">
+                                <i class="fas fa-exclamation-triangle"></i> Hard Reset
+                            </button>
+                            <button class="reset-btn factory" onclick="performFactoryReset()">
+                                <i class="fas fa-bomb"></i> Factory Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="reset-confirmation" id="resetConfirmation" style="display: none;">
+                        <h3>⚠️ Confirm Reset Action</h3>
+                        <p id="resetWarning"></p>
+                        <div class="confirmation-buttons">
+                            <button class="confirm-yes" onclick="confirmReset()">YES, RESET</button>
+                            <button class="confirm-no" onclick="cancelReset()">CANCEL</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Monitor Panel -->
+            <section class="control-panel monitor-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-chart-line"></i> System Monitor</h2>
+                    <div class="monitor-status" id="monitorStatus">ACTIVE</div>
+                </div>
+                <div class="panel-content">
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-label">Azure Health</div>
+                            <div class="metric-value" id="azureHealth">0%</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" data-metric="azure"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Docker Health</div>
+                            <div class="metric-value" id="dockerHealth">0%</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill" data-metric="docker"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">LMStudio Health</div>
+                            <div class="metric-value" id="lmstudioHealth">85%</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill width-85" data-metric="lmstudio"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Neural Interfaces</div>
+                            <div class="metric-value" id="neuralHealth">100%</div>
+                            <div class="metric-bar">
+                                <div class="metric-fill width-100" data-metric="neural"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="system-logs">
+                        <h3>📋 System Logs</h3>
+                        <div class="log-viewer" id="systemLogs">
+                            <div class="log-entry success">
+                                <span class="log-time">12:45:23</span>
+                                <span class="log-message">H3X Neural Interfaces initialized successfully</span>
+                            </div>
+                            <div class="log-entry info">
+                                <span class="log-time">12:45:24</span>
+                                <span class="log-message">LMStudio connection established on port 1234</span>
+                            </div>
+                            <div class="log-entry warning">
+                                <span class="log-time">12:45:25</span>
+                                <span class="log-message">Azure subscription not selected</span>
+                            </div>
+                        </div>
+                        <div class="log-controls">
+                            <button onclick="clearLogs()">Clear Logs</button>
+                            <button onclick="exportLogs()">Export Logs</button>
+                            <button onclick="refreshLogs()">Refresh</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Navigation Panel -->
+            <section class="control-panel navigation-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-compass"></i> Neural Interface Navigation</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="nav-grid">
+                        <a href="hex-genesis-creative-interface.html" class="nav-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>HEX GENESIS</span>
+                        </a>
+                        <a href="node-neural-dashboard-interface.html" class="nav-item">
+                            <i class="fas fa-network-wired"></i>
+                            <span>NODE NEURAL</span>
+                        </a>
+                        <a href="synapse-taskflow-orchestration-interface.html" class="nav-item">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>SYNAPSE TASKFLOW</span>
+                        </a>
+                        <a href="matrix-observer-analytics-interface.html" class="nav-item">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>MATRIX OBSERVER</span>
+                        </a>
+                        <a href="cortex-current-realtime-interface.html" class="nav-item">
+                            <i class="fas fa-bolt"></i>
+                            <span>CORTEX CURRENT</span>
+                        </a>
+                        <a href="Virtual-Taskmaster.html" class="nav-item">
+                            <i class="fas fa-tasks"></i>
+                            <span>VIRTUAL TASKMASTER</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- M365 AI Integration Panel -->
+            <div class="control-panel">
+                <h2>🤖 Microsoft 365 AI Integration</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-label">M365 Agent Status:</span>
+                        <span id="m365-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Graph API:</span>
+                        <span id="graph-api-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Teams Bot:</span>
+                        <span id="teams-bot-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Adaptive Cards:</span>
+                        <span id="adaptive-cards-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="initializeM365Agent()">Initialize M365 Agent</button>
+                    <button class="btn btn-secondary" onclick="testGraphAPI()">Test Graph API</button>
+                    <button class="btn btn-secondary" onclick="sendTeamsMessage()">Send Teams Message</button>
+                    <button class="btn btn-danger" onclick="disconnectM365()">Disconnect M365</button>
+                </div>
+                
+                <div class="m365-chat-interface">
+                    <h3>M365 Chat Interface</h3>
+                    <div id="m365-chat-history" class="chat-history"></div>
+                    <div class="chat-input-group">
+                        <input type="text" id="m365-chat-input" placeholder="Type your message to M365 AI..." class="chat-input">
+                        <button onclick="sendM365Message()" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hexperiment Protocol Integration Panel -->
+            <div class="control-panel">
+                <h2>🔬 Hexperiment System Protocol</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-label">Protocol Server:</span>
+                        <span id="protocol-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">WebSocket:</span>
+                        <span id="websocket-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Docker Container:</span>
+                        <span id="docker-status" class="status-indicator offline">OFFLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Active Connections:</span>
+                        <span id="connections-count" class="status-value">0</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="connectProtocolServer()">Connect Protocol Server</button>
+                    <button class="btn btn-secondary" onclick="startWebSocket()">Start WebSocket</button>
+                    <button class="btn btn-secondary" onclick="runDockerContainer()">Run Docker Container</button>
+                    <button class="btn btn-danger" onclick="stopProtocolServer()">Stop Protocol Server</button>
+                </div>
+                
+                <div class="protocol-data-view">
+                    <h3>Protocol Data Stream</h3>
+                    <div id="protocol-stream" class="data-stream"></div>
+                    <div class="protocol-controls">
+                        <input type="text" id="protocol-message" placeholder="Send protocol message..." class="protocol-input">
+                        <button onclick="sendProtocolMessage()" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Persona Generation Panel -->
+            <section class="control-panel persona-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-user-astronaut"></i> Persona Generation</h2>
+                    <div class="connection-status" id="personaStatus">READY</div>
+                </div>
+                <div class="panel-content">
+                    <div class="persona-config">
+                        <h3>🧬 Persona Parameters</h3>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <label for="personaSocialSetting">Social Setting:</label>
+                                <select id="personaSocialSetting" title="Select social setting">
+                                    <option value="work">Work</option>
+                                    <option value="family">Family</option>
+                                    <option value="friends">Friends</option>
+                                    <option value="public">Public</option>
+                                </select>
+                            </div>
+                            <div class="config-item">
+                                <label for="personaTrait">Personality Trait:</label>
+                                <input type="text" id="personaTrait" placeholder="e.g. extrovert, analytical" title="Enter personality trait">
+                            </div>
+                            <div class="config-item">
+                                <label for="personaVariations">Number of Variations:</label>
+                                <input type="number" id="personaVariations" value="3" min="1" max="10" placeholder="Number of variations" title="Number of persona variations">
+                            </div>
+                        </div>
+                        <div class="persona-controls">
+                            <button class="persona-btn" onclick="generatePersona()">
+                                <i class="fas fa-magic"></i> Generate Persona(s)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="persona-results">
+                        <h3>🧑‍🚀 Generated Personas</h3>
+                        <div id="personaResults" class="persona-results-list"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/ai-integration-control-core.js"></script>
+    <script>
+        // Initialize the AI Integration Control Center
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeControlCenter();
+            updateSystemStatus();
+            startHealthMonitoring();
+        });
+    </script>
+</body>
+</html>

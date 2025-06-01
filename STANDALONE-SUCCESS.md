@@ -1,27 +1,31 @@
-# 🎉 Your Standalone Weather Agent is Ready!
+# 🎉 Your Standalone SIR Control Interface is Ready
 
 ## ✅ Current Status
 
-Your Microsoft 365 Weather Agent is now successfully running in **standalone mode** - giving you all the benefits of a production-ready bot framework without needing Teams or complex authentication!
+Your Microsoft 365 SIR Control Interface is now successfully running in **standalone mode** - giving you all the benefits of a production-ready SIR framework without needing Teams or complex authentication!
 
 ### 🚀 **What's Running:**
-- **Server**: http://localhost:3978 
+
+- **Server**: <http://localhost:3978>
 - **Environment**: Standalone (no Teams dependency)
 - **OpenAI Integration**: ✅ Configured and working
 - **Hot Reload**: ✅ Automatic restart on code changes  
 - **Debug Mode**: ✅ Available on port 9239
 
 ### 📍 **Available Endpoints:**
+
 - **GET /** - Service status and information
 - **GET /health** - Health check endpoint
-- **POST /api/messages** - Main bot conversation endpoint
+- **POST /api/messages** - Main SIR conversation endpoint
 
-## 🔧 **How to Use Your Standalone Agent**
+## 🔧 **How to Use Your Standalone SIR Interface**
 
 ### 1. **Browser Testing**
-Visit http://localhost:3978 in your browser to see the status page
+
+Visit <http://localhost:3978> in your browser to see the status page
 
 ### 2. **API Testing**
+
 ```bash
 # Health check
 curl http://localhost:3978/health
@@ -31,6 +35,7 @@ curl http://localhost:3978/
 ```
 
 ### 3. **Interactive Testing**
+
 ```bash
 # Run automated test suite
 node test-client-enhanced.js
@@ -39,20 +44,20 @@ node test-client-enhanced.js
 node test-client-enhanced.js --interactive
 
 # Send a single message
-node test-client-enhanced.js "What's the weather in Paris?"
+node test-client-enhanced.js "What is the status of the SIR system?"
 
 # Just check health
 node test-client-enhanced.js --health
 ```
 
-## 🌦️ **Sample Weather Queries to Try**
+## 🤖 **Sample SIR Control Queries to Try**
 
 Once you have the test client running, try these:
 
-- "What's the weather like in Seattle tomorrow?"
-- "Tell me the forecast for New York on June 15th, 2025" 
-- "What will the temperature be in London next week?"
-- "I'm traveling to Tokyo next month. What should I expect weather-wise?"
+- "What is the current status of the SIR system?"
+- "Can you analyze the current environmental conditions?"
+- "Generate an AI assistant for monitoring laboratory equipment"
+- "Run a simulation analysis for optimal conditions"
 - "What's the current time and date?"
 
 ## 🎯 **Why Standalone is Perfect for You**
@@ -60,6 +65,7 @@ Once you have the test client running, try these:
 Since you have an M365 account, standalone deployment gives you:
 
 ### **✅ Advantages over Playground:**
+
 - **Real Bot Framework** - Not a simulation
 - **HTTP API Access** - Integrate with any application
 - **Production-like Environment** - Same code runs in Teams/Azure
@@ -68,6 +74,7 @@ Since you have an M365 account, standalone deployment gives you:
 - **Direct Testing** - No browser dependencies
 
 ### **✅ Easy Migration Paths:**
+
 - **To Teams**: Just run `npm run dev:teamsfx` and deploy
 - **To Azure**: Use Teams Toolkit → Provision → Deploy
 - **To Production**: Same codebase scales automatically
@@ -93,10 +100,10 @@ Ctrl+C in the terminal
 
 ## 🚀 **Next Steps**
 
-1. **Test Your Agent** - Use the test client to chat with your weather bot
+1. **Test Your SIR Interface** - Use the test client to interact with your SIR system
 2. **Add M365 Integration** - Connect to your Microsoft Graph API
-3. **Custom Tools** - Add business-specific tools and capabilities  
-4. **Teams Deployment** - When ready, deploy to Teams in minutes
+3. **Custom SIR Tools** - Add specialized environmental analysis capabilities  
+4. **Teams Deployment** - When ready, deploy SIR to Teams in minutes
 5. **Azure Scaling** - Move to cloud when you need global access
 
 ## 🛠️ **Files Created/Modified**
@@ -110,16 +117,19 @@ Ctrl+C in the terminal
 
 ## 🎊 **Congratulations!**
 
-You now have a **production-ready Microsoft 365 Weather Agent** running standalone! 
+You now have a **production-ready Microsoft 365 SIR Control Interface** running standalone!
 
-Your bot can:
-- ✅ Answer weather questions using OpenAI
-- ✅ Handle date/time queries  
+Your SIR system can:
+
+- ✅ Analyze environmental conditions using OpenAI
+- ✅ Control simulation parameters and experiments
+- ✅ Generate specialized AI assistants
 - ✅ Maintain conversation context
 - ✅ Scale to Teams/Azure when needed
 - ✅ Integrate with your M365 account
 
-**Ready to chat with your weather agent?** Run:
+**Ready to interact with your SIR Control Interface?** Run:
+
 ```bash
 node test-client-enhanced.js --interactive
 ```

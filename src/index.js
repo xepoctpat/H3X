@@ -1,9 +1,10 @@
 // Import required packages
 const { authorizeJWT, CloudAdapter, loadAuthConfigFromEnv } = require("@microsoft/agents-hosting");
 const express = require("express");
+const path = require("path");
 
 // This bot's main dialog.
-const { weatherAgent } = require("./agent");
+const { sirAgent } = require("./Agent-No-Openai");
 
 // Create authentication configuration
 const authConfig = loadAuthConfigFromEnv();
@@ -13,11 +14,14 @@ const adapter = new CloudAdapter(authConfig);
 const server = express();
 server.use(express.json());
 
+// Serve static files from Public directory for neural interfaces
+server.use(express.static(path.join(__dirname, '../Public')));
+
 // Health check endpoint (no auth required)
 server.get("/health", (req, res) => {
   res.json({ 
     status: "healthy", 
-    service: "Weather Agent", 
+    service: "Hexperiment Labs SIR Control Interface", 
     timestamp: new Date().toISOString(),
     port: process.env.port || process.env.PORT || 3978
   });
@@ -26,8 +30,8 @@ server.get("/health", (req, res) => {
 // Status endpoint (no auth required)
 server.get("/", (req, res) => {
   res.json({
-    service: "Microsoft 365 Weather Agent",
-    version: "1.0.0",
+    service: "Hexperiment Labs SIR Control Interface",
+    version: "2.0.0",
     status: "running",
     environment: process.env.TEAMSFX_ENV || "development",
     endpoints: {
@@ -36,11 +40,19 @@ server.get("/", (req, res) => {
       "GET /": "Service status"
     },
     features: [
-      "OpenAI GPT-4 integration",
-      "Weather forecasting",
-      "Date/time assistance",
-      "Microsoft 365 Agents framework"
+      "Microsoft SDK Agents (No OpenAI dependency)",
+      "Environmental analysis with real-life standards",
+      "Simulation control",
+      "AI assistant generation",
+      "Human-supervised confirmation scenarios",
+      "Monitoring system implementation",
+      "PDF framework integration ready"
     ],
+    mode: "PASSIVE",
+    description: "Super Intelligent Regulator for AI assistant generation and environment analysis using Microsoft SDK Agents",
+    framework: "Microsoft SDK Agents",
+    aiDependency: "None - Native Microsoft agents only",
+    realLifeStandards: true,
     timestamp: new Date().toISOString()
   });
 });
@@ -51,7 +63,7 @@ server.use("/api", authorizeJWT(authConfig));
 // Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
   await adapter.process(req, res, async (context) => {
-    await weatherAgent.run(context);
+    await sirAgent.run(context);
   });
 });
 

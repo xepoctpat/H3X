@@ -1,0 +1,561 @@
+/* Neural Taskmaster Interface Styles */
+/* Advanced task orchestration and virtual assistance interface */
+
+:root {
+    --neural-primary: #00ff88;
+    --neural-secondary: #ff0088;
+    --neural-accent: #0088ff;
+    --neural-dark: #1a1a2e;
+    --neural-darker: #0f0f1a;
+    --neural-light: #2a2a3e;
+    --neural-text: #ffffff;
+    --neural-text-muted: #aaaaaa;
+    --neural-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+    --neural-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--neural-darker) 0%, var(--neural-dark) 100%);
+    color: var(--neural-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.neural-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.neural-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--neural-primary);
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.neural-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neural-primary), transparent);
+    animation: neural-pulse 2s ease-in-out infinite;
+}
+
+.neural-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.neural-symbol {
+    font-size: 2.5rem;
+    color: var(--neural-primary);
+    text-shadow: var(--neural-glow);
+    animation: neural-glow 3s ease-in-out infinite alternate;
+}
+
+.neural-logo h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    background: linear-gradient(45deg, var(--neural-primary), var(--neural-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid var(--neural-primary);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--neural-secondary);
+    animation: status-pulse 1.5s ease-in-out infinite;
+}
+
+.status-dot.active {
+    background: var(--neural-primary);
+}
+
+.status-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--neural-primary);
+}
+
+/* Grid Layout */
+.neural-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+    flex: 1;
+}
+
+/* Panel Styles */
+.panel {
+    background: rgba(42, 42, 62, 0.8);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--neural-shadow);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neural-primary), var(--neural-accent), var(--neural-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 255, 136, 0.2);
+    border-color: var(--neural-primary);
+}
+
+.panel:hover::before {
+    opacity: 1;
+}
+
+.panel h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: var(--neural-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--neural-text);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 8px;
+    color: var(--neural-text);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--neural-primary);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.form-control::placeholder {
+    color: var(--neural-text-muted);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background: linear-gradient(45deg, var(--neural-primary), var(--neural-accent));
+    color: var(--neural-dark);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, var(--neural-light), var(--neural-dark));
+    color: var(--neural-text);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, var(--neural-secondary), #ff4444);
+    color: var(--neural-text);
+}
+
+/* Task Items */
+.task-item {
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.task-item:hover {
+    border-color: var(--neural-primary);
+    transform: translateX(5px);
+}
+
+.task-item.completed {
+    opacity: 0.7;
+    border-color: var(--neural-accent);
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: var(--neural-text-muted);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.task-title {
+    font-weight: 600;
+    color: var(--neural-text);
+    margin-bottom: 5px;
+}
+
+.task-priority {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.task-priority.high {
+    background: rgba(255, 0, 136, 0.2);
+    color: var(--neural-secondary);
+    border: 1px solid var(--neural-secondary);
+}
+
+.task-priority.medium {
+    background: rgba(0, 136, 255, 0.2);
+    color: var(--neural-accent);
+    border: 1px solid var(--neural-accent);
+}
+
+.task-priority.low {
+    background: rgba(0, 255, 136, 0.2);
+    color: var(--neural-primary);
+    border: 1px solid var(--neural-primary);
+}
+
+.task-description {
+    color: var(--neural-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.task-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.task-actions .btn {
+    padding: 6px 15px;
+    font-size: 0.85rem;
+}
+
+/* Virtual Assistant Chat */
+.chat-container {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background: rgba(26, 26, 46, 0.4);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.chat-message {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-message.user {
+    flex-direction: row-reverse;
+}
+
+.chat-message.user .message-content {
+    background: linear-gradient(45deg, var(--neural-primary), var(--neural-accent));
+    color: var(--neural-dark);
+}
+
+.message-content {
+    max-width: 80%;
+    padding: 12px 15px;
+    background: rgba(42, 42, 62, 0.8);
+    border-radius: 15px;
+    color: var(--neural-text);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.chat-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-group .form-control {
+    flex: 1;
+}
+
+/* Statistics Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--neural-primary);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--neural-primary);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--neural-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Loading and Animation Effects */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--neural-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .neural-container {
+        padding: 15px;
+    }
+    
+    .neural-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .neural-logo h1 {
+        font-size: 2rem;
+    }
+    
+    .neural-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .panel {
+        padding: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .neural-logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .neural-symbol {
+        font-size: 2rem;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .task-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations */
+@keyframes neural-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes neural-glow {
+    0% { text-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+    100% { text-shadow: 0 0 30px rgba(0, 255, 136, 0.6); }
+}
+
+@keyframes status-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --neural-primary: #00ff00;
+        --neural-secondary: #ff0000;
+        --neural-accent: #0000ff;
+    }
+    
+    .panel {
+        border-width: 2px;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .neural-container {
+        max-width: none;
+        padding: 0;
+    }
+    
+    .panel {
+        background: white;
+        border: 1px solid black;
+        break-inside: avoid;
+        margin-bottom: 20px;
+    }
+    
+    .btn {
+        display: none;
+    }
+}

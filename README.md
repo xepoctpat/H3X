@@ -1,78 +1,77 @@
-# Weather Agent - Microsoft 365 Agents Template
+# H3X Hexperiment System - Containerized Deployment
 
-This weather agent template demonstrates how to build intelligent conversational AI using the [Microsoft 365 Agents SDK](https://github.com/Microsoft/Agents) with LangChain integration. The agent provides weather forecasts with beautiful adaptive card responses and can be deployed in multiple environments.
+## 🐳 Docker Deployment (Current Method)
 
-## 🌟 Features
+The H3X system is now fully containerized for easy deployment and scalability.
 
-- **Smart Weather Forecasting** - Ask about weather for any date and location
-- **LangChain Integration** - Advanced AI reasoning with OpenAI GPT models
-- **Adaptive Cards** - Beautiful, interactive responses in Teams-style format
-- **Date/Time Tools** - Intelligent date parsing and calculations
-- **Multiple Deployment Options** - Test locally, in playground, or deploy to Teams/Azure
-- **Memory Management** - Conversation context retention across interactions
+### Quick Start
 
-## 🚀 Deployment Options
+1. **Clone the repository**
+   ```bash
+   git clone [repository-url]
+   cd H3X
+   ```
 
-This agent can run in several environments:
+2. **Start the system**
+   ```bash
+   docker-compose up -d
+   ```
 
-1. **Microsoft 365 Agents Playground** - Browser-based testing (no Teams required)
-2. **Microsoft Teams** - Full Teams integration with channels and chats
-3. **Azure Bot Service** - Deploy as a standalone bot service
-4. **Local Development** - Direct Express.js server for testing
+3. **Access the interfaces**
+   - **Main H3X Server**: http://localhost:4978
+   - **Protocol Server**: http://localhost:8081
+   - **Health Check**: http://localhost:8081/api/health
 
-Note: This template works best with newer OpenAI models like gpt-4o-mini that support reliable JSON output.
+### Services
 
-## Get started with the template
+- **h3x-server**: Main Node.js application with SIR Control Interface
+- **protocol-server**: Hexperiment System Protocol server for service coordination
 
-> **Prerequisites**
->
-> To run the template in your local dev machine, you will need:
->
-> - [Node.js](https://nodejs.org/), supported versions: 18, 20, 22.
-> - [Microsoft 365 Agents Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) latest version or [Microsoft 365 Agents Toolkit CLI](https://aka.ms/teamsfx-toolkit-cli).
-> - An account with [OpenAI](https://platform.openai.com/).
+### Development
 
-> For local debugging using Microsoft 365 Agents Toolkit CLI, you need to do some extra steps described in [Set up your Microsoft 365 Agents Toolkit CLI for local debugging](https://aka.ms/teamsfx-cli-debugging).
+For live development with file watching:
+```bash
+# The containers mount local volumes for live development
+docker-compose up
+# Edit files in ./Src or ./Public and see changes immediately
+```
 
-1. First, select the Microsoft 365 Agents Toolkit icon on the left in the VS Code toolbar.
-1. In file *env/.env.playground.user*, fill in your OpenAI key `SECRET_OPENAI_API_KEY=<your-key>`.
-1. Press F5 to start debugging which launches your agent in Microsoft 365 Agents Playground using a web browser. Select `Debug in Microsoft 365 Agents Playground`.
-1. You can send any message to get a response from the agent.
+### System Status
 
-**Congratulations**! You are running an agent that can now interact with users in Microsoft 365 Agents Playground.
+- ✅ **Docker Deployment**: Fully operational with service orchestration
+- ✅ **Case Sensitivity**: Resolved for Linux/container environments  
+- ✅ **Health Monitoring**: Automated health checks and restart policies
+- ✅ **Service Discovery**: Internal networking between containers
+- ✅ **Volume Mounting**: Live development support
 
+## 🏗️ Architecture
 
-## What's included in the template
+The system uses a microservices architecture with:
+- **Container Orchestration**: Docker Compose
+- **Service Networking**: Bridge network for inter-service communication
+- **Health Monitoring**: Built-in health checks
+- **Development Workflow**: Volume mounting for live code updates
 
-| Folder       | Contents                                            |
-| - | - |
-| `.vscode`    | VSCode files for debugging                          |
-| `appPackage` | Templates for the application manifest        |
-| `env`        | Environment files                                   |
-| `infra`      | Templates for provisioning Azure resources          |
-| `src`        | The source code for the application                 |
+## 📊 Monitoring
 
-The following files can be customized and demonstrate an example implementation to get you started.
+Check system status:
+```bash
+# View service status
+docker-compose ps
 
-| File                                 | Contents                                           |
-| - | - |
-|`src/index.js`| Sets up the agent server.|
-|`src/tools/*.js`| Tools that can be utilized by model.|
-|`src/agent.js`| Handles business logics for the Weather Agent.|
+# View logs
+docker-compose logs -f
 
-The following are Microsoft 365 Agents Toolkit specific project files. You can [visit a complete guide on Github](https://github.com/OfficeDev/TeamsFx/wiki/Teams-Toolkit-Visual-Studio-Code-v5-Guide#overview) to understand how Microsoft 365 Agents Toolkit works.
+# Health check
+curl http://localhost:8081/api/health
+```
 
-| File                                 | Contents                                           |
-| - | - |
-|`m365agents.yml`|This is the main Microsoft 365 Agents Toolkit project file. The project file defines two primary things:  Properties and configuration Stage definitions. |
-|`m365agents.local.yml`|This overrides `m365agents.yml` with actions that enable local execution and debugging.|
-|`m365agents.playground.yml`| This overrides `m365agents.yml` with actions that enable local execution and debugging in Microsoft 365 Agents Playground.|
+## 🔧 Troubleshooting
 
-## Additional information and references
+- **Port conflicts**: Configured to use ports 4978 and 8081
+- **Container issues**: Check `docker-compose logs`
+- **Network problems**: Verify h3x-network bridge is created
 
-- [Microsoft 365 Agents Toolkit Documentations](https://docs.microsoft.com/microsoftteams/platform/toolkit/teams-toolkit-fundamentals)
-- [Microsoft 365 Agents Toolkit CLI](https://aka.ms/teamsfx-toolkit-cli)
-- [Microsoft 365 Agents Toolkit Samples](https://github.com/OfficeDev/TeamsFx-Samples)
+---
 
-## Known issue
-- The agent is currently not working in any Teams group chats or Teams channels when the stream response is enabled.
+*Previous deployment methods (standalone scripts) have been archived and replaced with this containerized approach.*

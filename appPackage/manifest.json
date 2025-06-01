@@ -2,7 +2,7 @@
     "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
     "manifestVersion": "1.21",
     "version": "1.0.0",
-    "id": "${{TEAMS_APP_ID}}",
+    "id": "11111111-2222-3333-4444-555555555555",
     "developer": {
         "name": "My App, Inc.",
         "websiteUrl": "https://www.example.com",
@@ -14,25 +14,25 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "H3X${{APP_NAME_SUFFIX}}",
-        "full": "full name for H3X"
+        "short": "SIR${{APP_NAME_SUFFIX}}",
+        "full": "Hexperiment Labs SIR Control Interface"
     },
     "description": {
-        "short": "short description for H3X",
-        "full": "full description for H3X"
+        "short": "SIR environmental analysis interface",
+        "full": "Hexperiment Labs Super Intelligent Regulator (SIR) Control Interface for environmental analysis, simulation control, and AI assistant generation"
     },
     "accentColor": "#FFFFFF",
     "copilotAgents": {
         "customEngineAgents": [
             {
                 "type": "bot",
-                "id": "${{BOT_ID}}"
+                "id": "22222222-3333-4444-5555-666666666666"
             }
         ]
     },
     "bots": [
         {
-            "botId": "${{BOT_ID}}",
+            "botId": "22222222-3333-4444-5555-666666666666",
             "scopes": [
                 "copilot",
                 "personal",
@@ -52,8 +52,8 @@
                             "description": "How can you help me?"
                         },
                         {
-                            "title": "Forecast the weather tomorrow in San Francisco.",
-                            "description": "Can you forecast the tomorrow weather in San Francisco for me?"
+                            "title": "What is the status of the SIR system?",
+                            "description": "Can you provide the current status of the SIR Control Interface?"
                         }
                     ]
                 }

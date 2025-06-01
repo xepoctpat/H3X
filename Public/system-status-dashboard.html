@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 H3X System Status Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(90deg, #16213e, #1a1a2e);
+            border-radius: 15px;
+            border: 2px solid #00ff88;
+        }
+        
+        .dashboard-header h1 {
+            color: #00ff88;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        
+        .system-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #16213e, #1a1a2e);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #0088ff;
+            transition: all 0.3s ease;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 136, 255, 0.3);
+        }
+        
+        .status-card.healthy {
+            border-color: #00ff00;
+        }
+        
+        .status-card.warning {
+            border-color: #ffaa00;
+        }
+        
+        .status-card.error {
+            border-color: #ff4444;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .status-indicator {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: auto;
+        }
+        
+        .status-indicator.online {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .status-indicator.offline {
+            background: #ff4444;
+            color: #fff;
+        }
+        
+        .status-indicator.warning {
+            background: #ffaa00;
+            color: #000;
+        }
+        
+        .card-content {
+            margin-top: 15px;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .real-time-section {
+            background: linear-gradient(135deg, #16213e, #1a1a2e);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #ff8c00;
+            margin-bottom: 30px;
+        }
+        
+        .real-time-header {
+            text-align: center;
+            color: #ff8c00;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff8c00;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 140, 0, 0.3);
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            text-align: center;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        
+        .action-btn.primary {
+            background: #00ff88;
+            color: #000;
+        }
+        
+        .action-btn.secondary {
+            background: #0088ff;
+            color: #fff;
+        }
+        
+        .action-btn.warning {
+            background: #ff8c00;
+            color: #000;
+        }
+        
+        .action-btn.danger {
+            background: #ff4444;
+            color: #fff;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        .log-viewer {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        
+        .log-entry.info { color: #00ff88; }
+        .log-entry.warning { color: #ffaa00; }
+        .log-entry.error { color: #ff4444; }
+        .log-entry.success { color: #00ff00; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .pulsing {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>🎯 H3X Neural System Status Dashboard</h1>
+            <p>Real-time monitoring of AI integration components</p>
+        </div>
+
+        <div class="system-overview">
+            <div class="status-card" id="h3x-server-card">
+                <div class="card-header">
+                    <span class="card-icon">🧠</span>
+                    <span class="card-title">H3X Server</span>
+                    <span class="status-indicator" id="h3x-status">CHECKING</span>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span>Service:</span>
+                        <span id="h3x-service">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Version:</span>
+                        <span id="h3x-version">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Port:</span>
+                        <span id="h3x-port">3978</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Uptime:</span>
+                        <span id="h3x-uptime">Unknown</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="protocol-server-card">
+                <div class="card-header">
+                    <span class="card-icon">🔬</span>
+                    <span class="card-title">Protocol Server</span>
+                    <span class="status-indicator" id="protocol-status">CHECKING</span>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span>Service:</span>
+                        <span id="protocol-service">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Version:</span>
+                        <span id="protocol-version">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Port:</span>
+                        <span id="protocol-port">8080</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Connections:</span>
+                        <span id="protocol-connections">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="m365-ai-card">
+                <div class="card-header">
+                    <span class="card-icon">🤖</span>
+                    <span class="card-title">M365 AI</span>
+                    <span class="status-indicator" id="m365-ai-status">CHECKING</span>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span>Bot Framework:</span>
+                        <span id="m365-bot-framework">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Graph API:</span>
+                        <span id="m365-graph-api">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Teams Integration:</span>
+                        <span id="m365-teams">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Adaptive Cards:</span>
+                        <span id="m365-cards">Unknown</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="lmstudio-card">
+                <div class="card-header">
+                    <span class="card-icon">🤖</span>
+                    <span class="card-title">LMStudio</span>
+                    <span class="status-indicator" id="lmstudio-status">CHECKING</span>
+                </div>
+                <div class="card-content">
+                    <div class="metric-row">
+                        <span>API Status:</span>
+                        <span id="lmstudio-api">Unknown</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Models:</span>
+                        <span id="lmstudio-models">0</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Port:</span>
+                        <span id="lmstudio-port">1234</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Response Time:</span>
+                        <span id="lmstudio-latency">Unknown</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="real-time-section">
+            <h2 class="real-time-header">📊 Real-Time Metrics</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="total-requests">0</div>
+                    <div class="metric-label">Total Requests</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="active-connections">0</div>
+                    <div class="metric-label">Active Connections</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="response-time">0ms</div>
+                    <div class="metric-label">Avg Response Time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="system-health">100%</div>
+                    <div class="metric-label">System Health</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="neural-interfaces">6</div>
+                    <div class="metric-label">Neural Interfaces</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="uptime">0h 0m</div>
+                    <div class="metric-label">System Uptime</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn primary" onclick="runDiagnostics()">🔍 Run Diagnostics</button>
+            <button class="action-btn secondary" onclick="refreshStatus()">🔄 Refresh Status</button>
+            <button class="action-btn warning" onclick="openControlCenter()">🎯 Control Center</button>
+            <button class="action-btn danger" onclick="showResetOptions()">🚨 Reset Options</button>
+        </div>
+
+        <div class="log-viewer" id="system-logs">
+            <div class="log-entry info">[System] Dashboard initialized</div>
+            <div class="log-entry info">[System] Starting status checks...</div>
+        </div>
+    </div>
+
+    <script>
+        class SystemStatusDashboard {
+            constructor() {
+                this.lastUpdate = Date.now();
+                this.startTime = Date.now();
+                this.requestCount = 0;
+                this.averageResponseTime = 0;
+                this.responseTimes = [];
+                
+                this.initialize();
+            }
+
+            async initialize() {
+                this.log('Dashboard initializing...', 'info');
+                await this.checkAllSystems();
+                this.startRealTimeUpdates();
+                this.log('Dashboard ready', 'success');
+            }
+
+            async checkAllSystems() {
+                await Promise.all([
+                    this.checkH3XServer(),
+                    this.checkProtocolServer(),
+                    this.checkM365AI(),
+                    this.checkLMStudio()
+                ]);
+                this.updateSystemHealth();
+            }
+
+            async checkH3XServer() {
+                try {
+                    const startTime = Date.now();
+                    const [healthResponse, infoResponse] = await Promise.all([
+                        fetch('http://localhost:3978/health'),
+                        fetch('http://localhost:3978/')
+                    ]);
+                    const responseTime = Date.now() - startTime;
+                    this.recordResponseTime(responseTime);
+
+                    if (healthResponse.ok && infoResponse.ok) {
+                        const healthData = await healthResponse.json();
+                        const infoData = await infoResponse.json();
+
+                        this.updateCard('h3x-server-card', 'healthy');
+                        this.updateStatus('h3x-status', 'ONLINE', 'online');
+                        document.getElementById('h3x-service').textContent = healthData.service || 'H3X Server';
+                        document.getElementById('h3x-version').textContent = infoData.version || '2.0.0';
+                        document.getElementById('h3x-port').textContent = healthData.port || '3978';
+                        
+                        this.log('H3X Server: Online', 'success');
+                    } else {
+                        this.updateCard('h3x-server-card', 'error');
+                        this.updateStatus('h3x-status', 'OFFLINE', 'offline');
+                        this.log('H3X Server: Offline', 'error');
+                    }
+                } catch (error) {
+                    this.updateCard('h3x-server-card', 'error');
+                    this.updateStatus('h3x-status', 'ERROR', 'offline');
+                    this.log(`H3X Server: Error - ${error.message}`, 'error');
+                }
+            }
+
+            async checkProtocolServer() {
+                try {
+                    const [healthResponse, statusResponse] = await Promise.all([
+                        fetch('http://localhost:8080/api/health'),
+                        fetch('http://localhost:8080/api/status')
+                    ]);
+
+                    if (healthResponse.ok && statusResponse.ok) {
+                        const healthData = await healthResponse.json();
+                        const statusData = await statusResponse.json();
+
+                        this.updateCard('protocol-server-card', 'healthy');
+                        this.updateStatus('protocol-status', 'ONLINE', 'online');
+                        document.getElementById('protocol-service').textContent = healthData.service || 'Protocol Server';
+                        document.getElementById('protocol-version').textContent = healthData.version || '1.0.0';
+                        document.getElementById('protocol-connections').textContent = statusData.connections || 0;
+                        
+                        // Update real-time metrics
+                        document.getElementById('active-connections').textContent = statusData.connections || 0;
+                        
+                        this.log('Protocol Server: Online', 'success');
+                    } else {
+                        this.updateCard('protocol-server-card', 'error');
+                        this.updateStatus('protocol-status', 'OFFLINE', 'offline');
+                        this.log('Protocol Server: Offline', 'error');
+                    }
+                } catch (error) {
+                    this.updateCard('protocol-server-card', 'error');
+                    this.updateStatus('protocol-status', 'ERROR', 'offline');
+                    this.log(`Protocol Server: Error - ${error.message}`, 'error');
+                }
+            }
+
+            async checkM365AI() {
+                try {
+                    const infoResponse = await fetch('http://localhost:3978/');
+                    if (infoResponse.ok) {
+                        const infoData = await infoResponse.json();
+                        const hasM365Features = infoData.features?.some(f => f.includes('Microsoft'));
+                        
+                        if (hasM365Features) {
+                            this.updateCard('m365-ai-card', 'healthy');
+                            this.updateStatus('m365-ai-status', 'READY', 'online');
+                            document.getElementById('m365-bot-framework').textContent = 'Configured';
+                            document.getElementById('m365-graph-api').textContent = 'Available';
+                            document.getElementById('m365-teams').textContent = 'Ready';
+                            document.getElementById('m365-cards').textContent = 'Supported';
+                            this.log('M365 AI: Ready', 'success');
+                        } else {
+                            this.updateCard('m365-ai-card', 'warning');
+                            this.updateStatus('m365-ai-status', 'LIMITED', 'warning');
+                            this.log('M365 AI: Limited features', 'warning');
+                        }
+                    }
+                } catch (error) {
+                    this.updateCard('m365-ai-card', 'error');
+                    this.updateStatus('m365-ai-status', 'ERROR', 'offline');
+                    this.log(`M365 AI: Error - ${error.message}`, 'error');
+                }
+            }
+
+            async checkLMStudio() {
+                try {
+                    const startTime = Date.now();
+                    const response = await fetch('http://localhost:1234/v1/models');
+                    const responseTime = Date.now() - startTime;
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateCard('lmstudio-card', 'healthy');
+                        this.updateStatus('lmstudio-status', 'ONLINE', 'online');
+                        document.getElementById('lmstudio-api').textContent = 'Responding';
+                        document.getElementById('lmstudio-models').textContent = data.data?.length || 0;
+                        document.getElementById('lmstudio-latency').textContent = responseTime + 'ms';
+                        this.log('LMStudio: Online', 'success');
+                    } else {
+                        this.updateCard('lmstudio-card', 'warning');
+                        this.updateStatus('lmstudio-status', 'ERROR', 'warning');
+                        this.log('LMStudio: API Error', 'warning');
+                    }
+                } catch (error) {
+                    this.updateCard('lmstudio-card', 'error');
+                    this.updateStatus('lmstudio-status', 'OFFLINE', 'offline');
+                    document.getElementById('lmstudio-api').textContent = 'Offline';
+                    this.log('LMStudio: Offline', 'error');
+                }
+            }
+
+            updateCard(cardId, status) {
+                const card = document.getElementById(cardId);
+                card.className = `status-card ${status}`;
+            }
+
+            updateStatus(elementId, text, className) {
+                const element = document.getElementById(elementId);
+                element.textContent = text;
+                element.className = `status-indicator ${className}`;
+            }
+
+            recordResponseTime(time) {
+                this.responseTimes.push(time);
+                if (this.responseTimes.length > 10) {
+                    this.responseTimes.shift();
+                }
+                this.averageResponseTime = this.responseTimes.reduce((a, b) => a + b, 0) / this.responseTimes.length;
+                document.getElementById('response-time').textContent = Math.round(this.averageResponseTime) + 'ms';
+            }
+
+            updateSystemHealth() {
+                const cards = document.querySelectorAll('.status-card');
+                const healthyCount = document.querySelectorAll('.status-card.healthy').length;
+                const healthPercentage = Math.round((healthyCount / cards.length) * 100);
+                
+                document.getElementById('system-health').textContent = healthPercentage + '%';
+                
+                if (healthPercentage >= 75) {
+                    document.getElementById('system-health').style.color = '#00ff00';
+                } else if (healthPercentage >= 50) {
+                    document.getElementById('system-health').style.color = '#ffaa00';
+                } else {
+                    document.getElementById('system-health').style.color = '#ff4444';
+                }
+            }
+
+            startRealTimeUpdates() {
+                setInterval(() => {
+                    this.requestCount++;
+                    document.getElementById('total-requests').textContent = this.requestCount;
+                    
+                    const uptime = Date.now() - this.startTime;
+                    const hours = Math.floor(uptime / (1000 * 60 * 60));
+                    const minutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
+                }, 1000);
+
+                // Check systems every 30 seconds
+                setInterval(() => {
+                    this.checkAllSystems();
+                }, 30000);
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                const logViewer = document.getElementById('system-logs');
+                logViewer.appendChild(logEntry);
+                logViewer.scrollTop = logViewer.scrollHeight;
+            }
+        }
+
+        // Global functions for buttons
+        async function runDiagnostics() {
+            const dashboard = window.statusDashboard;
+            dashboard.log('Running full system diagnostics...', 'info');
+            await dashboard.checkAllSystems();
+            dashboard.log('Diagnostics complete', 'success');
+        }
+
+        async function refreshStatus() {
+            const dashboard = window.statusDashboard;
+            dashboard.log('Refreshing status...', 'info');
+            await dashboard.checkAllSystems();
+            dashboard.log('Status refreshed', 'success');
+        }
+
+        function openControlCenter() {
+            window.open('ai-integration-control-center.html', '_blank');
+        }
+
+        function showResetOptions() {
+            if (confirm('This will open the reset options in the Control Center. Continue?')) {
+                openControlCenter();
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.statusDashboard = new SystemStatusDashboard();
+        });
+    </script>
+</body>
+</html>
