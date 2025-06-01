@@ -67,8 +67,14 @@
     "git:commit": "node scripts/git-pr-automation.js commit",
     "git:quick-pr": "node scripts/git-pr-automation.js quick-pr",
     "git:interactive": "node scripts/git-pr-automation.js interactive",
-    "git:changelog": "node scripts/git-pr-automation.js changelog",
-    "git:pr": "node scripts/git-pr-automation.js pr"
+    "git:changelog": "node scripts/git-pr-automation.js changelog",    "git:pr": "node scripts/git-pr-automation.js pr",
+    "babillon:dev": "docker-compose -f docker-compose.babillon.yml up -d",
+    "babillon:dev:build": "docker-compose -f docker-compose.babillon.yml up -d --build",
+    "babillon:down": "docker-compose -f docker-compose.babillon.yml down",
+    "babillon:logs": "docker-compose -f docker-compose.babillon.yml logs -f",
+    "babillon:web": "docker-compose -f docker-compose.babillon.yml up -d babillon-web",
+    "babillon:api": "docker-compose -f docker-compose.babillon.yml up -d babillon-api",
+    "babillon:agents": "docker-compose -f docker-compose.babillon.yml up -d babillon-agents"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,35 @@
+# Dockerfile for Babillon Web Interface
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy application files
+COPY Public/ ./public/
+COPY index.modular.html ./
+COPY proof/ ./proof/
+
+# Create a simple Express server for serving static files
+RUN echo 'const express = require("express"); \
+const path = require("path"); \
+const app = express(); \
+const PORT = process.env.PORT || 3000; \
+\
+app.use("/Public", express.static("public")); \
+app.use("/proof", express.static("proof")); \
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.modular.html"))); \
+\
+app.listen(PORT, "0.0.0.0", () => { \
+  console.log(`Babillon web interface running on port ${PORT}`); \
+});' > server.js
+
+# Expose port
+EXPOSE 3000
+
+# Start the server
+CMD ["node", "server.js"]

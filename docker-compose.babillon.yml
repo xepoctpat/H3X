@@ -1,0 +1,93 @@
+# Docker Configuration for Babillon Branch
+
+version: '3.8'
+
+services:
+  # Main web server for the agentic interface
+  babillon-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./Public:/app/public
+      - ./proof:/app/proof
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    networks:
+      - babillon-network
+
+  # Backend API server for data persistence
+  babillon-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon-api
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./proof:/app/data/proof
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATA_PATH=/app/data
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-db
+
+  # Database for persistent storage
+  babillon-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=babillon
+      - POSTGRES_USER=babillon_user
+      - POSTGRES_PASSWORD=babillon_pass
+    volumes:
+      - babillon_db_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - babillon-network
+
+  # Redis for real-time features and caching
+  babillon-cache:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - babillon_cache_data:/data
+    networks:
+      - babillon-network
+
+  # Agent controller service
+  babillon-agents:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon-agents
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./agents:/app/agents
+      - ./proof:/app/data/proof
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - API_URL=http://babillon-api:3001
+      - WEB_URL=http://babillon-web:3000
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-api
+      - babillon-cache
+
+networks:
+  babillon-network:
+    driver: bridge
+
+volumes:
+  babillon_db_data:
+  babillon_cache_data:
