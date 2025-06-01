@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>H3X Modular Agentic Interface</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/proof-editor.css">
+  <style>    .agentic-container { max-width: 1200px; margin: 2rem auto; background: #232837; border-radius: 10px; box-shadow: 0 2px 16px #0008; padding: 2rem; }
+    .flex-row { display: flex; gap: 2rem; }
+    .flex-col { display: flex; flex-direction: column; gap: 1rem; }
+    .panel { background: #181c24; border-radius: 8px; padding: 1rem; flex: 1 1 0; min-width: 320px; }
+    .status-section { margin-top: 2rem; }
+    #status-log { min-height: 80px; background: #10131a; color: #7fd1b9; border-radius: 6px; padding: 0.5rem; font-size: 1rem; overflow-y: auto; }
+  </style>
+  <script src="js/sirHost.js"></script>
+</head>
+<body>
+  <div class="agentic-container">
+    <h1>H3X Modular Agentic Interface</h1>
+    <div class="flex-row">
+      <div class="panel">
+        <h2>Hex Grid</h2>
+        <svg id="hex-svg" width="400" height="400"></svg>
+      </div>
+      <div class="panel">
+        <h2>Traid Editor</h2>
+        <svg id="traid-svg" width="400" height="400"></svg>
+      </div>
+    </div>    <div class="flex-col status-section">
+      <div>
+        <h2>Status / Log</h2>
+        <div id="status-log"></div>
+      </div>
+    </div>
+  </div>
+  <script src="js/hex-grid.js"></script>
+  <script src="js/traid-editor.js"></script>
+  <script src="js/agentic-ui.js"></script>
+</body>
+</html>
