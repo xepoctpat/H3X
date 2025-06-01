@@ -225,7 +225,7 @@ services:
       - MONGO_INITDB_DATABASE=h3x
     volumes:
       - mongodb_data:/data/db
-      - ./flups-integration/docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - hex-flup-network
     healthcheck:
@@ -255,7 +255,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./flups-integration/docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'

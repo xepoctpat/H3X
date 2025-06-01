@@ -2,16 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "address": "TCP/IP address of process to be debugged",
-            "localRoot": "${workspaceFolder}",
-            "name": "docker",
-            "port": 9229,
-            "remoteRoot": "Absolute path to the remote directory containing the program",
+            "name": "Docker: Attach to H3X Server",
+            "type": "node",
             "request": "attach",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node"
+            "port": 9239,
+            "restart": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "presentation": {
+                "group": "docker",
+                "order": 1
+            },
+            "internalConsoleOptions": "neverOpen"
         },
         {
             "name": "Debug H3X Local Server",
@@ -25,106 +27,7 @@
             "args": [],
             "presentation": {
                 "group": "local",
-                "order": 0
-            }
-        },
-        {
-            "name": "Debug H3X Local Server (Attach)",
-            "type": "node",
-            "request": "attach",
-            "port": 9239,
-            "restart": true,
-            "presentation": {
-                "group": "local",
                 "order": 1
-            },
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug H3X Local Server (Manual)",
-            "type": "node",
-            "request": "attach",
-            "port": 9239,
-            "restart": true,
-            "presentation": {
-                "group": "local",
-                "order": 1
-            },
-            "internalConsoleOptions": "neverOpen",
-            "env": {
-                "MANUAL_MODE": "true"
-            }
-        },
-        {
-            "name": "Debug H3X Local Server (Auto)",
-            "type": "node",
-            "request": "attach",
-            "port": 9239,
-            "restart": true,
-            "presentation": {
-                "group": "local",
-                "order": 1
-            },
-            "internalConsoleOptions": "neverOpen",
-            "env": {
-    }
-},
-{
-        {
-            "name": "Debug H3X Local Server (No OpenAI, Manual)",
-            "type": "node",
-            "request": "attach",
-            "port": 9239,
-            "restart": true,
-            "presentation": {
-                "group": "local",
-                "order": 1
-            },
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Run LM Studio Interface",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/archive/obsolete-backup-2025-05-28-t19-24-42/Start-Lmstudio.js",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "runtimeExecutable": "node",
-            "env": {},
-            "args": [],
-            "presentation": {
-                "group": "local",
-                "order": 2
-            }
-        },
-        {
-            "name": "Run LM Studio Interface (Manual)",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/archive/obsolete-backup-2025-05-28-t19-24-42/Start-Lmstudio.js",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "runtimeExecutable": "node",
-            "env": {},
-            "args": ["--manual"],
-            "presentation": {
-                "group": "local",
-                "order": 3
-            }
-        },
-        {
-            "name": "Run LM Studio Interface (Auto)",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/archive/obsolete-backup-2025-05-28-t19-24-42/Start-Lmstudio.js",
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "runtimeExecutable": "node",
-            "env": {},
-            "args": ["--auto"],
-            "presentation": {
-                "group": "local",
-                "order": 4
             }
         },
         {
@@ -135,9 +38,24 @@
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "runtimeExecutable": "node",
+            "env": {
+                "NO_OPENAI": "true"
+            },
             "presentation": {
                 "group": "local",
-                "order": 5
+                "order": 2
+            }
+        },
+        {
+            "name": "Debug Protocol Server",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/hexperiment-system-protocol",
+            "cwd": "${workspaceFolder}/hexperiment-system-protocol",
+            "presentation": {
+                "group": "local",
+                "order": 3
             }
         }
     ]

@@ -1,5 +1,5 @@
 // Real H3X Backend Integration
-import type { H3XSystemStatus, H3XCommandResult } from '../types/h3x.js';
+import type { H3XSystemStatus, H3XCommandResult } from '../types/h3x.ts';
 
 export class H3XApiService {
   private baseUrl: string;

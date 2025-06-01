@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { beforeAll, afterEach, afterAll, vi } from 'vitest';
-import { setupGlobals } from './test-globals';
+import { setupGlobals } from './test-globals.ts';
 
 // Setup global test environment
 beforeAll(() => {

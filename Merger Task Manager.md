@@ -30,7 +30,8 @@ Last updated: 2025-06-01
   - [ ] Resolve naming conflicts and duplicates.
   - [ ] Update relative paths in code and Dockerfiles.
 
-- [ ] **Docker Compose Consolidation** _(Automate merging and validation)_  - [ ] Combine `docker-compose.yml` files into a single unified file.
+- [ ] **Docker Compose Consolidation** _(Automate merging and validation)_
+  - [ ] Combine `docker-compose.yml` files into a single unified file.
   - [ ] Ensure all services (`h3x-frontend`, `h3x-backend`,
     `h3x-websocket`, `mongodb`, `redis`, `nginx`, `prometheus`, `grafana`,
     `protocol-server`, `h3x-server`, `lmstudio`, `response-processor`) are

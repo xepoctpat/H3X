@@ -2045,7 +2045,7 @@ Use the feature request template:
 
 \`\`\`markdown
 **Feature Description**
-A clear and concise description of the feature
+Clear description of the feature
 
 **Use Case**
 Why is this feature needed?
@@ -2450,35 +2450,1291 @@ Thank you for contributing to ${projectName}! 🚀
 `;
   }
 
-  // Temporary simplified methods to fix syntax errors
+  /**
+   * Generate project changelog
+   */
   generateChangelog(projectName = 'H3X-fLups', options = {}) {
     const version = options.version || '1.0.0';
     const date = new Date().toISOString().split('T')[0];
-    return `# Changelog\n\nAll notable changes to ${projectName}.\n\n## [${version}] - ${date}\n\n### Added\n- Enhanced documentation generation\n- Virtual Taskmaster integration\n\n*Last updated: ${date}*\n`;
+    
+    return `# Changelog
+
+All notable changes to ${projectName} will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Enhanced documentation generation system
+- Virtual Taskmaster integration
+- Development automation workflows
+- Comprehensive API reference documentation
+
+## [${version}] - ${date}
+
+### Added
+- Initial release of ${projectName}
+- Core H3X Code Generator functionality
+- Docker containerization support
+- Virtual Taskmaster integration
+- Multi-environment deployment support
+- Automated testing framework
+- Development workflow automation
+
+### Changed
+- Improved code generation algorithms
+- Enhanced documentation templates
+- Optimized Docker configurations
+
+### Fixed
+- Documentation generation pipeline
+- Environment setup automation
+- Dependency management issues
+
+### Security
+- Implemented secure API authentication
+- Added environment variable protection
+- Enhanced container security configurations
+
+## [0.1.0] - Initial Development
+
+### Added
+- Project foundation and architecture
+- Basic code generation capabilities
+- Initial documentation structure
+- Development environment setup
+
+---
+
+## Release Notes
+
+### ${version} Highlights
+- **Enhanced Documentation**: Comprehensive auto-generated docs
+- **Virtual Taskmaster**: Advanced task management and monitoring
+- **Automation**: Full development workflow automation
+- **Docker Support**: Multi-environment containerization
+- **API Reference**: Complete API documentation with examples
+
+### Upgrade Instructions
+1. Update dependencies: \`npm install\`
+2. Run environment check: \`npm run setup-check\`
+3. Restart services: \`npm run env:dev\`
+4. Generate new docs: \`npm run docs:generate\`
+
+### Breaking Changes
+- Updated API endpoints (see MIGRATION.md)
+- Modified configuration structure
+- Changed environment variable names
+
+### Migration Guide
+See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions.
+`;
   }
 
+  /**
+   * Generate troubleshooting documentation
+   */
   generateTroubleshootingDoc(projectName = 'H3X-fLups', options = {}) {
-    return `# Troubleshooting Guide\n\nCommon issues and solutions for ${projectName}.\n\n## Installation Issues\n\n### Node.js Version\nEnsure Node.js 18+ is installed.\n\n### Docker Issues\nRun: docker system prune\n\n*Last updated: ${new Date().toISOString().split('T')[0]}*\n`;
+    return `# Troubleshooting Guide
+
+Common issues and solutions for ${projectName}.
+
+## Table of Contents
+- [Installation Issues](#installation-issues)
+- [Docker Problems](#docker-problems)
+- [Environment Setup](#environment-setup)
+- [API Issues](#api-issues)
+- [Performance Problems](#performance-problems)
+- [Development Workflow](#development-workflow)
+- [Getting Help](#getting-help)
+
+## Installation Issues
+
+### Node.js Version Compatibility
+**Problem**: \`npm install\` fails with version errors
+**Solution**:
+\`\`\`bash
+# Check Node.js version
+node --version
+
+# Install required version (18.x or higher)
+nvm install 18
+nvm use 18
+\`\`\`
+
+### Dependency Conflicts
+**Problem**: Package dependency conflicts
+**Solution**:
+\`\`\`bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and package-lock.json
+rm -rf node_modules package-lock.json
+
+# Reinstall dependencies
+npm install
+\`\`\`
+
+## Docker Problems
+
+### Container Build Failures
+**Problem**: Docker build fails or containers won't start
+**Solution**:
+\`\`\`bash
+# Check Docker status
+docker --version
+docker-compose --version
+
+# Clean Docker environment
+docker system prune -f
+docker-compose down -v
+
+# Rebuild containers
+docker-compose build --no-cache
+docker-compose up -d
+\`\`\`
+
+### Port Conflicts
+**Problem**: Port already in use errors
+**Solution**:
+\`\`\`bash
+# Check port usage
+netstat -tulpn | grep :3000
+netstat -tulpn | grep :8080
+
+# Stop conflicting processes
+docker-compose down
+lsof -ti:3000 | xargs kill -9
+\`\`\`
+
+### Volume Mount Issues
+**Problem**: File changes not reflecting in container
+**Solution**:
+\`\`\`bash
+# Check volume mounts
+docker-compose config
+
+# Restart with fresh volumes
+docker-compose down -v
+docker-compose up -d
+\`\`\`
+
+## Environment Setup
+
+### Environment Variables Missing
+**Problem**: Application fails to start due to missing env vars
+**Solution**:
+\`\`\`bash
+# Copy environment template
+cp .env.example .env
+
+# Edit environment variables
+nano .env
+
+# Verify environment
+npm run setup-check
+\`\`\`
+
+### Path Configuration Issues
+**Problem**: Modules or files not found
+**Solution**:
+\`\`\`bash
+# Check project structure
+ls -la src/
+ls -la scripts/
+
+# Verify paths in configuration
+cat H3X-config.json
+\`\`\`
+
+## API Issues
+
+### Authentication Failures
+**Problem**: API requests return 401/403 errors
+**Solution**:
+\`\`\`bash
+# Check API keys
+echo $API_KEY
+
+# Verify authentication headers
+curl -H "Authorization: Bearer $API_KEY" http://localhost:3000/api/health
+\`\`\`
+
+### CORS Errors
+**Problem**: Cross-origin requests blocked
+**Solution**:
+- Check CORS configuration in server settings
+- Verify allowed origins match client URL
+- Update API base URL in client configuration
+
+### Rate Limiting
+**Problem**: Too many requests error (429)
+**Solution**:
+- Implement request throttling
+- Check rate limit headers
+- Use exponential backoff for retries
+
+## Performance Problems
+
+### Slow Build Times
+**Problem**: Development builds take too long
+**Solution**:
+\`\`\`bash
+# Enable build caching
+export DOCKER_BUILDKIT=1
+
+# Use development compose file
+docker-compose -f docker-compose.dev.yml up
+
+# Optimize dependencies
+npm audit
+npm update
+\`\`\`
+
+### Memory Issues
+**Problem**: Out of memory errors
+**Solution**:
+\`\`\`bash
+# Increase Node.js memory limit
+export NODE_OPTIONS="--max-old-space-size=4096"
+
+# Check memory usage
+docker stats
+
+# Restart services
+docker-compose restart
+\`\`\`
+
+## Development Workflow
+
+### Git Issues
+**Problem**: Merge conflicts or commit issues
+**Solution**:
+\`\`\`bash
+# Check git status
+git status
+
+# Resolve conflicts
+git mergetool
+
+# Reset if needed
+git reset --hard HEAD~1
+\`\`\`
+
+### Hot Reload Not Working
+**Problem**: Changes not reflecting in development
+**Solution**:
+\`\`\`bash
+# Check file watching
+npm run dev
+
+# Restart development server
+npm run dev:restart
+
+# Clear cache
+npm run dev:clean
+\`\`\`
+
+## Common Error Messages
+
+### \`EADDRINUSE\` - Port in use
+\`\`\`bash
+# Find and kill process using port
+lsof -ti:3000 | xargs kill -9
+\`\`\`
+
+### \`MODULE_NOT_FOUND\`
+\`\`\`bash
+# Reinstall dependencies
+npm ci
+\`\`\`
+
+### \`Permission denied\`
+\`\`\`bash
+# Fix file permissions
+chmod +x scripts/*.sh
+sudo chown -R $USER:$USER .
+\`\`\`
+
+## Getting Help
+
+### Debug Information
+When reporting issues, include:
+\`\`\`bash
+# System information
+node --version
+npm --version
+docker --version
+docker-compose --version
+
+# Project status
+npm run setup-check
+
+# Recent logs
+docker-compose logs --tail=50
+\`\`\`
+
+### Support Channels
+- **GitHub Issues**: Report bugs and feature requests
+- **Documentation**: Check the full documentation suite
+- **Discord**: Join our community for real-time help
+- **Email**: Contact support@hexperiment-labs.com
+
+### Creating Bug Reports
+Include:
+1. Steps to reproduce
+2. Expected vs actual behavior
+3. Environment details
+4. Error logs and screenshots
+5. Minimal reproduction case
+
+---
+
+*Last updated: ${new Date().toISOString().split('T')[0]}*
+`;
   }
 
+  /**
+   * Generate environment setup documentation
+   */
   generateEnvironmentSetupDoc(projectName = 'H3X-fLups', options = {}) {
-    return `# Environment Setup\n\nSetup guide for ${projectName}.\n\n## Prerequisites\n- Node.js 18+\n- Docker 20+\n- Git 2.30+\n\n## Installation\n1. Clone repository\n2. Run: npm install\n3. Start: npm run env:dev\n\n*Last updated: ${new Date().toISOString().split('T')[0]}*\n`;
+    return `# Environment Setup Guide
+
+Complete guide for setting up ${projectName} development environment.
+
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Configuration](#environment-configuration)
+- [Development Setup](#development-setup)
+- [Production Setup](#production-setup)
+- [Verification](#verification)
+- [Troubleshooting](#troubleshooting)
+
+## Prerequisites
+
+### System Requirements
+- **Node.js**: v18.0.0 or higher
+- **npm**: v8.0.0 or higher
+- **Docker**: v20.0.0 or higher
+- **Docker Compose**: v2.0.0 or higher
+- **Git**: v2.30.0 or higher
+
+### Platform Support
+- **Windows**: 10/11 with WSL2
+- **macOS**: 10.15 or higher
+- **Linux**: Ubuntu 20.04+, CentOS 8+
+
+### Hardware Requirements
+- **RAM**: 8GB minimum, 16GB recommended
+- **Storage**: 10GB free space
+- **CPU**: 4 cores recommended
+
+## Installation
+
+### 1. Clone Repository
+\`\`\`bash
+git clone https://github.com/your-org/${projectName}.git
+cd ${projectName}
+\`\`\`
+
+### 2. Install Dependencies
+\`\`\`bash
+# Install Node.js dependencies
+npm install
+
+# Install global tools (optional)
+npm install -g nodemon pm2
+\`\`\`
+
+### 3. Docker Setup
+\`\`\`bash
+# Pull required images
+docker-compose pull
+
+# Build custom images
+docker-compose build
+\`\`\`
+
+## Environment Configuration
+
+### 1. Environment Files
+\`\`\`bash
+# Copy environment template
+cp .env.example .env
+
+# Edit configuration
+nano .env
+\`\`\`
+
+### 2. Required Environment Variables
+\`\`\`bash
+# Application Settings
+NODE_ENV=development
+PORT=3000
+HOST=localhost
+
+# Database Configuration
+DATABASE_URL=postgresql://user:pass@localhost:5432/h3x_dev
+REDIS_URL=redis://localhost:6379
+
+# API Keys
+API_KEY=your-api-key-here
+SECRET_KEY=your-secret-key-here
+
+# External Services
+LM_STUDIO_URL=http://localhost:1234
+OPENAI_API_KEY=your-openai-key (optional)
+
+# Docker Configuration
+COMPOSE_PROJECT_NAME=h3x-flups
+DOCKER_BUILDKIT=1
+\`\`\`
+
+### 3. Configuration Files
+\`\`\`bash
+# H3X Configuration
+cp H3Xbase-config.json H3X-config.json
+
+# Flup Merger Configuration
+cp flup-merger-config.example.json flup-merger-config.json
+\`\`\`
+
+## Development Setup
+
+### 1. Start Development Environment
+\`\`\`bash
+# Start all services
+npm run env:dev
+
+# Start H3X server only
+npm run standalone
+
+# Start with LM Studio integration
+npm run lmstudio
+\`\`\`
+
+### 2. Development Tools
+\`\`\`bash
+# Install development extensions
+npm run dev:install-tools
+
+# Setup Git hooks
+npm run dev:setup-hooks
+
+# Configure IDE
+npm run dev:setup-vscode
+\`\`\`
+
+### 3. Database Setup
+\`\`\`bash
+# Run migrations
+npm run db:migrate
+
+# Seed development data
+npm run db:seed
+
+# Reset database (if needed)
+npm run db:reset
+\`\`\`
+
+## Production Setup
+
+### 1. Environment Preparation
+\`\`\`bash
+# Set production environment
+export NODE_ENV=production
+
+# Copy production config
+cp .env.production .env
+\`\`\`
+
+### 2. Build Application
+\`\`\`bash
+# Build for production
+npm run build
+
+# Optimize Docker images
+docker-compose -f docker-compose.prod.yml build
+\`\`\`
+
+### 3. Deploy Services
+\`\`\`bash
+# Start production services
+docker-compose -f docker-compose.prod.yml up -d
+
+# Scale services
+docker-compose -f docker-compose.prod.yml up -d --scale h3x-server=3
+\`\`\`
+
+## Environment-Specific Configurations
+
+### Development
+\`\`\`json
+{
+  "name": "development",
+  "port": 3000,
+  "debug": true,
+  "hotReload": true,
+  "logging": "debug",
+  "database": {
+    "ssl": false,
+    "pool": { "min": 2, "max": 10 }
+  }
+}
+\`\`\`
+
+### Staging
+\`\`\`json
+{
+  "name": "staging",
+  "port": 8080,
+  "debug": false,
+  "hotReload": false,
+  "logging": "info",
+  "database": {
+    "ssl": true,
+    "pool": { "min": 5, "max": 20 }
+  }
+}
+\`\`\`
+
+### Production
+\`\`\`json
+{
+  "name": "production",
+  "port": 80,
+  "debug": false,
+  "hotReload": false,
+  "logging": "error",
+  "database": {
+    "ssl": true,
+    "pool": { "min": 10, "max": 50 }
+  }
+}
+\`\`\`
+
+## Verification
+
+### 1. System Check
+\`\`\`bash
+# Run comprehensive setup check
+npm run setup-check
+
+# Check individual components
+npm run check:node
+npm run check:docker
+npm run check:database
+\`\`\`
+
+### 2. Health Checks
+\`\`\`bash
+# Application health
+curl http://localhost:3000/health
+
+# Database connectivity
+npm run health:db
+
+# External services
+npm run health:external
+\`\`\`
+
+### 3. Run Tests
+\`\`\`bash
+# Unit tests
+npm run test
+
+# Integration tests
+npm run test:integration
+
+# Full test suite
+npm run test:all
+\`\`\`
+
+## IDE Configuration
+
+### VS Code
+\`\`\`json
+// .vscode/settings.json
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  }
+}
+\`\`\`
+
+### Recommended Extensions
+- ES6/ES7 Snippets
+- Prettier
+- ESLint
+- Docker
+- GitLens
+- Auto Rename Tag
+
+## Environment Scripts
+
+### Quick Setup
+\`\`\`bash
+#!/bin/bash
+# setup-env.sh
+
+echo "Setting up ${projectName} environment..."
+
+# Install dependencies
+npm ci
+
+# Setup environment
+cp .env.example .env
+
+# Start services
+docker-compose up -d
+
+# Run setup check
+npm run setup-check
+
+echo "Environment setup complete!"
+\`\`\`
+
+### Reset Environment
+\`\`\`bash
+#!/bin/bash
+# reset-env.sh
+
+echo "Resetting environment..."
+
+# Stop services
+docker-compose down -v
+
+# Clean dependencies
+rm -rf node_modules package-lock.json
+
+# Reinstall
+npm install
+
+# Restart
+docker-compose up -d
+
+echo "Environment reset complete!"
+\`\`\`
+
+## Troubleshooting
+
+### Common Issues
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions.
+
+### Environment Variables Not Loading
+\`\`\`bash
+# Check file location
+ls -la .env
+
+# Verify syntax
+npm run env:validate
+
+# Restart services
+npm run env:restart
+\`\`\`
+
+### Docker Permission Issues
+\`\`\`bash
+# Add user to docker group (Linux)
+sudo usermod -aG docker $USER
+
+# Restart Docker service
+sudo systemctl restart docker
+\`\`\`
+
+---
+
+*Last updated: ${new Date().toISOString().split('T')[0]}*
+`;
   }
 
+  /**
+   * Generate automation documentation
+   */
   generateAutomationDoc(projectName = 'H3X-fLups', options = {}) {
-    return `# Automation Documentation\n\nAutomation guide for ${projectName}.\n\n## Development Automation\n- Virtual Taskmaster integration\n- Automated workflows\n- Task scheduling\n\n## Scripts\n- npm run dev:start\n- npm run dev:automate\n\n*Last updated: ${new Date().toISOString().split('T')[0]}*\n`;
+    return `# Automation Documentation
+
+Comprehensive guide to ${projectName} automation systems and workflows.
+
+## Table of Contents
+- [Overview](#overview)
+- [Development Automation](#development-automation)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Task Automation](#task-automation)
+- [Documentation Generation](#documentation-generation)
+- [Deployment Automation](#deployment-automation)
+- [Monitoring and Alerting](#monitoring-and-alerting)
+- [Custom Automation](#custom-automation)
+
+## Overview
+
+${projectName} includes a comprehensive automation framework that handles:
+- Development workflow automation
+- Continuous integration and deployment
+- Documentation generation
+- Testing and quality assurance
+- Environment management
+- Performance monitoring
+
+## Development Automation
+
+### Virtual Taskmaster Integration
+The Virtual Taskmaster provides intelligent task management and automation:
+
+\`\`\`javascript
+// Virtual Taskmaster features
+const taskmaster = new VirtualTaskmaster({
+  synapseMonitoring: true,
+  taskScheduling: true,
+  progressTracking: true,
+  anomalyDetection: true
+});
+
+// Automated task execution
+taskmaster.scheduleTask({
+  name: 'Code Generation',
+  interval: '0 */6 * * *', // Every 6 hours
+  action: 'generateCode',
+  priority: 'high'
+});
+\`\`\`
+
+### Development Workflow Scripts
+\`\`\`bash
+# Start development environment
+npm run dev:start
+
+# Run development automation
+npm run dev:automate
+
+# Generate development reports
+npm run dev:report
+
+# Cleanup development environment
+npm run dev:cleanup
+\`\`\`
+
+### Automated Code Generation
+\`\`\`javascript
+// H3X Code Generator automation
+const generator = new H3XCodeGenerator();
+
+// Automated generation pipeline
+generator.automateGeneration({
+  schedule: 'daily',
+  targets: ['api', 'docs', 'tests'],
+  quality: 'high',
+  validation: true
+});
+\`\`\`
+
+## CI/CD Pipeline
+
+### GitHub Actions Workflow
+\`\`\`yaml
+# .github/workflows/main.yml
+name: H3X-fLups CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run test:all
+      - run: npm run lint
+      - run: npm run security:check
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker build -t h3x-flups .
+      - run: docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - run: npm run deploy:production
+\`\`\`
+
+### Deployment Pipeline
+\`\`\`bash
+# Automated deployment script
+#!/bin/bash
+
+echo "Starting deployment pipeline..."
+
+# Pre-deployment checks
+npm run pre-deploy:check
+
+# Build application
+npm run build
+
+# Run security scan
+npm run security:scan
+
+# Deploy to staging
+npm run deploy:staging
+
+# Run smoke tests
+npm run test:smoke
+
+# Deploy to production
+npm run deploy:production
+
+# Post-deployment verification
+npm run post-deploy:verify
+
+echo "Deployment complete!"
+\`\`\`
+
+## Task Automation
+
+### Scheduled Tasks
+\`\`\`javascript
+// Task scheduler configuration
+const scheduler = {
+  tasks: [
+    {
+      name: 'Daily Documentation Update',
+      schedule: '0 6 * * *',
+      action: 'generateDocs',
+      enabled: true
+    },
+    {
+      name: 'Weekly Performance Report',
+      schedule: '0 9 * * 1',
+      action: 'generateReport',
+      enabled: true
+    },
+    {
+      name: 'Monthly Security Audit',
+      schedule: '0 10 1 * *',
+      action: 'securityAudit',
+      enabled: true
+    }
+  ]
+};
+\`\`\`
+
+### Automated Testing
+\`\`\`bash
+# Continuous testing automation
+npm run test:watch        # Watch mode testing
+npm run test:coverage     # Coverage reporting
+npm run test:e2e:auto     # Automated E2E tests
+npm run test:performance  # Performance testing
+npm run test:security     # Security testing
+\`\`\`
+
+## Documentation Generation
+
+### Automated Documentation Pipeline
+\`\`\`javascript
+// Documentation automation
+const docGenerator = new H3XDevAutomation();
+
+// Full documentation suite generation
+docGenerator.generateDocumentationSuite({
+  output: 'docs/generated',
+  format: ['markdown', 'html', 'pdf'],
+  includeApiDocs: true,
+  includeArchitecture: true,
+  includeTutorials: true
+});
+\`\`\`
+
+### Documentation Workflows
+\`\`\`bash
+# Generate all documentation
+npm run docs:generate
+
+# Update API documentation
+npm run docs:api
+
+# Generate architecture diagrams
+npm run docs:diagrams
+
+# Create deployment guides
+npm run docs:deployment
+
+# Publish documentation
+npm run docs:publish
+\`\`\`
+
+## Deployment Automation
+
+### Multi-Environment Deployment
+\`\`\`javascript
+// Environment-specific deployment
+const deployer = new DeploymentAutomation();
+
+// Automated deployment to multiple environments
+deployer.deployToEnvironments({
+  environments: ['staging', 'production'],
+  strategy: 'blue-green',
+  rollback: 'automatic',
+  healthChecks: true
+});
+\`\`\`
+
+### Infrastructure as Code
+\`\`\`yaml
+# Docker Compose automation
+version: '3.8'
+services:
+  h3x-server:
+    build: .
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        order: start-first
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+\`\`\`
+
+## Monitoring and Alerting
+
+### Health Check Automation
+\`\`\`javascript
+// Automated health monitoring
+const monitor = new HealthMonitor({
+  checkInterval: 30000, // 30 seconds
+  alertThreshold: 3,    // Alert after 3 failures
+  autoRestart: true,    // Auto-restart on failure
+  notifications: ['email', 'slack']
+});
+
+monitor.watchServices([
+  'h3x-server',
+  'database',
+  'redis',
+  'lm-studio'
+]);
+\`\`\`
+
+### Performance Monitoring
+\`\`\`bash
+# Automated performance monitoring
+npm run monitor:performance
+npm run monitor:memory
+npm run monitor:cpu
+npm run monitor:network
+\`\`\`
+
+## Custom Automation
+
+### Creating Custom Automations
+\`\`\`javascript
+// Custom automation example
+class CustomAutomation extends H3XDevAutomation {
+  async customWorkflow() {
+    // Custom automation logic
+    await this.executeTask('preprocess');
+    await this.executeTask('generate');
+    await this.executeTask('validate');
+    await this.executeTask('deploy');
   }
 
+  async scheduleCustomTask(taskConfig) {
+    return this.scheduleTask({
+      name: taskConfig.name,
+      interval: taskConfig.interval,
+      action: this.customWorkflow.bind(this),
+      priority: taskConfig.priority || 'medium'
+    });
+  }
+}
+\`\`\`
+
+### Automation Configuration
+\`\`\`json
+{
+  "automation": {
+    "enabled": true,
+    "environment": "development",
+    "tasks": {
+      "codeGeneration": {
+        "enabled": true,
+        "schedule": "0 */6 * * *",
+        "timeout": 300000
+      },
+      "documentation": {
+        "enabled": true,
+        "schedule": "0 2 * * *",
+        "targets": ["api", "guides", "tutorials"]
+      },
+      "testing": {
+        "enabled": true,
+        "schedule": "0 */4 * * *",
+        "types": ["unit", "integration"]
+      }
+    },
+    "notifications": {
+      "email": "dev@hexperiment-labs.com",
+      "slack": "#h3x-automation",
+      "onSuccess": false,
+      "onFailure": true
+    }
+  }
+}
+\`\`\`
+
+## Automation Scripts
+
+### Daily Automation
+\`\`\`bash
+#!/bin/bash
+# scripts/daily-automation.sh
+
+echo "Running daily automation tasks..."
+
+# Update dependencies
+npm audit fix
+
+# Generate documentation
+npm run docs:generate
+
+# Run full test suite
+npm run test:all
+
+# Update performance metrics
+npm run metrics:update
+
+# Clean temporary files
+npm run cleanup
+
+echo "Daily automation complete!"
+\`\`\`
+
+### Weekly Automation
+\`\`\`bash
+#!/bin/bash
+# scripts/weekly-automation.sh
+
+echo "Running weekly automation tasks..."
+
+# Security audit
+npm run security:audit
+
+# Performance analysis
+npm run performance:analyze
+
+# Documentation review
+npm run docs:review
+
+# Backup generation
+npm run backup:create
+
+echo "Weekly automation complete!"
+\`\`\`
+
+## Automation Monitoring
+
+### Dashboard Integration
+The automation system integrates with the development dashboard for real-time monitoring:
+
+- Task execution status
+- Performance metrics
+- Error tracking
+- Resource utilization
+- Success/failure rates
+
+### Logging and Reporting
+\`\`\`javascript
+// Automation logging
+const logger = new AutomationLogger({
+  level: 'info',
+  format: 'json',
+  transports: ['file', 'console'],
+  rotation: 'daily'
+});
+
+// Generate automation reports
+const reporter = new AutomationReporter();
+reporter.generateWeeklyReport();
+reporter.generateMonthlyReport();
+\`\`\`
+
+---
+
+*Last updated: ${new Date().toISOString().split('T')[0]}*
+`;
+  }
+
+  /**
+   * Generate pull request template
+   */
   generatePRTemplate() {
-    return `## Description\nBrief description of changes.\n\n## Type of Change\n- [ ] Bug fix\n- [ ] New feature\n- [ ] Documentation\n\n## Testing\n- [ ] Tests pass\n- [ ] Manual testing\n\n## Checklist\n- [ ] Code reviewed\n- [ ] Documentation updated\n`;
+    return `## Description
+Brief description of the changes made in this PR.
+
+## Type of Change
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
+- [ ] Performance improvement
+- [ ] Code refactoring
+
+## Changes Made
+- Item 1
+- Item 2
+- Item 3
+
+## Testing
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+- [ ] Performance testing (if applicable)
+
+## Documentation
+- [ ] Code comments updated
+- [ ] README updated (if needed)
+- [ ] API documentation updated (if needed)
+- [ ] Changelog updated
+
+## Screenshots (if applicable)
+Add screenshots here if the changes affect the UI.
+
+## Checklist
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+
+## Related Issues
+Closes #(issue_number)
+`;
   }
 
+  /**
+   * Generate issue template
+   */
   generateIssueTemplate() {
-    return `## Bug Description\nClear description of the bug.\n\n## Steps to Reproduce\n1. Step one\n2. Step two\n\n## Expected Behavior\nWhat should happen.\n\n## Environment\n- OS: [e.g. Windows]\n- Version: [e.g. 1.0.0]\n`;
+    return `---
+name: Bug Report
+about: Create a report to help us improve
+title: '[BUG] '
+labels: bug
+assignees: ''
+---
+
+## Bug Description
+A clear and concise description of what the bug is.
+
+## Steps to Reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+## Expected Behavior
+A clear and concise description of what you expected to happen.
+
+## Actual Behavior
+A clear and concise description of what actually happened.
+
+## Screenshots
+If applicable, add screenshots to help explain your problem.
+
+## Environment
+- OS: [e.g. Windows 10, macOS 12, Ubuntu 20.04]
+- Browser: [e.g. Chrome 96, Firefox 95, Safari 15]
+- Node.js Version: [e.g. 18.12.0]
+- Project Version: [e.g. 1.0.0]
+
+## Additional Context
+Add any other context about the problem here.
+
+## Possible Solution
+If you have ideas on how to fix the issue, please describe them here.
+`;
   }
 
+  /**
+   * Generate feature request template
+   */
   generateFeatureRequestTemplate() {
-    return `## Feature Summary\nBrief summary of feature.\n\n## Problem Statement\nDescription of problem.\n\n## Proposed Solution\nDescription of solution.\n\n## Priority\n- [ ] Low\n- [ ] Medium\n- [ ] High\n`;
+    return `---
+name: Feature Request
+about: Suggest an idea for this project
+title: '[FEATURE] '
+labels: enhancement
+assignees: ''
+---
+
+## Feature Summary
+A brief summary of the feature you'd like to see added.
+
+## Problem Statement
+Is your feature request related to a problem? Please describe.
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+
+## Proposed Solution
+Describe the solution you'd like.
+A clear and concise description of what you want to happen.
+
+## Alternative Solutions
+Describe alternatives you've considered.
+A clear and concise description of any alternative solutions or features you've considered.
+
+## Use Cases
+Describe the use cases for this feature:
+- Use case 1
+- Use case 2
+- Use case 3
+
+## Expected Benefits
+- Benefit 1
+- Benefit 2
+- Benefit 3
+
+## Implementation Ideas
+If you have ideas on how this could be implemented, please describe them here.
+
+## Additional Context
+Add any other context, screenshots, or examples about the feature request here.
+
+## Priority
+- [ ] Low
+- [ ] Medium
+- [ ] High
+- [ ] Critical
+
+## Acceptance Criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+`;
   }
 }
 

@@ -167,18 +167,16 @@ services:
   ai-pipeline:
     image: h3x/neural-pipeline:latest
     ports:
-      - "8080:8080"
-    environment:
+      - "8080:8080"    environment:
       - LMSTUDIO_URL=http://lmstudio-server:1234
       - VECTOR_DB_URL=http://vector-database:6333
-      - AZURE_CLIENT_ID=\${AZURE_CLIENT_ID}
-      - AZURE_CLIENT_SECRET=\${AZURE_CLIENT_SECRET}
+      - API_KEY=\${API_KEY}
+      - MODEL_ENDPOINT=\${MODEL_ENDPOINT}
     depends_on:
       - lmstudio-server
       - vector-database
     networks:
       - h3x-neural-network
-
   h3x-neural-bot:
     image: h3x/neural-bot:latest
     ports:
@@ -187,6 +185,7 @@ services:
       - BOT_ID=\${BOT_ID}
       - BOT_PASSWORD=\${BOT_PASSWORD}
       - AI_PIPELINE_URL=http://ai-pipeline:8080
+      - H3X_PROTOCOL=\${H3X_PROTOCOL}
     depends_on:
       - ai-pipeline
     networks:
@@ -291,11 +290,9 @@ volumes:
         } catch (error) {
             this.log(`Test prompt failed: ${error.message}`, 'error');
         }
-    }
-
-    async simulateAIResponse(prompt) {
+    }    async simulateAIResponse(prompt) {
         await this.delay(2000);
-        return `AI Response to: "${prompt}"\n\nThis is a simulated response from the H3X Neural AI system. The integration with LMStudio is working correctly, and the system is ready to process complex queries across Microsoft 365 applications with advanced AI capabilities.`;
+        return `AI Response to: "${prompt}"\n\nThis is a simulated response from the H3X Neural AI system. The integration with LMStudio is working correctly, and the system is ready to process complex queries with advanced AI capabilities.`;
     }
 
     // System Reset Methods
