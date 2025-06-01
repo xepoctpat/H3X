@@ -470,6 +470,19 @@ func generatePersona(socialSetting, preferredTrait string, useAI bool) Persona {
 	
 	// Select communication style
 	commStyle := communicationStyles[rand.Intn(len(communicationStyles))]
+	
+	// If AI enhancement is enabled, use more complex communication styles
+	if useAI {
+		// Enhanced communication styles for AI-generated personas
+		aiCommStyles := []string{
+			"Analytical and data-driven, focusing on evidence and facts",
+			"Highly empathetic with nuanced emotional intelligence",
+			"Creative and metaphorical, using rich analogies and storytelling",
+			"Strategic and systems-oriented, connecting disparate concepts",
+			"Diplomatic and balanced, considering multiple perspectives",
+		}
+		commStyle = aiCommStyles[rand.Intn(len(aiCommStyles))]
+	}
 
 	// Generate background based on social setting
 	backgrounds := map[string][]string{
@@ -942,4 +955,18 @@ func handleHeartbeat(protocol Protocol, client *Client) {
 	}
 
 	client.conn.WriteJSON(response)
+}
+
+// Health check endpoint handler
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	
+	health := map[string]interface{}{
+		"status": "ok",
+		"time": time.Now().Format(time.RFC3339),
+		"version": os.Getenv("APP_VERSION"),
+		"environment": os.Getenv("APP_ENV"),
+	}
+	
+	json.NewEncoder(w).Encode(health)
 }

@@ -227,9 +227,7 @@
         .status-display h4 {
             color: #2c3e50;
             margin-bottom: 5px;
-        }
-
-        .3d-visualization {
+        }        .visualization-3d {
             height: 300px;
             background: #f8f9fa;
             border-radius: 10px;
@@ -243,9 +241,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #7f8c8d;
-        }
-
-        @media (max-width: 768px) {
+        }        @media (max-width: 768px) {
             .main-grid {
                 grid-template-columns: 1fr;
             }
@@ -253,6 +249,28 @@
             .scenario-buttons {
                 grid-template-columns: 1fr;
             }
+        }
+        
+        /* Added classes to replace inline styles */
+        .hidden {
+            display: none;
+        }
+        
+        .status-indicators-container {
+            margin-top: 10px;
+        }
+        
+        .status-indicators-flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .status-indicator-style {
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #f8f9fa;
         }
     </style>
 </head>
@@ -276,56 +294,50 @@
                 </div>
 
                 <div class="parameter-group">
-                    <h3>Population Parameters</h3>
-                    <div class="parameter-row">
-                        <span class="parameter-label">Total Population:</span>
+                    <h3>Population Parameters</h3>                    <div class="parameter-row">
+                        <label for="population" class="parameter-label">Total Population:</label>
                         <input type="number" id="population" class="parameter-input" value="100000" min="1000" max="10000000">
                     </div>
                     <div class="parameter-row">
-                        <span class="parameter-label">Initial Infected:</span>
+                        <label for="initialInfected" class="parameter-label">Initial Infected:</label>
                         <input type="number" id="initialInfected" class="parameter-input" value="10" min="1" max="1000">
                     </div>
                 </div>
 
                 <div class="parameter-group">
-                    <h3>Disease Parameters</h3>
-                    <div class="parameter-row">
-                        <span class="parameter-label">Transmission Rate (β):</span>
+                    <h3>Disease Parameters</h3>                    <div class="parameter-row">
+                        <label for="beta" class="parameter-label">Transmission Rate (β):</label>
                         <input type="number" id="beta" class="parameter-input" value="0.3" step="0.01" min="0" max="2">
-                        <input type="range" id="betaRange" class="parameter-range" value="30" min="0" max="200">
+                        <input type="range" id="betaRange" class="parameter-range" value="30" min="0" max="200" aria-label="Transmission Rate slider">
                     </div>
                     <div class="parameter-row">
-                        <span class="parameter-label">Recovery Rate (γ):</span>
+                        <label for="gamma" class="parameter-label">Recovery Rate (γ):</label>
                         <input type="number" id="gamma" class="parameter-input" value="0.1" step="0.01" min="0" max="1">
-                        <input type="range" id="gammaRange" class="parameter-range" value="10" min="0" max="100">
-                    </div>
-                    <div class="parameter-row" id="sigmaRow" style="display: none;">
-                        <span class="parameter-label">Incubation Rate (σ):</span>
+                        <input type="range" id="gammaRange" class="parameter-range" value="10" min="0" max="100" aria-label="Recovery Rate slider">
+                    </div>                    <div id="sigmaRow" class="parameter-row hidden">
+                        <label for="sigma" class="parameter-label">Incubation Rate (σ):</label>
                         <input type="number" id="sigma" class="parameter-input" value="0.2" step="0.01" min="0" max="1">
-                        <input type="range" id="sigmaRange" class="parameter-range" value="20" min="0" max="100">
+                        <input type="range" id="sigmaRange" class="parameter-range" value="20" min="0" max="100" aria-label="Incubation Rate slider">
                     </div>
-                </div>
-
-                <div class="parameter-group" id="vaccinationGroup" style="display: none;">
+                </div>                <div id="vaccinationGroup" class="parameter-group hidden">
                     <h3>Vaccination Parameters</h3>
                     <div class="parameter-row">
-                        <span class="parameter-label">Vaccination Rate:</span>
+                        <label for="vaccinationRate" class="parameter-label">Vaccination Rate:</label>
                         <input type="number" id="vaccinationRate" class="parameter-input" value="0.01" step="0.001" min="0" max="0.1">
                     </div>
                     <div class="parameter-row">
-                        <span class="parameter-label">Vaccine Efficacy:</span>
+                        <label for="vaccineEfficacy" class="parameter-label">Vaccine Efficacy:</label>
                         <input type="number" id="vaccineEfficacy" class="parameter-input" value="0.95" step="0.01" min="0" max="1">
                     </div>
                 </div>
 
                 <div class="parameter-group">
-                    <h3>Simulation Settings</h3>
-                    <div class="parameter-row">
-                        <span class="parameter-label">Time Steps:</span>
+                    <h3>Simulation Settings</h3>                    <div class="parameter-row">
+                        <label for="timeSteps" class="parameter-label">Time Steps:</label>
                         <input type="number" id="timeSteps" class="parameter-input" value="365" min="30" max="1000">
                     </div>
                     <div class="parameter-row">
-                        <span class="parameter-label">Update Interval (ms):</span>
+                        <label for="updateInterval" class="parameter-label">Update Interval (ms):</label>
                         <input type="number" id="updateInterval" class="parameter-input" value="50" min="10" max="1000">
                     </div>
                 </div>                <div class="control-buttons">
@@ -341,12 +353,11 @@
                         <button class="control-btn start-btn" onclick="saveCurrentSimulation()">Save to API</button>
                         <button class="control-btn" onclick="loadSimulationFromAPI()">Load from API</button>
                         <button class="control-btn start-btn" onclick="runDistributedSim()">Run Distributed</button>
-                    </div>
-                    <div class="status-indicators" style="margin-top: 10px;">
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <span id="apiStatus" class="status-indicator" style="font-size: 0.9em; padding: 5px 10px; border-radius: 15px; background: #f8f9fa;">API: Checking...</span>
-                            <span id="agentsStatus" class="status-indicator" style="font-size: 0.9em; padding: 5px 10px; border-radius: 15px; background: #f8f9fa;">Agents: Checking...</span>
-                            <span id="wsStatus" class="status-indicator" style="font-size: 0.9em; padding: 5px 10px; border-radius: 15px; background: #f8f9fa;">WebSocket: Disconnected</span>
+                    </div>                    <div class="status-indicators status-indicators-container">
+                        <div class="status-indicators-flex">
+                            <span id="apiStatus" class="status-indicator status-indicator-style">API: Checking...</span>
+                            <span id="agentsStatus" class="status-indicator status-indicator-style">Agents: Checking...</span>
+                            <span id="wsStatus" class="status-indicator status-indicator-style">WebSocket: Disconnected</span>
                         </div>
                     </div>
                 </div>
@@ -366,12 +377,11 @@
                 <h2 class="panel-title">Real-time Visualization</h2>
                 <div class="chart-container" id="mainChart"></div>
                 
-                <div class="metrics-grid">
-                    <div class="metric-card">
+                <div class="metrics-grid">                    <div class="metric-card">
                         <div class="metric-value susceptible" id="susceptibleCount">99,990</div>
                         <div class="metric-label">Susceptible</div>
                     </div>
-                    <div class="metric-card" id="exposedCard" style="display: none;">
+                    <div class="metric-card hidden" id="exposedCard">
                         <div class="metric-value exposed" id="exposedCount">0</div>
                         <div class="metric-label">Exposed</div>
                     </div>
@@ -383,9 +393,7 @@
                         <div class="metric-value recovered" id="recoveredCount">0</div>
                         <div class="metric-label">Recovered</div>
                     </div>
-                </div>
-
-                <div class="3d-visualization" id="3dContainer">
+                </div>                <div class="visualization-3d" id="3dContainer">
                     <div class="loading">3D Population Dynamics (Coming Soon)</div>
                 </div>
             </div>
@@ -682,27 +690,26 @@
                 const sigmaRow = document.getElementById('sigmaRow');
                 const vaccinationGroup = document.getElementById('vaccinationGroup');
                 const exposedCard = document.getElementById('exposedCard');
-                
-                switch(scenario) {
+                  switch(scenario) {
                     case 'sir':
-                        sigmaRow.style.display = 'none';
-                        vaccinationGroup.style.display = 'none';
-                        exposedCard.style.display = 'none';
+                        sigmaRow.classList.add('hidden');
+                        vaccinationGroup.classList.add('hidden');
+                        exposedCard.classList.add('hidden');
                         break;
                     case 'seir':
-                        sigmaRow.style.display = 'flex';
-                        vaccinationGroup.style.display = 'none';
-                        exposedCard.style.display = 'block';
+                        sigmaRow.classList.remove('hidden');
+                        vaccinationGroup.classList.add('hidden');
+                        exposedCard.classList.remove('hidden');
                         break;
                     case 'vaccination':
-                        sigmaRow.style.display = 'none';
-                        vaccinationGroup.style.display = 'block';
-                        exposedCard.style.display = 'none';
+                        sigmaRow.classList.add('hidden');
+                        vaccinationGroup.classList.remove('hidden');
+                        exposedCard.classList.add('hidden');
                         break;
                     case 'variants':
-                        sigmaRow.style.display = 'flex';
-                        vaccinationGroup.style.display = 'block';
-                        exposedCard.style.display = 'block';
+                        sigmaRow.classList.remove('hidden');
+                        vaccinationGroup.classList.remove('hidden');
+                        exposedCard.classList.remove('hidden');
                         break;
                 }
                 
@@ -1013,9 +1020,8 @@
             updateStatusIndicator('agentsStatus', agents ? 'Agents Ready ✓' : 'Agents Offline ✗', agents ? 'success' : 'error');
             
             return { api, agents };
-        }
-
-        // Check service health on load        window.onload = async () => {
+        }        // Check service health on load
+        window.onload = async () => {
             // Initialize simulation instance first
             simulation = new SIRSimulation();
             

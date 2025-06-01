@@ -6,7 +6,9 @@
 
 ## 📖 Documentation & Usage
 
-This file documents all automation scripts, agent actions, and automation requests for the H3X-fLups unified workspace. Use it to:
+This file documents all automation scripts, agent actions, and automation requests for the 
+H3X-fLups unified workspace. Use it to:
+
 - Track all current and obsolete automation scripts
 - Log agent actions and automation completions
 - Propose and document new automations
@@ -15,6 +17,7 @@ This file documents all automation scripts, agent actions, and automation reques
 For integration with the Merger Task Manager, see the "Agent Actions" section below.
 
 ## 🚀 Auto
+
 - Run daily checkpoint: `pwsh ./daily-checkpoint.ps1`
 - Manage Docker: `pwsh ./docker-manage.ps1 <command>`
 - Import Docker config: `pwsh ./docker-import-helper.ps1 <config>`
@@ -22,6 +25,7 @@ For integration with the Merger Task Manager, see the "Agent Actions" section be
 - Clean modular files: `npx ts-node h3x-modular-clean.ts`
 - Backup modular files: `npx ts-node h3x-modular-backup.ts`
 - Merge modular to all-in-one: `node merge-modular-to-allinone.js`
+- Auto commit and PR: `pwsh ./scripts/auto-commit-pr.ps1 -Message "Your commit message"`
 
 ---
 
@@ -30,21 +34,30 @@ For integration with the Merger Task Manager, see the "Agent Actions" section be
 - **daily-checkpoint.ps1**
   - Purpose: Automates daily project checkpointing and logging.
   - Location/path: `daily-checkpoint.ps1`
+
 - **docker-manage.ps1**
   - Purpose: PowerShell script for managing Docker containers and images for the project.
   - Location/path: `docker-manage.ps1`
+
 - **cicd-automation.js**
   - Purpose: Node.js script for CI/CD automation tasks.
   - Location/path: `cicd-automation.js`
+
 - **docker-import-helper.ps1**
   - Purpose: PowerShell script for importing Docker configurations.
   - Location/path: `docker-import-helper.ps1`
+
 - **h3x-modular-clean.ts**
   - Purpose: TypeScript script for cleaning up modular H3X project files.
   - Location/path: `h3x-modular-clean.ts`
+
 - **h3x-modular-backup.ts**
   - Purpose: TypeScript script for backing up modular H3X project files.
   - Location/path: `h3x-modular-backup.ts`
+
+- **auto-commit-pr.ps1**
+  - Purpose: Automates git commit and PR creation workflow.
+  - Location/path: `scripts/auto-commit-pr.ps1`
 - **merge-modular-to-allinone.js**
   - Purpose: Node.js script to merge modular code into an all-in-one file.
   - Location/path: `merge-modular-to-allinone.js`

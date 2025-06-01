@@ -1,6 +1,7 @@
 # Babillon Branch - Modular Agentic Interface
 
 ## Overview
+
 The **Babillon** branch is dedicated to building a modular, agentic interface system inspired by the Library of Babel concept. This branch focuses on creating a highly modular architecture where agents can navigate and manipulate structured data through a central SIR (System/Interface/Relay) host.
 
 ## Architecture
@@ -39,6 +40,7 @@ The **Babillon** branch is dedicated to building a modular, agentic interface sy
 ## Agentic Capabilities
 
 ### Agent API
+
 ```javascript
 // Navigate to a specific cell
 window.agent.executeCommand({
@@ -57,12 +59,14 @@ const state = window.agent.getState();
 ```
 
 ### Demo Mode
+
 - Automated demonstration sequences
 - Real-time action logging
 - Visual feedback for all operations
 
 ## File Structure
-```
+
+```text
 Public/
 ├── css/
 │   └── proof-editor.css
@@ -87,6 +91,7 @@ Public/
 ## Docker Integration
 
 The babillon branch includes Docker support for:
+
 - Development environment setup
 - Modular service architecture
 - Scalable deployment options

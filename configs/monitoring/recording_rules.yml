@@ -1,0 +1,21 @@
+groups:
+  - name: babillon_system_rules
+    interval: 30s
+    rules:
+      - record: babillon:request_rate_5m
+        expr: rate(http_requests_total[5m])
+      
+      - record: babillon:error_rate_5m
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])
+      
+      - record: babillon:response_time_95p
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+      
+      - record: babillon:cpu_usage_avg
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+      
+      - record: babillon:memory_usage_percent
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+      
+      - record: babillon:disk_usage_percent
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100

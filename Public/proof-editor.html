@@ -12,13 +12,15 @@
   <div class="proof-editor-container">
     <header>
       <h1>Proof Editor & Visualizer</h1>
-      <select id="proof-file-select"></select>
+      <label for="proof-file-select" class="visually-hidden">Select proof file</label>
+      <select id="proof-file-select" aria-label="Select proof file"></select>
       <button id="load-file">Load</button>
     </header>
     <main>
       <section class="editor-section">
         <h2>Markdown Editor</h2>
-        <textarea id="markdown-editor" rows="20"></textarea>
+        <label for="markdown-editor" class="visually-hidden">Markdown editor</label>
+        <textarea id="markdown-editor" rows="20" placeholder="Enter your markdown content here"></textarea>
         <button id="save-file">Save Changes</button>
       </section>
       <section class="preview-section">
