@@ -1,0 +1,22 @@
+{
+  "daily": [
+    "health_check",
+    "log_analysis"
+  ],
+  "weekly": [
+    "documentation_update",
+    "dependency_check"
+  ],
+  "monthly": [
+    "architecture_review",
+    "performance_analysis"
+  ],
+  "onCommit": [
+    "api_docs_update",
+    "readme_sync"
+  ],
+  "onDeploy": [
+    "deployment_docs",
+    "changelog_update"
+  ]
+}

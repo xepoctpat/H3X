@@ -1,0 +1,20 @@
+# Dockerfile for Babillon API Server
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install dependencies
+RUN npm init -y && \
+    npm install express cors body-parser fs-extra sqlite3
+
+# Copy the API server file
+COPY api-server.js .
+
+# Copy data files
+COPY proof/ ./data/proof/
+
+# Expose port
+EXPOSE 3001
+
+# Start the API server
+CMD ["node", "api-server.js"]

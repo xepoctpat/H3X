@@ -1,0 +1,272 @@
+# Enhanced Dockerfile for Babillon Unified API Server
+# Integrating H3X, SIR, and fLups backend capabilities
+
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache curl git python3 make g++
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm ci
+
+# Copy source code
+COPY src/ ./src/
+COPY proof/ ./proof/
+COPY data/ ./data/
+COPY flups-integration/ ./flups-integration/
+COPY scripts/ ./scripts/
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apk add --no-cache curl mongodb-tools redis
+
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy application files
+COPY --from=builder /app/src/ ./src/
+COPY --from=builder /app/proof/ ./proof/
+COPY --from=builder /app/data/ ./data/
+COPY --from=builder /app/flups-integration/ ./flups-integration/
+COPY --from=builder /app/scripts/ ./scripts/
+
+# Create enhanced API server for Babillon unified system
+RUN echo 'const express = require("express"); \
+const cors = require("cors"); \
+const fs = require("fs-extra"); \
+const path = require("path"); \
+const { MongoClient } = require("mongodb"); \
+const redis = require("redis"); \
+\
+const app = express(); \
+const PORT = process.env.PORT || 3001; \
+\
+// Middleware \
+app.use(cors({ \
+  origin: ["http://localhost:3000", "http://babillon-web:3000", process.env.WEB_URL], \
+  credentials: true \
+})); \
+app.use(express.json({ limit: "50mb" })); \
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); \
+\
+// Global state \
+let mongoClient = null; \
+let redisClient = null; \
+\
+// Database initialization \
+async function initializeDatabases() { \
+  try { \
+    // MongoDB connection \
+    if (process.env.MONGODB_URL) { \
+      mongoClient = new MongoClient(process.env.MONGODB_URL); \
+      await mongoClient.connect(); \
+      console.log("MongoDB connected successfully"); \
+    } \
+    \
+    // Redis connection \
+    if (process.env.REDIS_URL) { \
+      redisClient = redis.createClient({ url: process.env.REDIS_URL }); \
+      await redisClient.connect(); \
+      console.log("Redis connected successfully"); \
+    } \
+  } catch (error) { \
+    console.error("Database initialization error:", error); \
+  } \
+} \
+\
+// Health check endpoint \
+app.get("/health", async (req, res) => { \
+  const health = { \
+    status: "healthy", \
+    service: "babillon-api", \
+    mode: "unified", \
+    timestamp: new Date().toISOString(), \
+    databases: { \
+      mongodb: mongoClient ? "connected" : "disconnected", \
+      redis: redisClient ? "connected" : "disconnected" \
+    }, \
+    integrations: { \
+      h3x: process.env.H3X_SERVER_URL ? "enabled" : "disabled", \
+      protocol: process.env.PROTOCOL_SERVER_URL ? "enabled" : "disabled", \
+      lmstudio: process.env.LMSTUDIO_URL ? "enabled" : "disabled" \
+    } \
+  }; \
+  res.json(health); \
+}); \
+\
+// Data management endpoints \
+app.get("/api/data", async (req, res) => { \
+  try { \
+    if (mongoClient) { \
+      const db = mongoClient.db("babillon"); \
+      const collection = db.collection("data"); \
+      const data = await collection.find({}).limit(100).toArray(); \
+      res.json({ success: true, data }); \
+    } else { \
+      // Fallback to file system \
+      const dataPath = path.join(__dirname, "data"); \
+      const files = await fs.readdir(dataPath); \
+      res.json({ success: true, files }); \
+    } \
+  } catch (error) { \
+    res.status(500).json({ error: "Data retrieval failed", details: error.message }); \
+  } \
+}); \
+\
+app.post("/api/data", async (req, res) => { \
+  try { \
+    const { data, type, source } = req.body; \
+    \
+    if (mongoClient) { \
+      const db = mongoClient.db("babillon"); \
+      const collection = db.collection("data"); \
+      const result = await collection.insertOne({ \
+        data, \
+        type, \
+        source, \
+        timestamp: new Date(), \
+        babillonMode: true \
+      }); \
+      res.json({ success: true, id: result.insertedId }); \
+    } else { \
+      // Fallback to file system \
+      const filename = `data_${Date.now()}.json`; \
+      await fs.writeJSON(path.join(__dirname, "data", filename), { data, type, source, timestamp: new Date() }); \
+      res.json({ success: true, filename }); \
+    } \
+  } catch (error) { \
+    res.status(500).json({ error: "Data storage failed", details: error.message }); \
+  } \
+}); \
+\
+// Proof system endpoints \
+app.get("/api/proof", async (req, res) => { \
+  try { \
+    const proofPath = path.join(__dirname, "data/proof"); \
+    const files = await fs.readdir(proofPath); \
+    const proofs = []; \
+    \
+    for (const file of files.filter(f => f.endsWith(".json"))) { \
+      const proof = await fs.readJSON(path.join(proofPath, file)); \
+      proofs.push({ filename: file, ...proof }); \
+    } \
+    \
+    res.json({ success: true, proofs }); \
+  } catch (error) { \
+    res.status(500).json({ error: "Proof retrieval failed", details: error.message }); \
+  } \
+}); \
+\
+// H3X integration endpoints \
+app.get("/api/h3x/status", async (req, res) => { \
+  try { \
+    if (process.env.H3X_SERVER_URL) { \
+      const response = await fetch(`${process.env.H3X_SERVER_URL}/api/status`); \
+      const status = await response.json(); \
+      res.json({ success: true, h3x: status }); \
+    } else { \
+      res.json({ success: false, error: "H3X server not configured" }); \
+    } \
+  } catch (error) { \
+    res.status(500).json({ error: "H3X status check failed", details: error.message }); \
+  } \
+}); \
+\
+// SIR system integration \
+app.get("/api/sir/data", async (req, res) => { \
+  try { \
+    if (redisClient) { \
+      const sirData = await redisClient.get("sir:current"); \
+      res.json({ success: true, data: sirData ? JSON.parse(sirData) : null }); \
+    } else { \
+      res.json({ success: false, error: "Redis not available for SIR data" }); \
+    } \
+  } catch (error) { \
+    res.status(500).json({ error: "SIR data retrieval failed", details: error.message }); \
+  } \
+}); \
+\
+// fLups integration endpoints \
+app.get("/api/flups/status", (req, res) => { \
+  res.json({ \
+    success: true, \
+    flups: { \
+      status: "integrated", \
+      mode: "babillon-unified", \
+      timestamp: new Date().toISOString() \
+    } \
+  }); \
+}); \
+\
+// Real-time data endpoints \
+app.get("/api/realtime/weather", async (req, res) => { \
+  try { \
+    if (redisClient) { \
+      const weatherData = await redisClient.get("weather:current"); \
+      res.json({ success: true, data: weatherData ? JSON.parse(weatherData) : null }); \
+    } else { \
+      res.json({ success: false, error: "Real-time weather data not available" }); \
+    } \
+  } catch (error) { \
+    res.status(500).json({ error: "Weather data retrieval failed", details: error.message }); \
+  } \
+}); \
+\
+app.get("/api/realtime/financial", async (req, res) => { \
+  try { \
+    if (redisClient) { \
+      const financialData = await redisClient.get("financial:current"); \
+      res.json({ success: true, data: financialData ? JSON.parse(financialData) : null }); \
+    } else { \
+      res.json({ success: false, error: "Real-time financial data not available" }); \
+    } \
+  } catch (error) { \
+    res.status(500).json({ error: "Financial data retrieval failed", details: error.message }); \
+  } \
+}); \
+\
+// Initialize and start server \
+async function startServer() { \
+  await initializeDatabases(); \
+  \
+  app.listen(PORT, "0.0.0.0", () => { \
+    console.log(`Babillon Unified API Server running on port ${PORT}`); \
+    console.log(`Health check: http://localhost:${PORT}/health`); \
+    console.log(`Data API: http://localhost:${PORT}/api/data`); \
+    console.log(`Proof API: http://localhost:${PORT}/api/proof`); \
+    console.log(`H3X Integration: http://localhost:${PORT}/api/h3x/status`); \
+    console.log(`SIR Integration: http://localhost:${PORT}/api/sir/data`); \
+    console.log(`fLups Integration: http://localhost:${PORT}/api/flups/status`); \
+  }); \
+} \
+\
+startServer().catch(console.error);' > server.js
+
+# Create health check script
+RUN echo '#!/bin/sh\ncurl -f http://localhost:3001/health || exit 1' > /health-check.sh && \
+    chmod +x /health-check.sh
+
+# Create data directories
+RUN mkdir -p /app/data/proof /app/logs
+
+# Expose port
+EXPOSE 3001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD /health-check.sh
+
+# Start the API server
+CMD ["node", "server.js"]

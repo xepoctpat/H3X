@@ -1,0 +1,4 @@
+clientId=
+clientSecret=
+OPENAI_API_KEY=The compiler option "forceConsistentCasingInFileNames" should be enabled to reduce issues when working with different OSes.
+TEAMSFX_NOTIFICATION_STORE_FILENAME=.notification.playgroundstore.json

@@ -1,0 +1,408 @@
+# Enhanced Dockerfile for Babillon Unified Agent Controller
+# Integrating H3X, SIR, and fLups agent capabilities
+
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache curl git python3 make g++
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm ci
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apk add --no-cache curl redis
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies
+RUN npm ci --only=production
+
+# Create enhanced agent controller for Babillon unified system
+RUN echo 'const express = require("express"); \
+const WebSocket = require("ws"); \
+const cors = require("cors"); \
+const redis = require("redis"); \
+const { v4: uuidv4 } = require("uuid"); \
+\
+const app = express(); \
+const PORT = process.env.PORT || 3002; \
+const WS_PORT = process.env.WEBSOCKET_PORT || 3003; \
+\
+// Middleware \
+app.use(cors()); \
+app.use(express.json()); \
+\
+// Global state \
+let redisClient = null; \
+const activeAgents = new Map(); \
+const agentTasks = new Map(); \
+\
+// WebSocket server for real-time communication \
+const wss = new WebSocket.Server({ port: WS_PORT }); \
+\
+// Redis initialization \
+async function initializeRedis() { \
+  try { \
+    if (process.env.REDIS_URL) { \
+      redisClient = redis.createClient({ url: process.env.REDIS_URL }); \
+      await redisClient.connect(); \
+      console.log("Redis connected for agent coordination"); \
+    } \
+  } catch (error) { \
+    console.error("Redis initialization error:", error); \
+  } \
+} \
+\
+// Agent management class \
+class BabillonAgent { \
+  constructor(id, type, capabilities) { \
+    this.id = id; \
+    this.type = type; \
+    this.capabilities = capabilities; \
+    this.status = "active"; \
+    this.created = new Date(); \
+    this.lastActivity = new Date(); \
+    this.tasks = []; \
+  } \
+  \
+  addTask(task) { \
+    this.tasks.push({ \
+      id: uuidv4(), \
+      ...task, \
+      assigned: new Date(), \
+      status: "pending" \
+    }); \
+    this.lastActivity = new Date(); \
+  } \
+  \
+  updateStatus(status) { \
+    this.status = status; \
+    this.lastActivity = new Date(); \
+  } \
+  \
+  toJSON() { \
+    return { \
+      id: this.id, \
+      type: this.type, \
+      capabilities: this.capabilities, \
+      status: this.status, \
+      created: this.created, \
+      lastActivity: this.lastActivity, \
+      taskCount: this.tasks.length \
+    }; \
+  } \
+} \
+\
+// WebSocket connection handling \
+wss.on("connection", (ws, req) => { \
+  const agentId = uuidv4(); \
+  console.log(`Agent connected: ${agentId}`); \
+  \
+  ws.agentId = agentId; \
+  ws.isAlive = true; \
+  \
+  ws.on("pong", () => { \
+    ws.isAlive = true; \
+  }); \
+  \
+  ws.on("message", async (message) => { \
+    try { \
+      const data = JSON.parse(message); \
+      await handleAgentMessage(ws, data); \
+    } catch (error) { \
+      ws.send(JSON.stringify({ error: "Invalid message format" })); \
+    } \
+  }); \
+  \
+  ws.on("close", () => { \
+    console.log(`Agent disconnected: ${agentId}`); \
+    activeAgents.delete(agentId); \
+  }); \
+  \
+  // Send welcome message \
+  ws.send(JSON.stringify({ \
+    type: "welcome", \
+    agentId: agentId, \
+    message: "Connected to Babillon Unified Agent Controller" \
+  })); \
+}); \
+\
+// Handle agent messages \
+async function handleAgentMessage(ws, data) { \
+  const { type, payload } = data; \
+  \
+  switch (type) { \
+    case "register": \
+      const agent = new BabillonAgent( \
+        ws.agentId, \
+        payload.type || "generic", \
+        payload.capabilities || [] \
+      ); \
+      activeAgents.set(ws.agentId, agent); \
+      \
+      if (redisClient) { \
+        await redisClient.set(`agent:${ws.agentId}`, JSON.stringify(agent)); \
+      } \
+      \
+      ws.send(JSON.stringify({ \
+        type: "registered", \
+        agentId: ws.agentId, \
+        status: "success" \
+      })); \
+      break; \
+    \
+    case "task_result": \
+      const agent_result = activeAgents.get(ws.agentId); \
+      if (agent_result) { \
+        agent_result.updateStatus("completed_task"); \
+        \
+        if (redisClient) { \
+          await redisClient.publish("agent:task_completed", JSON.stringify({ \
+            agentId: ws.agentId, \
+            result: payload \
+          })); \
+        } \
+      } \
+      break; \
+    \
+    case "status_update": \
+      const agent_status = activeAgents.get(ws.agentId); \
+      if (agent_status) { \
+        agent_status.updateStatus(payload.status); \
+      } \
+      break; \
+    \
+    default: \
+      ws.send(JSON.stringify({ error: "Unknown message type" })); \
+  } \
+} \
+\
+// Health check endpoint \
+app.get("/health", (req, res) => { \
+  res.json({ \
+    status: "healthy", \
+    service: "babillon-agents", \
+    mode: "unified", \
+    timestamp: new Date().toISOString(), \
+    agents: { \
+      active: activeAgents.size, \
+      websocket_port: WS_PORT \
+    }, \
+    integrations: { \
+      redis: redisClient ? "connected" : "disconnected", \
+      h3x: process.env.H3X_SERVER_URL ? "enabled" : "disabled", \
+      lmstudio: process.env.LMSTUDIO_URL ? "enabled" : "disabled" \
+    } \
+  }); \
+}); \
+\
+// Agent management endpoints \
+app.get("/api/agents", (req, res) => { \
+  const agents = Array.from(activeAgents.values()).map(agent => agent.toJSON()); \
+  res.json({ success: true, agents }); \
+}); \
+\
+app.post("/api/agents/:agentId/task", async (req, res) => { \
+  try { \
+    const { agentId } = req.params; \
+    const task = req.body; \
+    \
+    const agent = activeAgents.get(agentId); \
+    if (!agent) { \
+      return res.status(404).json({ error: "Agent not found" }); \
+    } \
+    \
+    agent.addTask(task); \
+    \
+    // Send task to agent via WebSocket \
+    wss.clients.forEach(client => { \
+      if (client.agentId === agentId && client.readyState === WebSocket.OPEN) { \
+        client.send(JSON.stringify({ \
+          type: "new_task", \
+          task: task \
+        })); \
+      } \
+    }); \
+    \
+    res.json({ success: true, message: "Task assigned to agent" }); \
+  } catch (error) { \
+    res.status(500).json({ error: "Task assignment failed", details: error.message }); \
+  } \
+}); \
+\
+// H3X integration endpoints \
+app.post("/api/h3x/agent/spawn", async (req, res) => { \
+  try { \
+    const { type, capabilities, h3xConfig } = req.body; \
+    \
+    // Broadcast spawn request to available agents \
+    wss.clients.forEach(client => { \
+      if (client.readyState === WebSocket.OPEN) { \
+        client.send(JSON.stringify({ \
+          type: "h3x_spawn_request", \
+          agentType: type, \
+          capabilities: capabilities, \
+          h3xConfig: h3xConfig \
+        })); \
+      } \
+    }); \
+    \
+    res.json({ success: true, message: "H3X agent spawn request broadcasted" }); \
+  } catch (error) { \
+    res.status(500).json({ error: "H3X agent spawn failed", details: error.message }); \
+  } \
+}); \
+\
+// SIR system integration \
+app.post("/api/sir/agent/coordinate", async (req, res) => { \
+  try { \
+    const { sirData, coordinationTask } = req.body; \
+    \
+    // Find agents capable of SIR coordination \
+    const sirAgents = Array.from(activeAgents.values()) \
+      .filter(agent => agent.capabilities.includes("sir") || agent.type === "sir"); \
+    \
+    if (sirAgents.length === 0) { \
+      return res.status(404).json({ error: "No SIR-capable agents available" }); \
+    } \
+    \
+    // Assign coordination task to SIR agents \
+    sirAgents.forEach(agent => { \
+      agent.addTask({ \
+        type: "sir_coordination", \
+        data: sirData, \
+        task: coordinationTask \
+      }); \
+    }); \
+    \
+    res.json({ \
+      success: true, \
+      message: `SIR coordination assigned to ${sirAgents.length} agents` \
+    }); \
+  } catch (error) { \
+    res.status(500).json({ error: "SIR coordination failed", details: error.message }); \
+  } \
+}); \
+\
+// fLups integration \
+app.post("/api/flups/agent/hexagonal", async (req, res) => { \
+  try { \
+    const { hexData, flupsConfig } = req.body; \
+    \
+    // Create hexagonal processing task \
+    const hexTask = { \
+      type: "hexagonal_processing", \
+      data: hexData, \
+      config: flupsConfig, \
+      timestamp: new Date() \
+    }; \
+    \
+    // Broadcast to all agents \
+    wss.clients.forEach(client => { \
+      if (client.readyState === WebSocket.OPEN) { \
+        client.send(JSON.stringify({ \
+          type: "flups_hexagonal_task", \
+          task: hexTask \
+        })); \
+      } \
+    }); \
+    \
+    res.json({ success: true, message: "Hexagonal processing task broadcasted" }); \
+  } catch (error) { \
+    res.status(500).json({ error: "fLups hexagonal processing failed", details: error.message }); \
+  } \
+}); \
+\
+// Real-time data processing \
+app.post("/api/realtime/process", async (req, res) => { \
+  try { \
+    const { dataType, data, processingConfig } = req.body; \
+    \
+    // Find agents capable of real-time processing \
+    const realtimeAgents = Array.from(activeAgents.values()) \
+      .filter(agent => \
+        agent.capabilities.includes("realtime") || \
+        agent.capabilities.includes(dataType) \
+      ); \
+    \
+    if (realtimeAgents.length === 0) { \
+      return res.status(404).json({ error: `No agents available for ${dataType} processing` }); \
+    } \
+    \
+    // Distribute processing task \
+    realtimeAgents.forEach(agent => { \
+      agent.addTask({ \
+        type: "realtime_processing", \
+        dataType: dataType, \
+        data: data, \
+        config: processingConfig \
+      }); \
+    }); \
+    \
+    res.json({ \
+      success: true, \
+      message: `Real-time processing assigned to ${realtimeAgents.length} agents` \
+    }); \
+  } catch (error) { \
+    res.status(500).json({ error: "Real-time processing failed", details: error.message }); \
+  } \
+}); \
+\
+// Heartbeat for WebSocket connections \
+setInterval(() => { \
+  wss.clients.forEach((ws) => { \
+    if (!ws.isAlive) { \
+      ws.terminate(); \
+      activeAgents.delete(ws.agentId); \
+      return; \
+    } \
+    \
+    ws.isAlive = false; \
+    ws.ping(); \
+  }); \
+}, 30000); \
+\
+// Initialize and start servers \
+async function startServers() { \
+  await initializeRedis(); \
+  \
+  app.listen(PORT, "0.0.0.0", () => { \
+    console.log(`Babillon Unified Agent Controller running on port ${PORT}`); \
+    console.log(`WebSocket server running on port ${WS_PORT}`); \
+    console.log(`Health check: http://localhost:${PORT}/health`); \
+    console.log(`Agents API: http://localhost:${PORT}/api/agents`); \
+    console.log(`H3X Integration: http://localhost:${PORT}/api/h3x/agent/spawn`); \
+    console.log(`SIR Integration: http://localhost:${PORT}/api/sir/agent/coordinate`); \
+    console.log(`fLups Integration: http://localhost:${PORT}/api/flups/agent/hexagonal`); \
+  }); \
+} \
+\
+startServers().catch(console.error);' > server.js
+
+# Create health check script
+RUN echo '#!/bin/sh\ncurl -f http://localhost:3002/health || exit 1' > /health-check.sh && \
+    chmod +x /health-check.sh
+
+# Create agent directories
+RUN mkdir -p /app/agents /app/logs
+
+# Expose ports (HTTP API and WebSocket)
+EXPOSE 3002 3003
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD /health-check.sh
+
+# Start the agent controller
+CMD ["node", "server.js"]

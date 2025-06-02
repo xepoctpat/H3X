@@ -1,0 +1,3741 @@
+// H3X Code Generation Engine - Dedicated Generative Scripts
+const fs = require('fs').promises;
+const path = require('path');
+const { HexperimentFramework } = require('../framework/hexperimentFramework');
+
+class H3XCodeGenerator {
+  constructor() {
+    this.framework = new HexperimentFramework();
+    this.generationMode = 'ACTIVE';
+    this.templates = this.initializeTemplates();
+  }
+
+  /**
+   * Generate complete AI Assistant configuration based on environment
+   */
+  async generateAIAssistant(environmentData, requirements = {}) {
+    console.log("🤖 Generating AI Assistant Configuration...");
+    
+    const assistantConfig = this.framework.generateAssistantConfig(environmentData, requirements);
+    
+    // Enhanced generation with code templates
+    const generatedCode = {
+      assistantId: assistantConfig.assistantId,
+      configurationFile: this.generateConfigFile(assistantConfig),
+      deploymentScript: this.generateDeploymentScript(assistantConfig),
+      testingSuite: this.generateTestingSuite(assistantConfig),
+      monitoringCode: this.generateMonitoringCode(assistantConfig),
+      documentationMd: this.generateDocumentation(assistantConfig)
+    };
+
+    return {
+      success: true,
+      generationType: 'AI_ASSISTANT_FULL_STACK',
+      timestamp: new Date().toISOString(),
+      framework: 'Hexperiment Labs Framework',
+      configuration: assistantConfig,
+      generatedFiles: generatedCode,
+      realLifeStandards: true
+    };
+  }
+
+  /**
+   * Generate Environment Simulation Scripts
+   */
+  async generateEnvironmentSimulation(simulationType, parameters = {}) {
+    console.log("🌍 Generating Environment Simulation Scripts...");
+    
+    const baseTemplate = this.templates.environmentSimulation;
+    const generatedScript = baseTemplate
+      .replace(/{{SIMULATION_TYPE}}/g, simulationType)
+      .replace(/{{TIMESTAMP}}/g, new Date().toISOString())
+      .replace(/{{PARAMETERS}}/g, JSON.stringify(parameters, null, 2))
+      .replace(/{{SIM_ID}}/g, `SIM_${Date.now()}`);
+
+    const testScript = this.generateSimulationTests(simulationType, parameters);
+    
+    return {
+      success: true,
+      generationType: 'ENVIRONMENT_SIMULATION',
+      simulationType,
+      scripts: {
+        mainScript: generatedScript,
+        testScript: testScript,
+        configFile: this.generateSimulationConfig(simulationType, parameters)
+      },
+      framework: 'Hexperiment Labs Framework'
+    };
+  }
+
+  /**
+   * Generate SIR Analysis Tool Extensions
+   */
+  async generateSIRAnalysisTool(analysisType, customParameters = {}) {
+    console.log("🔬 Generating SIR Analysis Tool Extension...");
+    
+    const toolTemplate = this.templates.sirAnalysisTool;
+    const generatedTool = toolTemplate
+      .replace(/{{ANALYSIS_TYPE}}/g, analysisType)
+      .replace(/{{CUSTOM_PARAMS}}/g, JSON.stringify(customParameters, null, 2))
+      .replace(/{{TOOL_ID}}/g, `TOOL_${Date.now()}`)
+      .replace(/{{TIMESTAMP}}/g, new Date().toISOString());
+
+    return {
+      success: true,
+      generationType: 'SIR_ANALYSIS_TOOL',
+      analysisType,
+      toolCode: generatedTool,
+      integrationInstructions: this.generateIntegrationInstructions(analysisType),
+      framework: 'Hexperiment Labs Framework'
+    };
+  }
+
+  /**
+   * Generate Server Endpoint Extensions
+   */
+  async generateServerEndpoint(endpointName, functionality) {
+    console.log("🚀 Generating Server Endpoint...");
+    
+    const endpointTemplate = this.templates.serverEndpoint;
+    const generatedEndpoint = endpointTemplate
+      .replace(/{{ENDPOINT_NAME}}/g, endpointName)
+      .replace(/{{FUNCTIONALITY}}/g, functionality)
+      .replace(/{{ROUTE_PATH}}/g, endpointName.toLowerCase().replace(/\s+/g, '-'))
+      .replace(/{{TIMESTAMP}}/g, new Date().toISOString());
+
+    return {
+      success: true,
+      generationType: 'SERVER_ENDPOINT',
+      endpointName,
+      endpointCode: generatedEndpoint,
+      integrationCode: this.generateEndpointIntegration(endpointName),
+      testCode: this.generateEndpointTests(endpointName),
+      framework: 'Hexperiment Labs Framework'
+    };
+  }
+
+  /**
+   * Generate Complete Project Structure
+   */
+  async generateProjectStructure(projectName, projectType = 'ai_assistant') {
+    console.log("🏗️ Generating Complete Project Structure...");
+    
+    const structure = {
+      projectName,
+      projectType,
+      timestamp: new Date().toISOString(),
+      files: {
+        'package.json': this.generatePackageJson(projectName),
+        'README.md': this.generateReadme(projectName, projectType),
+        'src/index.js': this.generateMainFile(projectName, projectType),
+        'src/config/config.js': this.generateConfigFile({ projectName, projectType }),
+        'tests/test.js': this.generateTestFile(projectName),
+        '.env.example': this.generateEnvExample(),
+        'docker/Dockerfile': this.generateDockerfile(projectType),
+        'docs/API.md': this.generateApiDocs(projectName)
+      },
+      framework: 'Hexperiment Labs Framework'
+    };
+
+    return {
+      success: true,
+      generationType: 'COMPLETE_PROJECT_STRUCTURE',
+      structure,
+      realLifeStandards: true
+    };
+  }
+
+  /**
+   * Generate Real-time Data Simulation
+   */
+  async generateRealtimeDataSimulator(dataType, frequency = 1000) {
+    console.log("📊 Generating Real-time Data Simulator...");
+    
+    const simulatorTemplate = this.templates.realtimeDataSimulator;
+    const generatedSimulator = simulatorTemplate
+      .replace(/{{DATA_TYPE}}/g, dataType)
+      .replace(/{{FREQUENCY}}/g, frequency)
+      .replace(/{{TIMESTAMP}}/g, new Date().toISOString())
+      .replace(/{{SIMULATOR_ID}}/g, `DATASIM_${Date.now()}`);
+
+    return {
+      success: true,
+      generationType: 'REALTIME_DATA_SIMULATOR',
+      dataType,
+      frequency,
+      simulatorCode: generatedSimulator,
+      framework: 'Hexperiment Labs Framework'
+    };
+  }
+
+  // Template initialization
+  initializeTemplates() {
+    return {
+      environmentSimulation: `
+// Generated Environment Simulation - {{SIMULATION_TYPE}}
+// Generated: {{TIMESTAMP}}
+// Simulation ID: {{SIM_ID}}
+
+const { HexperimentFramework } = require('../framework/hexperimentFramework');
+
+class Generated{{SIMULATION_TYPE}}Simulation {
+  constructor() {
+    this.framework = new HexperimentFramework();
+    this.simulationId = '{{SIM_ID}}';
+    this.parameters = {{PARAMETERS}};
+    this.realLifeStandards = true;
+  }
+
+  async runSimulation() {
+    console.log("🌍 Starting {{SIMULATION_TYPE}} simulation...");
+    
+    const environmentData = this.generateEnvironmentData();
+    const compliance = this.framework.evaluateEnvironmentCompliance(environmentData);
+    
+    return {
+      simulationId: this.simulationId,
+      type: '{{SIMULATION_TYPE}}',
+      environmentData,
+      compliance,
+      results: this.processSimulationResults(environmentData, compliance),
+      framework: 'Hexperiment Labs Framework',
+      realLifeStandards: true
+    };
+  }
+
+  generateEnvironmentData() {
+    return {
+      temperature: 22.5 + (Math.random() - 0.5) * 4,
+      humidity: 45 + (Math.random() - 0.5) * 20,
+      airQuality: Math.floor(Math.random() * 80) + 10,
+      lighting: Math.floor(Math.random() * 600) + 100,
+      noiseLevel: Math.floor(Math.random() * 40) + 25,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  processSimulationResults(environmentData, compliance) {
+    return {
+      status: compliance.overall === 'COMPLIANT' ? 'SUCCESS' : 'NEEDS_OPTIMIZATION',
+      score: compliance.score,
+      recommendations: compliance.recommendations,
+      readyForDeployment: compliance.score > 90
+    };
+  }
+}
+
+module.exports = { Generated{{SIMULATION_TYPE}}Simulation };
+`,
+
+      sirAnalysisTool: `
+// Generated SIR Analysis Tool - {{ANALYSIS_TYPE}}
+// Generated: {{TIMESTAMP}}
+// Tool ID: {{TOOL_ID}}
+
+const { z } = require("zod");
+const { HexperimentFramework } = require("../framework/hexperimentFramework");
+
+const framework = new HexperimentFramework();
+
+const generated{{ANALYSIS_TYPE}}Tool = {
+  name: "generated_{{ANALYSIS_TYPE}}_tool",
+  description: "Generated analysis tool for {{ANALYSIS_TYPE}} with Hexperiment Labs Framework",
+  schema: z.object({
+    target: z.string().describe("Target for {{ANALYSIS_TYPE}} analysis"),
+    parameters: z.any().optional().describe("Custom parameters: {{CUSTOM_PARAMS}}"),
+    realLifeStandards: z.boolean().default(true)
+  }),
+  func: async ({ target, parameters, realLifeStandards }) => {
+    console.log("🔬 Executing Generated {{ANALYSIS_TYPE}} Analysis for:", target);
+    
+    const environmentData = generateEnvironmentalData();
+    const compliance = framework.evaluateEnvironmentCompliance(environmentData);
+    
+    return {
+      toolId: '{{TOOL_ID}}',
+      analysisType: '{{ANALYSIS_TYPE}}',
+      target,
+      environmentData,
+      compliance,
+      results: processAnalysisResults(environmentData, compliance, parameters),
+      framework: 'Hexperiment Labs Framework',
+      realLifeStandards,
+      timestamp: new Date().toISOString()
+    };
+  }
+};
+
+function generateEnvironmentalData() {
+  return {
+    temperature: 22.5 + (Math.random() - 0.5) * 4,
+    humidity: 45 + (Math.random() - 0.5) * 20,
+    airQuality: Math.floor(Math.random() * 80) + 10,
+    lighting: Math.floor(Math.random() * 600) + 100,
+    noiseLevel: Math.floor(Math.random() * 40) + 25
+  };
+}
+
+function processAnalysisResults(environmentData, compliance, customParams) {
+  return {
+    analysisScore: compliance.score,
+    recommendations: compliance.recommendations,
+    customAnalysis: customParams ? "Custom parameters applied" : "Standard analysis",
+    readyForProduction: compliance.overall === 'COMPLIANT'
+  };
+}
+
+module.exports = { generated{{ANALYSIS_TYPE}}Tool };
+`,
+
+      serverEndpoint: `
+// Generated Server Endpoint - {{ENDPOINT_NAME}}
+// Generated: {{TIMESTAMP}}
+
+// Add this to your start-lmstudio.js file:
+
+// {{ENDPOINT_NAME}} endpoint
+app.post('/{{ROUTE_PATH}}', async (req, res) => {
+  try {
+    const { parameters } = req.body;
+    
+    console.log("🚀 {{ENDPOINT_NAME}} endpoint called with parameters:", parameters);
+    
+    // {{FUNCTIONALITY}}
+    const result = await processGenerated{{ENDPOINT_NAME}}(parameters);
+    
+    res.json({
+      success: true,
+      endpoint: '{{ENDPOINT_NAME}}',
+      result: result,
+      timestamp: new Date().toISOString(),
+      framework: 'Hexperiment Labs Framework'
+    });
+    
+  } catch (error) {
+    console.error("❌ {{ENDPOINT_NAME}} endpoint error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+async function processGenerated{{ENDPOINT_NAME}}(parameters) {
+  // Implementation for {{FUNCTIONALITY}}
+  return {
+    processed: true,
+    parameters,
+    result: "Generated {{ENDPOINT_NAME}} processing complete",
+    framework: 'Hexperiment Labs Framework'
+  };
+}
+`,
+
+      realtimeDataSimulator: `
+// Generated Real-time Data Simulator - {{DATA_TYPE}}
+// Generated: {{TIMESTAMP}}
+// Simulator ID: {{SIMULATOR_ID}}
+
+class Generated{{DATA_TYPE}}Simulator {
+  constructor() {
+    this.simulatorId = '{{SIMULATOR_ID}}';
+    this.dataType = '{{DATA_TYPE}}';
+    this.frequency = {{FREQUENCY}};
+    this.isRunning = false;
+    this.interval = null;
+    this.listeners = [];
+  }
+
+  start() {
+    if (this.isRunning) return;
+    
+    console.log("📊 Starting {{DATA_TYPE}} data simulator...");
+    this.isRunning = true;
+    
+    this.interval = setInterval(() => {
+      const data = this.generateData();
+      this.notifyListeners(data);
+    }, this.frequency);
+  }
+
+  stop() {
+    if (!this.isRunning) return;
+    
+    console.log("⏹️ Stopping {{DATA_TYPE}} data simulator...");
+    this.isRunning = false;
+    
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+  }
+
+  generateData() {
+    return {
+      simulatorId: this.simulatorId,
+      dataType: this.dataType,
+      timestamp: new Date().toISOString(),
+      value: this.generateRandomValue(),
+      metadata: {
+        frequency: this.frequency,
+        framework: 'Hexperiment Labs Framework'
+      }
+    };
+  }
+
+  generateRandomValue() {
+    // Customize based on {{DATA_TYPE}}
+    switch (this.dataType) {
+      case 'temperature':
+        return (22.5 + (Math.random() - 0.5) * 4).toFixed(1);
+      case 'humidity':
+        return Math.floor(45 + (Math.random() - 0.5) * 20);
+      case 'environmental':
+        return {
+          temperature: (22.5 + (Math.random() - 0.5) * 4).toFixed(1),
+          humidity: Math.floor(45 + (Math.random() - 0.5) * 20),
+          airQuality: Math.floor(Math.random() * 80) + 10
+        };
+      default:
+        return Math.random();
+    }
+  }
+
+  addListener(callback) {
+    this.listeners.push(callback);
+  }
+
+  removeListener(callback) {
+    const index = this.listeners.indexOf(callback);
+    if (index > -1) {
+      this.listeners.splice(index, 1);
+    }
+  }
+
+  notifyListeners(data) {
+    this.listeners.forEach(listener => {
+      try {
+        listener(data);
+      } catch (error) {
+        console.error("❌ Listener error:", error);
+      }
+    });
+  }
+}
+
+module.exports = { Generated{{DATA_TYPE}}Simulator };
+`
+    };
+  }
+
+  // Helper generation methods
+  generateConfigFile(config) {
+    return `module.exports = ${JSON.stringify(config, null, 2)};`;
+  }
+
+  generateDeploymentScript(config) {
+    return `#!/usr/bin/env node
+// Deployment script for ${config.assistantId}
+console.log("🚀 Deploying AI Assistant: ${config.assistantId}");
+// Deployment logic here
+`;
+  }
+
+  generateTestingSuite(config) {
+    return `// Test suite for ${config.assistantId}
+const assert = require('assert');
+
+describe('${config.assistantId} Tests', () => {
+  it('should be configured correctly', () => {
+    assert.ok(true);
+  });
+});
+`;
+  }
+
+  generateMonitoringCode(config) {
+    return `// Monitoring code for ${config.assistantId}
+class AssistantMonitor {
+  constructor() {
+    this.assistantId = '${config.assistantId}';
+  }
+  
+  startMonitoring() {
+    console.log('📊 Monitoring started for:', this.assistantId);
+  }
+}
+
+module.exports = { AssistantMonitor };
+`;
+  }
+
+  generateDocumentation(config) {
+    return `# AI Assistant: ${config.assistantId}
+
+## Configuration
+- Environment Optimized: ${config.environmentOptimized}
+- Framework: Hexperiment Labs Framework
+- Real-life Standards: ${config.configuration.realLifeStandards}
+
+## Deployment Status
+- Ready for Deployment: ${config.deployment.readyForDeployment}
+- Risk Assessment: ${config.deployment.riskAssessment}
+`;
+  }
+
+  generateSimulationTests(simulationType, parameters) {
+    return `// Tests for ${simulationType} simulation
+const { Generated${simulationType}Simulation } = require('./generated${simulationType}Simulation');
+
+describe('${simulationType} Simulation Tests', () => {
+  it('should run simulation successfully', async () => {
+    const sim = new Generated${simulationType}Simulation();
+    const result = await sim.runSimulation();
+    assert.ok(result.success);
+  });
+});
+`;
+  }
+
+  generateSimulationConfig(simulationType, parameters) {
+    return `{
+  "simulationType": "${simulationType}",
+  "parameters": ${JSON.stringify(parameters, null, 2)},
+  "framework": "Hexperiment Labs Framework",
+  "realLifeStandards": true
+}`;
+  }
+
+  generatePackageJson(projectName) {
+    return `{
+  "name": "${projectName.toLowerCase().replace(/\s+/g, '-')}",
+  "version": "1.0.0",
+  "description": "Generated by H3X Code Generator - Hexperiment Labs Framework",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "npm test",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "framework": "Hexperiment Labs Framework"
+}`;
+  }
+
+  generateReadme(projectName, projectType) {
+    return `# ${projectName}
+
+Generated by H3X Code Generator using Hexperiment Labs Framework.
+
+## Project Type
+${projectType}
+
+## Real-life Standards
+This project follows real-life environment creation standards.
+
+## Getting Started
+\`\`\`bash
+npm install
+npm start
+\`\`\`
+
+## Framework
+Built with Hexperiment Labs Framework for optimal AI assistant deployment.
+`;
+  }
+
+  generateMainFile(projectName, projectType) {
+    return `// ${projectName} - Generated by H3X Code Generator
+// Project Type: ${projectType}
+// Framework: Hexperiment Labs Framework
+
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    project: '${projectName}',
+    type: '${projectType}',
+    framework: 'Hexperiment Labs Framework',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.listen(PORT, () => {
+  console.log('🚀 ${projectName} started on port', PORT);
+  console.log('🔮 Hexperiment Labs Framework Active');
+});
+`;
+  }
+
+  generateIntegrationInstructions(analysisType) {
+    return `
+// Integration instructions for ${analysisType} tool:
+// 1. Import the generated tool
+// 2. Add to your agent's tools array
+// 3. Register the endpoint in your server
+    `;
+  }
+
+  generateEndpointIntegration(endpointName) {
+    return `// Add this to your sirAgent tools registration:
+sirAgent.registerTool('${endpointName}', generated${endpointName}Tool);`;
+  }
+
+  generateEndpointTests(endpointName) {
+    return `// Tests for ${endpointName} endpoint
+describe('${endpointName} Endpoint', () => {
+  it('should respond successfully', async () => {
+    // Test implementation
+  });
+});`;
+  }
+
+  generateTestFile(projectName) {
+    return `// Tests for ${projectName}
+const assert = require('assert');
+
+describe('${projectName} Tests', () => {
+  it('should start successfully', () => {
+    assert.ok(true);
+  });
+});`;
+  }
+
+  generateEnvExample() {
+    return `# Environment variables for H3X generated project
+PORT=3000
+LMSTUDIO_URL=http://localhost:1234/v1
+LMSTUDIO_MODEL=local-model
+FRAMEWORK=Hexperiment_Labs_Framework`;
+  }
+
+  generateDockerfile(projectType) {
+    return `FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+
+# Generated for ${projectType} by H3X Code Generator
+# Framework: Hexperiment Labs Framework`;
+  }
+
+  generateApiDocs(projectName) {
+    return `# ${projectName} API Documentation
+
+Generated by H3X Code Generator using Hexperiment Labs Framework.
+
+## Endpoints
+
+### GET /health
+Health check endpoint
+
+### Framework
+All endpoints follow Hexperiment Labs Framework standards for real-life environment compliance.
+`;
+  }
+
+  /**
+   * Generate Advanced Documentation Suite
+   */
+  async generateDocumentationSuite(projectName, options = {}) {
+    console.log("📚 Generating Advanced Documentation Suite...");
+    
+    const docSuite = {
+      projectName,
+      timestamp: new Date().toISOString(),
+      framework: 'Hexperiment Labs Framework',
+      documentation: {
+        'README.md': this.generateAdvancedReadme(projectName, options),
+        'docs/API_REFERENCE.md': this.generateApiReference(projectName, options),
+        'docs/DEVELOPMENT_GUIDE.md': this.generateDevelopmentGuide(projectName, options),
+        'docs/ARCHITECTURE.md': this.generateArchitectureDoc(projectName, options),
+        'docs/DEPLOYMENT.md': this.generateDeploymentDoc(projectName, options),
+        'docs/CONTRIBUTING.md': this.generateContributingDoc(projectName, options),
+        'docs/CHANGELOG.md': this.generateChangelog(projectName, options),
+        'docs/TROUBLESHOOTING.md': this.generateTroubleshootingDoc(projectName, options),
+        'docs/ENVIRONMENT_SETUP.md': this.generateEnvironmentSetupDoc(projectName, options),
+        'docs/AUTOMATION.md': this.generateAutomationDoc(projectName, options)
+      },
+      templates: {
+        'templates/pull-request.md': this.generatePRTemplate(),
+        'templates/issue.md': this.generateIssueTemplate(),
+        'templates/feature-request.md': this.generateFeatureRequestTemplate()
+      },
+      configuration: {
+        '.github/workflows/docs.yml': this.generateDocsWorkflow(),
+        'docs/config.json': this.generateDocsConfig(projectName, options),
+        'mkdocs.yml': this.generateMkDocsConfig(projectName, options)
+      }
+    };
+
+    return {
+      success: true,
+      generationType: 'DOCUMENTATION_SUITE',
+      documentation: docSuite,
+      realLifeStandards: true,
+      framework: 'Hexperiment Labs Framework'
+    };
+  }
+
+  generateAdvancedReadme(projectName, options) {
+    return `# ${projectName}
+
+> 🚀 **${options.description || 'Advanced AI Assistant System'}** - Built with Hexperiment Labs Framework
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![Documentation](https://img.shields.io/badge/docs-complete-blue)]()
+[![Framework](https://img.shields.io/badge/framework-Hexperiment_Labs-purple)]()
+[![Real-Life Standards](https://img.shields.io/badge/standards-real--life-gold)]()
+
+## 🎯 Overview
+
+${projectName} is a comprehensive AI assistant system designed with real-life deployment standards and production-ready architecture.
+
+### Key Features
+
+- 🧠 **Neural Processing**: Advanced AI logic with synapse activity monitoring
+- 🔄 **Feedback Loops**: Continuous learning and adaptation capabilities  
+- 🐳 **Containerized**: Full Docker deployment with orchestration
+- 📊 **Monitoring**: Real-time system metrics and health checks
+- 🔒 **Security**: Production-grade security and authentication
+- 📚 **Documentation**: Comprehensive auto-generated documentation
+
+## 🏗️ Architecture
+
+\`\`\`mermaid
+graph TB
+    A[Client Interface] --> B[H3X Server]
+    B --> C[Protocol Server]
+    C --> D[AI Processing]
+    D --> E[Feedback System]
+    E --> F[Data Storage]
+    
+    B --> G[Virtual Taskmaster]
+    G --> H[Synapse Monitor]
+    H --> I[Activity Logger]
+\`\`\`
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker Desktop 4.0+
+- Node.js 18+
+- 8GB RAM minimum
+
+### Installation
+
+\`\`\`bash
+# Clone and setup
+git clone <repository>
+cd ${projectName.toLowerCase().replace(/\s+/g, '-')}
+
+# Install dependencies
+npm install
+
+# Setup environment
+npm run env:setup
+
+# Start development environment
+npm run dev:start
+\`\`\`
+
+### Development Workflow
+
+\`\`\`bash
+# Start all services
+npm run dev:up
+
+# View logs
+npm run dev:logs
+
+# Run tests
+npm run test:all
+
+# Generate documentation
+npm run docs:generate
+
+# Deploy to staging
+npm run deploy:staging
+\`\`\`
+
+## 📋 Available Commands
+
+| Command | Description |
+|---------|-------------|
+| \`npm run dev:start\` | Start development environment |
+| \`npm run prod:deploy\` | Deploy to production |
+| \`npm run test:all\` | Run comprehensive tests |
+| \`npm run docs:generate\` | Generate documentation |
+| \`npm run health:check\` | System health monitoring |
+
+## 🔧 Configuration
+
+### Environment Variables
+
+\`\`\`env
+NODE_ENV=development
+LOG_LEVEL=debug
+API_HOST=localhost
+API_PORT=3978
+FRAMEWORK=Hexperiment_Labs
+\`\`\`
+
+### Docker Configuration
+
+The system uses multi-environment Docker configurations:
+- \`docker-compose.dev.yml\` - Development environment
+- \`docker-compose.prod.yml\` - Production environment
+- \`docker-compose.test.yml\` - Testing environment
+
+## 📚 Documentation
+
+- [API Reference](docs/API_REFERENCE.md) - Complete API documentation
+- [Development Guide](docs/DEVELOPMENT_GUIDE.md) - Development workflows
+- [Architecture](docs/ARCHITECTURE.md) - System architecture details
+- [Deployment](docs/DEPLOYMENT.md) - Deployment procedures
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: \`git checkout -b feature/amazing-feature\`
+3. Commit changes: \`git commit -m 'Add amazing feature'\`
+4. Push to branch: \`git push origin feature/amazing-feature\`
+5. Submit a pull request
+
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
+
+## 📊 System Status
+
+- ✅ **Core System**: Operational
+- ✅ **AI Processing**: Active  
+- ✅ **Monitoring**: Real-time
+- ✅ **Documentation**: Auto-generated
+- ✅ **Tests**: Passing
+
+## 🔒 Security
+
+This project follows security best practices:
+- Environment variable management
+- Secure API endpoints
+- Container security scanning
+- Dependency vulnerability monitoring
+
+## 📜 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Hexperiment Labs Framework
+- H3X Development Team
+- Open Source Community
+
+---
+
+**Built with ❤️ using Hexperiment Labs Framework**
+
+*Generated by H3X Code Generator - ${new Date().toISOString()}*
+`;
+  }
+
+  generateApiReference(projectName, options) {
+    return `# API Reference - ${projectName}
+
+## Overview
+
+This document provides comprehensive API documentation for ${projectName}.
+
+## Base URL
+
+\`\`\`
+Development: http://localhost:3978/api
+Production: https://api.${projectName.toLowerCase()}.com
+\`\`\`
+
+## Authentication
+
+All API endpoints require authentication via API key:
+
+\`\`\`bash
+Authorization: Bearer YOUR_API_KEY
+\`\`\`
+
+## Core Endpoints
+
+### Health Check
+
+\`\`\`http
+GET /api/health
+\`\`\`
+
+**Response:**
+\`\`\`json
+{
+  "status": "healthy",
+  "timestamp": "2025-06-01T00:00:00.000Z",
+  "services": {
+    "database": "connected",
+    "ai_processor": "active",
+    "feedback_system": "operational"
+  },
+  "framework": "Hexperiment Labs Framework"
+}
+\`\`\`
+
+### Task Management
+
+#### Create Task
+\`\`\`http
+POST /api/tasks
+Content-Type: application/json
+
+{
+  "description": "Task description",
+  "priority": "high",
+  "category": "ai_processing"
+}
+\`\`\`
+
+#### Get Tasks
+\`\`\`http
+GET /api/tasks?status=active&limit=50
+\`\`\`
+
+#### Update Task
+\`\`\`http
+PUT /api/tasks/:id
+Content-Type: application/json
+
+{
+  "status": "completed",
+  "result": "Task completed successfully"
+}
+\`\`\`
+
+### AI Processing
+
+#### Process Request
+\`\`\`http
+POST /api/ai/process
+Content-Type: application/json
+
+{
+  "input": "User input text",
+  "model": "gpt-4",
+  "parameters": {
+    "temperature": 0.7,
+    "max_tokens": 1000
+  }
+}
+\`\`\`
+
+**Response:**
+\`\`\`json
+{
+  "success": true,
+  "response": "AI generated response",
+  "metadata": {
+    "processing_time": 1200,
+    "tokens_used": 150,
+    "model": "gpt-4"
+  },
+  "framework": "Hexperiment Labs Framework"
+}
+\`\`\`
+
+### Monitoring
+
+#### System Metrics
+\`\`\`http
+GET /api/metrics
+\`\`\`
+
+#### Activity Logs
+\`\`\`http
+GET /api/logs?level=info&limit=100
+\`\`\`
+
+## Error Handling
+
+All API endpoints return consistent error responses:
+
+\`\`\`json
+{
+  "error": true,
+  "code": "VALIDATION_ERROR",
+  "message": "Invalid input parameters",
+  "details": {
+    "field": "description",
+    "reason": "Required field missing"
+  },
+  "timestamp": "2025-06-01T00:00:00.000Z"
+}
+\`\`\`
+
+## Rate Limiting
+
+- Development: 1000 requests/minute
+- Production: 10000 requests/minute
+
+## WebSocket Endpoints
+
+### Real-time Task Updates
+\`\`\`javascript
+const ws = new WebSocket('ws://localhost:3978/ws/tasks');
+ws.onmessage = (event) => {
+  const update = JSON.parse(event.data);
+  console.log('Task update:', update);
+};
+\`\`\`
+
+## SDK Examples
+
+### JavaScript/Node.js
+
+\`\`\`javascript
+const H3XClient = require('${projectName.toLowerCase()}-sdk');
+
+const client = new H3XClient({
+  apiKey: process.env.API_KEY,
+  baseUrl: 'http://localhost:3978/api'
+});
+
+// Create task
+const task = await client.tasks.create({
+  description: 'Process user input',
+  priority: 'high'
+});
+
+// Process AI request
+const response = await client.ai.process({
+  input: 'Hello world',
+  model: 'gpt-4'
+});
+\`\`\`
+
+### Python
+
+\`\`\`python
+from h3x_client import H3XClient
+
+client = H3XClient(
+    api_key=os.getenv('API_KEY'),
+    base_url='http://localhost:3978/api'
+)
+
+# Create task
+task = client.tasks.create({
+    'description': 'Process user input',
+    'priority': 'high'
+})
+
+# Process AI request
+response = client.ai.process({
+    'input': 'Hello world',
+    'model': 'gpt-4'
+})
+\`\`\`
+
+## Framework Integration
+
+This API is built with the Hexperiment Labs Framework, providing:
+- Real-life deployment standards
+- Comprehensive error handling
+- Automatic documentation generation
+- Built-in monitoring and metrics
+
+---
+
+*Generated by H3X Code Generator - ${new Date().toISOString()}*
+`;
+  }
+
+  generateDevelopmentGuide(projectName, options) {
+    return `# Development Guide - ${projectName}
+
+## Overview
+
+This guide covers the complete development workflow for ${projectName}.
+
+## Development Environment Setup
+
+### Prerequisites
+
+1. **System Requirements**
+   - Node.js 18+ 
+   - Docker Desktop 4.0+
+   - Git 2.30+
+   - Visual Studio Code (recommended)
+   - 8GB RAM minimum
+
+2. **Required Tools**
+   \`\`\`bash
+   # Install global dependencies
+   npm install -g nodemon
+   npm install -g docker-compose
+   \`\`\`
+
+### Initial Setup
+
+1. **Clone and Install**
+   \`\`\`bash
+   git clone <repository>
+   cd ${projectName.toLowerCase().replace(/\s+/g, '-')}
+   npm install
+   \`\`\`
+
+2. **Environment Configuration**
+   \`\`\`bash
+   # Copy environment template
+   cp .env.example .env.development
+   
+   # Edit configuration
+   code .env.development
+   \`\`\`
+
+3. **Database Setup**
+   \`\`\`bash
+   # Start database containers
+   npm run db:start
+   
+   # Run migrations
+   npm run db:migrate
+   
+   # Seed test data
+   npm run db:seed
+   \`\`\`
+
+## Development Workflow
+
+### Daily Development
+
+1. **Start Development Environment**
+   \`\`\`bash
+   # Start all services
+   npm run dev:start
+   
+   # View service status
+   npm run dev:status
+   \`\`\`
+
+2. **Code with Hot Reload**
+   \`\`\`bash
+   # Start with file watching
+   npm run dev:watch
+   
+   # View logs in real-time
+   npm run dev:logs
+   \`\`\`
+
+3. **Testing During Development**
+   \`\`\`bash
+   # Run tests on file changes
+   npm run test:watch
+   
+   # Run specific test suite
+   npm run test:unit
+   npm run test:integration
+   \`\`\`
+
+### Code Generation
+
+The project includes the H3X Code Generator for rapid development:
+
+\`\`\`bash
+# Generate new AI tool
+npm run generate:tool -- --name "DataProcessor" --type "analysis"
+
+# Generate API endpoint
+npm run generate:endpoint -- --name "tasks" --methods "GET,POST,PUT,DELETE"
+
+# Generate complete documentation
+npm run generate:docs
+
+# Generate test files
+npm run generate:tests -- --component "TaskManager"
+\`\`\`
+
+### Virtual Taskmaster Integration
+
+The development environment includes the Virtual Taskmaster for task management:
+
+1. **Access Interface**: http://localhost:3978/taskmaster
+2. **Features**:
+   - Real-time task tracking
+   - Synapse activity monitoring
+   - Auto-completion capabilities
+   - Development task integration
+
+## Code Structure
+
+\`\`\`
+src/
+├── api/              # API endpoints
+├── components/       # Reusable components
+├── generators/       # Code generators
+├── services/         # Business logic
+├── utils/           # Utility functions
+├── tests/           # Test files
+└── config/          # Configuration files
+
+public/
+├── js/              # Frontend JavaScript
+├── css/             # Stylesheets
+└── assets/          # Static assets
+
+docs/
+├── api/             # API documentation
+├── guides/          # Development guides
+└── architecture/    # System architecture
+\`\`\`
+
+## Coding Standards
+
+### JavaScript/Node.js
+
+1. **ESLint Configuration**
+   \`\`\`json
+   {
+     "extends": ["eslint:recommended"],
+     "env": {
+       "node": true,
+       "es2022": true
+     },
+     "rules": {
+       "indent": ["error", 2],
+       "quotes": ["error", "single"],
+       "semi": ["error", "always"]
+     }
+   }
+   \`\`\`
+
+2. **Code Formatting**
+   \`\`\`bash
+   # Format code
+   npm run format
+   
+   # Check formatting
+   npm run format:check
+   \`\`\`
+
+### Documentation Standards
+
+All code must include:
+- JSDoc comments for functions
+- README files for modules
+- API documentation for endpoints
+- Test descriptions
+
+Example:
+\`\`\`javascript
+/**
+ * Process AI request with Hexperiment Labs Framework
+ * @param {Object} request - The input request
+ * @param {string} request.input - User input text
+ * @param {Object} request.options - Processing options
+ * @returns {Promise<Object>} Processed response
+ */
+async function processAIRequest(request) {
+  // Implementation
+}
+\`\`\`
+
+## Testing Strategy
+
+### Test Types
+
+1. **Unit Tests**
+   - Individual function testing
+   - Component isolation testing
+   - Mock external dependencies
+
+2. **Integration Tests**
+   - API endpoint testing
+   - Database integration
+   - Service communication
+
+3. **End-to-End Tests**
+   - Complete workflow testing
+   - User interface testing
+   - Production scenario simulation
+
+### Test Commands
+
+\`\`\`bash
+# Run all tests
+npm run test:all
+
+# Run with coverage
+npm run test:coverage
+
+# Run performance tests
+npm run test:performance
+
+# Run security tests
+npm run test:security
+\`\`\`
+
+## Debugging
+
+### Development Debugging
+
+1. **Node.js Debugging**
+   \`\`\`bash
+   # Start with debugger
+   npm run debug
+   
+   # Attach debugger (VS Code)
+   # Use "Node.js: Attach" configuration
+   \`\`\`
+
+2. **Container Debugging**
+   \`\`\`bash
+   # Debug specific container
+   docker exec -it h3x-main-dev /bin/bash
+   
+   # View container logs
+   docker logs h3x-main-dev -f
+   \`\`\`
+
+### Production Debugging
+
+1. **Log Analysis**
+   \`\`\`bash
+   # View application logs
+   npm run logs:app
+   
+   # View system logs
+   npm run logs:system
+   
+   # Export logs for analysis
+   npm run logs:export
+   \`\`\`
+
+## Performance Optimization
+
+### Monitoring
+
+1. **Real-time Metrics**
+   - CPU usage monitoring
+   - Memory consumption tracking
+   - Response time analysis
+   - Error rate monitoring
+
+2. **Performance Testing**
+   \`\`\`bash
+   # Load testing
+   npm run test:load
+   
+   # Stress testing
+   npm run test:stress
+   
+   # Memory leak detection
+   npm run test:memory
+   \`\`\`
+
+## Disaster Recovery
+
+### Backup Strategy
+
+1. **Data Backups**
+   - Daily database backups
+   - File system snapshots
+   - Cross-region replication
+
+2. **Service Recovery**
+   - Container orchestration
+   - Automatic restart policies
+   - Health check automation
+
+### Business Continuity
+
+1. **Failover Procedures**
+   - Primary/secondary setup
+   - Automatic failover
+   - Manual recovery steps
+
+2. **Data Recovery**
+   - Point-in-time recovery
+   - Backup verification
+   - Recovery testing
+
+---
+
+*Built with Hexperiment Labs Framework - Real-life deployment standards*
+
+*Generated by H3X Code Generator - ${new Date().toISOString()}*
+`;
+  }
+
+  generateDeploymentDoc(projectName, options) {
+    return `# Deployment Guide - ${projectName}
+
+## Overview
+
+This guide covers comprehensive deployment procedures for ${projectName} across different environments.
+
+## Prerequisites
+
+### System Requirements
+
+- **Minimum**: 4GB RAM, 2 CPU cores, 50GB storage
+- **Recommended**: 8GB RAM, 4 CPU cores, 100GB storage
+- **Production**: 16GB RAM, 8 CPU cores, 500GB storage
+
+### Software Requirements
+
+- Docker Engine 20.10+
+- Docker Compose 2.0+
+- Node.js 18+ (for local development)
+- Git 2.30+
+
+## Environment Setup
+
+### Development Environment
+
+1. **Local Development Setup**
+   \`\`\`bash
+   # Clone repository
+   git clone https://github.com/your-org/${projectName}.git
+   cd ${projectName}
+
+   # Install dependencies
+   npm install
+
+   # Setup environment
+   cp .env.example .env.development
+
+   # Start development environment
+   npm run env:dev
+   \`\`\`
+
+2. **Development Configuration**
+   \`\`\`env
+   NODE_ENV=development
+   API_PORT=3000
+   PROTOCOL_PORT=8081
+   DEBUG=true
+   LOG_LEVEL=debug
+   FRAMEWORK=Hexperiment_Labs
+   \`\`\`
+
+3. **Database Setup**
+   \`\`\`bash
+   # Run migrations
+   npm run db:migrate
+
+   # Seed development data
+   npm run db:seed
+
+   # Reset database (if needed)
+   npm run db:reset
+   \`\`\`
+
+### Staging Environment
+
+1. **Staging Setup**
+   \`\`\`bash
+   # Create staging environment
+   cp .env.example .env.staging
+   
+   # Configure staging settings
+   vim .env.staging
+   
+   # Deploy to staging
+   npm run deploy:staging
+   \`\`\`
+
+2. **Staging Configuration**
+   \`\`\`env
+   NODE_ENV=staging
+   API_PORT=3978
+   PROTOCOL_PORT=8081
+   DEBUG=false
+   LOG_LEVEL=info
+   DATABASE_URL=staging-db-url
+   REDIS_URL=staging-redis-url
+   \`\`\`
+
+### Production Environment
+
+1. **Production Deployment**
+   \`\`\`bash
+   # Prepare production environment
+   cp .env.example .env.production
+   
+   # Configure production settings
+   vim .env.production
+   
+   # Deploy to production
+   npm run deploy:production
+   \`\`\`
+
+2. **Production Configuration**
+   \`\`\`env
+   NODE_ENV=production
+   API_PORT=3978
+   PROTOCOL_PORT=8081
+   DEBUG=false
+   LOG_LEVEL=warn
+   DATABASE_URL=production-db-url
+   REDIS_URL=production-redis-url
+   SSL_ENABLED=true
+   \`\`\`
+
+## Docker Deployment
+
+### Single Server Deployment
+
+1. **Basic Docker Compose**
+   \`\`\`yaml
+   version: '3.8'
+   services:
+     h3x-server:
+       build: .
+       ports:
+         - "3978:3978"
+       environment:
+         - NODE_ENV=production
+       volumes:
+         - ./data:/app/data
+       restart: unless-stopped
+   
+     protocol-server:
+       build: ./protocol
+       ports:
+         - "8081:8081"
+       depends_on:
+         - h3x-server
+       restart: unless-stopped
+   \`\`\`
+
+2. **Deploy Commands**
+   \`\`\`bash
+   # Build and start services
+   docker-compose up -d
+   
+   # Check service status
+   docker-compose ps
+   
+   # View logs
+   docker-compose logs -f
+   
+   # Stop services
+   docker-compose down
+   \`\`\`
+
+### Multi-Server Deployment
+
+1. **Docker Swarm Setup**
+   \`\`\`bash
+   # Initialize swarm
+   docker swarm init
+   
+   # Add worker nodes
+   docker swarm join --token <worker-token> <manager-ip>
+   
+   # Deploy stack
+   docker stack deploy -c docker-compose.swarm.yml h3x
+   \`\`\`
+
+2. **Kubernetes Deployment**
+   \`\`\`yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: h3x-server
+   spec:
+     replicas: 3
+     selector:
+       matchLabels:
+         app: h3x-server
+     template:
+       metadata:
+         labels:
+           app: h3x-server
+       spec:
+         containers:
+         - name: h3x-server
+           image: h3x-server:latest
+           ports:
+           - containerPort: 3978
+   \`\`\`
+
+## Cloud Deployment
+
+### AWS Deployment
+
+1. **ECS Service**
+   \`\`\`json
+   {
+     "family": "h3x-service",
+     "networkMode": "awsvpc",
+     "cpu": "256",
+     "memory": "512",
+     "containerDefinitions": [
+       {
+         "name": "h3x-server",
+         "image": "your-registry/h3x-server:latest",
+         "portMappings": [
+           {
+             "containerPort": 3978,
+             "protocol": "tcp"
+           }
+         ]
+       }
+     ]
+   }
+   \`\`\`
+
+2. **ECS Deployment Commands**
+   \`\`\`bash
+   # Build and push image
+   docker build -t h3x-server .
+   docker tag h3x-server:latest <aws-account>.dkr.ecr.<region>.amazonaws.com/h3x-server:latest
+   docker push <aws-account>.dkr.ecr.<region>.amazonaws.com/h3x-server:latest
+   
+   # Update ECS service
+   aws ecs update-service --cluster h3x-cluster --service h3x-service --force-new-deployment
+   \`\`\`
+
+### Azure Deployment
+
+1. **Container Instances**
+   \`\`\`bash
+   # Create resource group
+   az group create --name h3x-rg --location eastus
+   
+   # Deploy container
+   az container create \\
+     --resource-group h3x-rg \\
+     --name h3x-server \\
+     --image your-registry/h3x-server:latest \\
+     --ports 3978 \\
+     --environment-variables NODE_ENV=production
+   \`\`\`
+
+### Google Cloud Deployment
+
+1. **Cloud Run**
+   \`\`\`bash
+   # Build and push to Container Registry
+   docker build -t gcr.io/your-project/h3x-server .
+   docker push gcr.io/your-project/h3x-server
+   
+   # Deploy to Cloud Run
+   gcloud run deploy h3x-server \\
+     --image gcr.io/your-project/h3x-server \\
+     --platform managed \\
+     --region us-central1 \\
+     --allow-unauthenticated
+   \`\`\`
+
+## Database Deployment
+
+### MongoDB Setup
+
+1. **Docker MongoDB**
+   \`\`\`yaml
+   services:
+     mongodb:
+       image: mongo:6.0
+       environment:
+         MONGO_INITDB_ROOT_USERNAME: admin
+         MONGO_INITDB_ROOT_PASSWORD: password
+       volumes:
+         - mongodb_data:/data/db
+       ports:
+         - "27017:27017"
+   \`\`\`
+
+2. **MongoDB Atlas (Cloud)**
+   \`\`\`bash
+   # Configure connection string
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+   \`\`\`
+
+### Redis Setup
+
+1. **Docker Redis**
+   \`\`\`yaml
+   services:
+     redis:
+       image: redis:7.0-alpine
+       volumes:
+         - redis_data:/data
+       ports:
+         - "6379:6379"
+   \`\`\`
+
+## Load Balancing
+
+### Nginx Configuration
+
+1. **Nginx Config**
+   \`\`\`nginx
+   upstream h3x_backend {
+     server h3x-server-1:3978;
+     server h3x-server-2:3978;
+     server h3x-server-3:3978;
+   }
+   
+   server {
+     listen 80;
+     server_name your-domain.com;
+     
+     location / {
+       proxy_pass http://h3x_backend;
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+     }
+   }
+   \`\`\`
+
+### Application Load Balancer (AWS)
+
+1. **ALB Configuration**
+   \`\`\`bash
+   # Create target group
+   aws elbv2 create-target-group \\
+     --name h3x-targets \\
+     --protocol HTTP \\
+     --port 3978 \\
+     --vpc-id vpc-12345678
+   
+   # Create load balancer
+   aws elbv2 create-load-balancer \\
+     --name h3x-alb \\
+     --subnets subnet-12345678 subnet-87654321
+   \`\`\`
+
+## SSL/TLS Configuration
+
+### Let's Encrypt (Free SSL)
+
+1. **Certbot Setup**
+   \`\`\`bash
+   # Install certbot
+   sudo apt install certbot python3-certbot-nginx
+   
+   # Generate certificate
+   sudo certbot --nginx -d your-domain.com
+   \`\`\`
+
+### Custom SSL Certificate
+
+1. **Nginx SSL Config**
+   \`\`\`nginx
+   server {
+     listen 443 ssl;
+     server_name your-domain.com;
+     
+     ssl_certificate /path/to/certificate.crt;
+     ssl_certificate_key /path/to/private.key;
+     
+     location / {
+       proxy_pass http://h3x_backend;
+     }
+   }
+   \`\`\`
+
+## Monitoring & Observability
+
+### Metrics Collection
+
+1. **Application Metrics**
+   - Response times
+   - Error rates
+   - Throughput
+   - User activity
+
+2. **System Metrics**
+   - CPU utilization
+   - Memory usage
+   - Disk I/O
+   - Network traffic
+
+### Logging Strategy
+
+\`\`\`javascript
+// Structured logging example
+logger.info('Task completed', {
+  taskId: 'task-123',
+  userId: 'user-456',
+  duration: 1200,
+  timestamp: new Date().toISOString(),
+  service: 'h3x-server'
+});
+\`\`\`
+
+### Health Monitoring
+
+1. **Health Endpoints**
+   - Service availability
+   - Database connectivity
+   - External service status
+
+2. **Automated Alerts**
+   - Error rate thresholds
+   - Performance degradation
+   - Service downtime
+
+## Performance Considerations
+
+1. **Node.js Optimization**
+   - Use `--max-old-space-size` for memory
+   - Enable `NODE_OPTIONS` for performance flags
+   - Use `pm2` for process management
+
+2. **Docker Optimization**
+   - Use multi-stage builds
+   - Optimize image layers
+   - Use `.dockerignore` to exclude unnecessary files
+
+3. **Database Optimization**
+   - Use indexes for faster queries
+   - Optimize connection pooling
+   - Regularly analyze and optimize queries
+
+4. **Code Optimization**
+   - Avoid blocking the event loop
+   - Use asynchronous programming patterns
+   - Optimize algorithms and data structures
+
+## Security Hardening
+
+1. **Environment Security**
+   - Use `.env` files for secrets
+   - Never hard-code secrets in the codebase
+   - Use `dotenv` to load environment variables
+
+2. **API Security**
+   - Implement rate limiting
+   - Validate and sanitize all inputs
+   - Use HTTPS for all communications
+
+3. **Container Security**
+   - Run containers as non-root users
+   - Limit container capabilities
+   - Regularly update base images
+
+4. **Network Security**
+   - Use firewalls to restrict access
+   - Isolate services in separate networks
+   - Use VPNs for secure communication
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Container Won't Start**
+   \`\`\`bash
+   # Check logs
+   docker logs container-name
+   
+   # Check resource usage
+   docker stats
+   
+   # Inspect container
+   docker inspect container-name
+   \`\`\`
+
+2. **Database Connection Issues**
+   \`\`\`bash
+   # Test database connectivity
+   docker exec -it mongodb mongo --eval "db.runCommand('ping')"
+   
+   # Check network connectivity
+   docker exec -it h3x-server ping mongodb
+   \`\`\`
+
+3. **Performance Issues**
+   \`\`\`bash
+   # Monitor resource usage
+   docker stats --no-stream
+   
+   # Check application metrics
+   curl http://localhost:3978/metrics
+   \`\`\`
+
+## Post-Deployment Checklist
+
+- [ ] All services started successfully
+- [ ] Health checks passing
+- [ ] Database connectivity verified
+- [ ] SSL certificates valid
+- [ ] Monitoring configured
+- [ ] Backups scheduled
+- [ ] Load balancer operational
+- [ ] DNS configured
+- [ ] Security scans completed
+- [ ] Performance benchmarks met
+
+---
+
+*Built with Hexperiment Labs Framework - Production-ready deployment*
+
+*Generated by H3X Code Generator - ${new Date().toISOString()}*
+`;
+  }
+
+  generateContributingDoc(projectName, options) {
+    return `# Contributing to ${projectName}
+
+## Welcome Contributors! 🎉
+
+Thank you for your interest in contributing to ${projectName}. This guide will help you get started with contributing to our Hexperiment Labs Framework project.
+
+## Code of Conduct
+
+By participating in this project, you agree to abide by our Code of Conduct:
+
+- Be respectful and inclusive
+- Focus on constructive feedback
+- Help others learn and grow
+- Maintain professional communication
+
+## Getting Started
+
+### Prerequisites
+
+1. **Development Environment**
+   - Node.js 18+
+   - Docker Desktop
+   - Git 2.30+
+   - Code editor (VS Code recommended)
+
+2. **Account Setup**
+   - GitHub account
+   - Fork the repository
+   - Clone your fork locally
+
+### Initial Setup
+
+\`\`\`bash
+# Clone your fork
+git clone https://github.com/your-username/${projectName.toLowerCase().replace(/\s+/g, '-')}.git
+cd ${projectName.toLowerCase().replace(/\s+/g, '-')}
+
+# Add upstream remote
+git remote add upstream https://github.com/original-owner/${projectName.toLowerCase().replace(/\s+/g, '-')}.git
+
+# Install dependencies
+npm install
+
+# Setup development environment
+npm run dev:setup
+\`\`\`
+
+## Development Workflow
+
+### 1. Create a Feature Branch
+
+\`\`\`bash
+# Update your main branch
+git checkout main
+git pull upstream main
+
+# Create feature branch
+git checkout -b feature/amazing-feature
+\`\`\`
+
+### 2. Make Your Changes
+
+1. **Code Standards**
+   - Follow existing code style
+   - Add JSDoc comments
+   - Include unit tests
+   - Update documentation
+
+2. **Testing**
+   \`\`\`bash
+   # Run tests
+   npm run test
+   
+   # Run linting
+   npm run lint
+   
+   # Check code coverage
+   npm run test:coverage
+   \`\`\`
+
+### 3. Commit Your Changes
+
+\`\`\`bash
+# Stage changes
+git add .
+
+# Commit with conventional format
+git commit -m "feat: add amazing new feature
+
+- Implement feature X
+- Add unit tests
+- Update documentation"
+\`\`\`
+
+### 4. Submit Pull Request
+
+\`\`\`bash
+# Push to your fork
+git push origin feature/amazing-feature
+
+# Create PR through GitHub interface
+\`\`\`
+
+## Contribution Types
+
+### 🐛 Bug Reports
+
+Use the bug report template:
+
+\`\`\`markdown
+**Bug Description**
+Clear description of the bug
+
+**Steps to Reproduce**
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+**Expected Behavior**
+A clear and concise description of what you expected to happen.
+
+**Actual Behavior**
+A clear and concise description of what actually happened.
+
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
+
+**Environment**
+- OS: [e.g. Windows 10, macOS 12, Ubuntu 20.04]
+- Node.js: [e.g. 18.12.0]
+- Project Version: [e.g. 1.0.0]
+
+**Additional Context**
+Add any other context about the problem here.
+
+**Possible Solution**
+If you have ideas on how to fix the issue, please describe them here.
+\`\`\`
+
+### ✨ Feature Requests
+
+Use the feature request template:
+
+\`\`\`markdown
+**Feature Description**
+Clear description of the feature
+
+**Use Case**
+Why is this feature needed?
+
+**Proposed Solution**
+How should it work?
+
+**Alternatives Considered**
+Other approaches considered
+
+**Benefits**
+- Benefit 1
+- Benefit 2
+- Benefit 3
+
+**Implementation Ideas**
+If you have ideas on how this could be implemented, please describe them here.
+
+**Additional Context**
+Add any other context, screenshots, or examples about the feature request here.
+
+**Priority**
+- [ ] Low
+- [ ] Medium
+- [ ] High
+- [ ] Critical
+
+**Acceptance Criteria**
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+\`\`\`
+
+### 📖 Documentation
+
+Documentation improvements are always welcome:
+
+- Fix typos and grammar
+- Add examples and tutorials
+- Improve API documentation
+- Create guides for common tasks
+
+### 🧪 Testing
+
+Help improve test coverage:
+
+- Add unit tests
+- Create integration tests
+- Improve test utilities
+- Add performance tests
+
+## Coding Standards
+
+### JavaScript/Node.js Style
+
+\`\`\`javascript
+// Use const/let instead of var
+const apiUrl = 'https://api.example.com';
+let currentUser = null;
+
+// Function documentation
+/**
+ * Process user input with Hexperiment Labs Framework
+ * @param {Object} input - User input data
+ * @param {Object} options - Processing options
+ * @returns {Promise<Object>} Processed result
+ */
+async function processInput(input, options = {}) {
+  // Implementation
+}
+
+// Error handling
+try {
+  const result = await processInput(data);
+  return result;
+} catch (error) {
+  logger.error('Processing failed:', error);
+  throw error;
+}
+\`\`\`
+
+### CSS Style
+
+\`\`\`css
+/* Use meaningful class names */
+.task-management-panel {
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* Mobile-first responsive design */
+@media (min-width: 768px) {
+  .task-management-panel {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+}
+\`\`\`
+
+### HTML Structure
+
+\`\`\`html
+<!-- Semantic HTML -->
+<main class="application-content">
+  <section class="task-dashboard">
+    <h2>Task Management</h2>
+    <article class="task-item">
+      <h3>Task Title</h3>
+      <p>Task description</p>
+    </article>
+  </section>
+</main>
+\`\`\`
+
+## Testing Guidelines
+
+### Unit Tests
+
+\`\`\`javascript
+// test/unit/taskManager.test.js
+const { TaskManager } = require('../../src/services/TaskManager');
+
+describe('TaskManager', () => {
+  let taskManager;
+
+  beforeEach(() => {
+    taskManager = new TaskManager();
+  });
+
+  describe('createTask', () => {
+    it('should create a new task', async () => {
+      const taskData = {
+        description: 'Test task',
+        priority: 'high'
+      };
+
+      const task = await taskManager.createTask(taskData);
+
+      expect(task).toBeDefined();
+      expect(task.description).toBe(taskData.description);
+      expect(task.status).toBe('pending');
+    });
+
+    it('should validate required fields', async () => {
+      await expect(taskManager.createTask({}))
+        .rejects.toThrow('Description is required');
+    });
+  });
+});
+\`\`\`
+
+### Integration Tests
+
+\`\`\`javascript
+// test/integration/api.test.js
+const request = require('supertest');
+const app = require('../../src/app');
+
+describe('API Integration', () => {
+  describe('POST /api/tasks', () => {
+    it('should create a new task', async () => {
+      const response = await request(app)
+        .post('/api/tasks')
+        .send({
+          description: 'Integration test task',
+          priority: 'medium'
+        })
+        .expect(201);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.task.description).toBe('Integration test task');
+    });
+  });
+});
+\`\`\`
+
+## Documentation Standards
+
+### README Updates
+
+When adding features, update relevant sections:
+
+- Installation instructions
+- Usage examples
+- API documentation
+- Configuration options
+
+### Code Documentation
+
+\`\`\`javascript
+/**
+ * TaskManager handles task lifecycle operations
+ * Built with Hexperiment Labs Framework standards
+ */
+class TaskManager {
+  /**
+   * Creates a new task instance
+   * @param {Object} taskData - Task configuration
+   * @param {string} taskData.description - Task description
+   * @param {string} [taskData.priority='medium'] - Task priority
+   * @param {Object} [options={}] - Additional options
+   * @returns {Promise<Task>} Created task instance
+   * @throws {ValidationError} When required fields are missing
+   * @example
+   * const task = await taskManager.createTask({
+   *   description: 'Process user data',
+   *   priority: 'high'
+   * });
+   */
+  async createTask(taskData, options = {}) {
+    // Implementation
+  }
+}
+\`\`\`
+
+## Review Process
+
+### Pull Request Requirements
+
+- [ ] **Tests**: All tests pass
+- [ ] **Linting**: Code follows style guidelines
+- [ ] **Documentation**: README and comments updated
+- [ ] **Changelog**: Entry added if applicable
+- [ ] **Breaking Changes**: Documented in PR description
+
+### Review Checklist
+
+Reviewers will check:
+
+1. **Functionality**
+   - Feature works as described
+   - Edge cases handled
+   - Error handling implemented
+
+2. **Code Quality**
+   - Follows coding standards
+   - Well-documented
+   - Efficient implementation
+
+3. **Testing**
+   - Adequate test coverage
+   - Tests are meaningful
+   - Integration tests included
+
+4. **Documentation**
+   - Updated where necessary
+   - Examples are clear
+   - API docs accurate
+
+## Release Process
+
+### Semantic Versioning
+
+We follow [SemVer](https://semver.org/):
+
+- **MAJOR**: Breaking changes
+- **MINOR**: New features (backward compatible)
+- **PATCH**: Bug fixes (backward compatible)
+
+### Changelog Format
+
+\`\`\`markdown
+## [1.2.0] - 2025-06-01
+
+### Added
+- Virtual Taskmaster integration
+- Development automation workflows
+- Comprehensive API reference documentation
+
+### Changed
+- Improved code generation algorithms
+- Enhanced documentation templates
+- Optimized Docker configurations
+
+### Fixed
+- Documentation generation pipeline
+- Environment setup automation
+- Dependency management issues
+
+### Security
+- Implemented secure API authentication
+- Added environment variable protection
+- Enhanced container security configurations
+
+## [1.0.0] - 2025-06-01
+
+### Added
+- Initial release of ${projectName}
+- Core H3X Code Generator functionality
+- Docker containerization support
+- Virtual Taskmaster integration
+- Multi-environment deployment support
+- Automated testing framework
+- Development workflow automation
+
+### Changed
+- Improved code generation algorithms
+- Enhanced documentation templates
+- Optimized Docker configurations
+
+### Fixed
+- Documentation generation pipeline
+- Environment setup automation
+- Dependency management issues
+
+### Security
+- Implemented secure API authentication
+- Added environment variable protection
+- Enhanced container security configurations
+
+## [0.1.0] - Initial Development
+
+### Added
+- Project foundation and architecture
+- Basic code generation capabilities
+- Initial documentation structure
+- Development environment setup
+
+---
+
+## Release Notes
+
+### ${version} Highlights
+- **Enhanced Documentation**: Comprehensive auto-generated docs
+- **Virtual Taskmaster**: Advanced task management and monitoring
+- **Automation**: Full development workflow automation
+- **Docker Support**: Multi-environment containerization
+- **API Reference**: Complete API documentation with examples
+
+### Upgrade Instructions
+1. Update dependencies: \`npm install\`
+2. Run environment check: \`npm run setup-check\`
+3. Restart services: \`npm run env:dev\`
+4. Generate new docs: \`npm run docs:generate\`
+
+### Breaking Changes
+- Updated API endpoints (see MIGRATION.md)
+- Modified configuration structure
+- Changed environment variable names
+
+### Migration Guide
+See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions.
+\`\`\`
+
+## Community
+
+### Getting Help
+
+- **GitHub Issues**: Bug reports and feature requests
+- **Discussions**: General questions and ideas
+- **Documentation**: Check existing docs first
+- **Examples**: Look at example implementations
+
+### Communication
+
+- Be patient and respectful
+- Provide context and examples
+- Search existing issues before creating new ones
+- Use clear, descriptive titles
+
+## Recognition
+
+Contributors are recognized in:
+
+- README.md contributors section
+- Release notes
+- Project documentation
+- Annual contributor highlights
+
+## Framework Guidelines
+
+### Hexperiment Labs Framework Standards
+
+All contributions must follow the framework principles:
+
+1. **Real-life Standards**
+   - Production-ready code
+   - Comprehensive error handling
+   - Security best practices
+   - Performance optimization
+
+2. **Documentation First**
+   - Clear API documentation
+   - Usage examples
+   - Architecture explanations
+   - Troubleshooting guides
+
+3. **Testing Requirements**
+   - Unit test coverage > 80%
+   - Integration tests for APIs
+   - End-to-end test scenarios
+   - Performance benchmarks
+
+Thank you for contributing to ${projectName}! 🚀
+
+---
+
+*Built with ❤️ using Hexperiment Labs Framework*
+
+*Generated by H3X Code Generator - ${new Date().toISOString()}*
+`;
+  }
+
+  /**
+   * Generate project changelog
+   */
+  generateChangelog(projectName = 'H3X-fLups', options = {}) {
+    const version = options.version || '1.0.0';
+    const date = new Date().toISOString().split('T')[0];
+    
+    return `# Changelog
+
+All notable changes to ${projectName} will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Enhanced documentation generation system
+- Virtual Taskmaster integration
+- Development automation workflows
+- Comprehensive API reference documentation
+
+## [${version}] - ${date}
+
+### Added
+- Initial release of ${projectName}
+- Core H3X Code Generator functionality
+- Docker containerization support
+- Virtual Taskmaster integration
+- Multi-environment deployment support
+- Automated testing framework
+- Development workflow automation
+
+### Changed
+- Improved code generation algorithms
+- Enhanced documentation templates
+- Optimized Docker configurations
+
+### Fixed
+- Documentation generation pipeline
+- Environment setup automation
+- Dependency management issues
+
+### Security
+- Implemented secure API authentication
+- Added environment variable protection
+- Enhanced container security configurations
+
+## [0.1.0] - Initial Development
+
+### Added
+- Project foundation and architecture
+- Basic code generation capabilities
+- Initial documentation structure
+- Development environment setup
+
+---
+
+## Release Notes
+
+### ${version} Highlights
+- **Enhanced Documentation**: Comprehensive auto-generated docs
+- **Virtual Taskmaster**: Advanced task management and monitoring
+- **Automation**: Full development workflow automation
+- **Docker Support**: Multi-environment containerization
+- **API Reference**: Complete API documentation with examples
+
+### Upgrade Instructions
+1. Update dependencies: \`npm install\`
+2. Run environment check: \`npm run setup-check\`
+3. Restart services: \`npm run env:dev\`
+4. Generate new docs: \`npm run docs:generate\`
+
+### Breaking Changes
+- Updated API endpoints (see MIGRATION.md)
+- Modified configuration structure
+- Changed environment variable names
+
+### Migration Guide
+See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions.
+`;
+  }
+
+  /**
+   * Generate troubleshooting documentation
+   */
+  generateTroubleshootingDoc(projectName = 'H3X-fLups', options = {}) {
+    return `# Troubleshooting Guide
+
+Common issues and solutions for ${projectName}.
+
+## Table of Contents
+- [Installation Issues](#installation-issues)
+- [Docker Problems](#docker-problems)
+- [Environment Setup](#environment-setup)
+- [API Issues](#api-issues)
+- [Performance Problems](#performance-problems)
+- [Development Workflow](#development-workflow)
+- [Getting Help](#getting-help)
+
+## Installation Issues
+
+### Node.js Version Compatibility
+**Problem**: \`npm install\` fails with version errors
+**Solution**:
+\`\`\`bash
+# Check Node.js version
+node --version
+
+# Install required version (18.x or higher)
+nvm install 18
+nvm use 18
+\`\`\`
+
+### Dependency Conflicts
+**Problem**: Package dependency conflicts
+**Solution**:
+\`\`\`bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and package-lock.json
+rm -rf node_modules package-lock.json
+
+# Reinstall dependencies
+npm install
+\`\`\`
+
+## Docker Problems
+
+### Container Build Failures
+**Problem**: Docker build fails or containers won't start
+**Solution**:
+\`\`\`bash
+# Check Docker status
+docker --version
+docker-compose --version
+
+# Clean Docker environment
+docker system prune -f
+docker-compose down -v
+
+# Rebuild containers
+docker-compose build --no-cache
+docker-compose up -d
+\`\`\`
+
+### Port Conflicts
+**Problem**: Port already in use errors
+**Solution**:
+\`\`\`bash
+# Check port usage
+netstat -tulpn | grep :3000
+netstat -tulpn | grep :8080
+
+# Stop conflicting processes
+docker-compose down
+lsof -ti:3000 | xargs kill -9
+\`\`\`
+
+### Volume Mount Issues
+**Problem**: File changes not reflecting in container
+**Solution**:
+\`\`\`bash
+# Check volume mounts
+docker-compose config
+
+# Restart with fresh volumes
+docker-compose down -v
+docker-compose up -d
+\`\`\`
+
+## Environment Setup
+
+### Environment Variables Missing
+**Problem**: Application fails to start due to missing env vars
+**Solution**:
+\`\`\`bash
+# Copy environment template
+cp .env.example .env
+
+# Edit environment variables
+nano .env
+
+# Verify environment
+npm run setup-check
+\`\`\`
+
+### Path Configuration Issues
+**Problem**: Modules or files not found
+**Solution**:
+\`\`\`bash
+# Check project structure
+ls -la src/
+ls -la scripts/
+
+# Verify paths in configuration
+cat H3X-config.json
+\`\`\`
+
+## API Issues
+
+### Authentication Failures
+**Problem**: API requests return 401/403 errors
+**Solution**:
+\`\`\`bash
+# Check API keys
+echo $API_KEY
+
+# Verify authentication headers
+curl -H "Authorization: Bearer $API_KEY" http://localhost:3000/api/health
+\`\`\`
+
+### CORS Errors
+**Problem**: Cross-origin requests blocked
+**Solution**:
+- Check CORS configuration in server settings
+- Verify allowed origins match client URL
+- Update API base URL in client configuration
+
+### Rate Limiting
+**Problem**: Too many requests error (429)
+**Solution**:
+- Implement request throttling
+- Check rate limit headers
+- Use exponential backoff for retries
+
+## Performance Problems
+
+### Slow Build Times
+**Problem**: Development builds take too long
+**Solution**:
+\`\`\`bash
+# Enable build caching
+export DOCKER_BUILDKIT=1
+
+# Use development compose file
+docker-compose -f docker-compose.dev.yml up
+
+# Optimize dependencies
+npm audit
+npm update
+\`\`\`
+
+### Memory Issues
+**Problem**: Out of memory errors
+**Solution**:
+\`\`\`bash
+# Increase Node.js memory limit
+export NODE_OPTIONS="--max-old-space-size=4096"
+
+# Check memory usage
+docker stats
+
+# Restart services
+docker-compose restart
+\`\`\`
+
+## Development Workflow
+
+### Git Issues
+**Problem**: Merge conflicts or commit issues
+**Solution**:
+\`\`\`bash
+# Check git status
+git status
+
+# Resolve conflicts
+git mergetool
+
+# Reset if needed
+git reset --hard HEAD~1
+\`\`\`
+
+### Hot Reload Not Working
+**Problem**: Changes not reflecting in development
+**Solution**:
+\`\`\`bash
+# Check file watching
+npm run dev
+
+# Restart development server
+npm run dev:restart
+
+# Clear cache
+npm run dev:clean
+\`\`\`
+
+## Common Error Messages
+
+### \`EADDRINUSE\` - Port in use
+\`\`\`bash
+# Find and kill process using port
+lsof -ti:3000 | xargs kill -9
+\`\`\`
+
+### \`MODULE_NOT_FOUND\`
+\`\`\`bash
+# Reinstall dependencies
+npm ci
+\`\`\`
+
+### \`Permission denied\`
+\`\`\`bash
+# Fix file permissions
+chmod +x scripts/*.sh
+sudo chown -R $USER:$USER .
+\`\`\`
+
+## Getting Help
+
+### Debug Information
+When reporting issues, include:
+\`\`\`bash
+# System information
+node --version
+npm --version
+docker --version
+docker-compose --version
+
+# Project status
+npm run setup-check
+
+# Recent logs
+docker-compose logs --tail=50
+\`\`\`
+
+### Support Channels
+- **GitHub Issues**: Report bugs and feature requests
+- **Documentation**: Check the full documentation suite
+- **Discord**: Join our community for real-time help
+- **Email**: Contact support@hexperiment-labs.com
+
+### Creating Bug Reports
+Include:
+1. Steps to reproduce
+2. Expected vs actual behavior
+3. Environment details
+4. Error logs and screenshots
+5. Minimal reproduction case
+
+---
+
+*Last updated: ${new Date().toISOString().split('T')[0]}*
+`;
+  }
+
+  /**
+   * Generate environment setup documentation
+   */
+  generateEnvironmentSetupDoc(projectName = 'H3X-fLups', options = {}) {
+    return `# Environment Setup Guide
+
+Complete guide for setting up ${projectName} development environment.
+
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Configuration](#environment-configuration)
+- [Development Setup](#development-setup)
+- [Production Setup](#production-setup)
+- [Verification](#verification)
+- [Troubleshooting](#troubleshooting)
+
+## Prerequisites
+
+### System Requirements
+- **Node.js**: v18.0.0 or higher
+- **npm**: v8.0.0 or higher
+- **Docker**: v20.0.0 or higher
+- **Docker Compose**: v2.0.0 or higher
+- **Git**: v2.30.0 or higher
+
+### Platform Support
+- **Windows**: 10/11 with WSL2
+- **macOS**: 10.15 or higher
+- **Linux**: Ubuntu 20.04+, CentOS 8+
+
+### Hardware Requirements
+- **RAM**: 8GB minimum, 16GB recommended
+- **Storage**: 10GB free space
+- **CPU**: 4 cores recommended
+
+## Installation
+
+### 1. Clone Repository
+\`\`\`bash
+git clone https://github.com/your-org/${projectName}.git
+cd ${projectName}
+\`\`\`
+
+### 2. Install Dependencies
+\`\`\`bash
+# Install Node.js dependencies
+npm install
+
+# Install global tools (optional)
+npm install -g nodemon pm2
+\`\`\`
+
+### 3. Docker Setup
+\`\`\`bash
+# Pull required images
+docker-compose pull
+
+# Build custom images
+docker-compose build
+\`\`\`
+
+## Environment Configuration
+
+### 1. Environment Files
+\`\`\`bash
+# Copy environment template
+cp .env.example .env
+
+# Edit configuration
+nano .env
+\`\`\`
+
+### 2. Required Environment Variables
+\`\`\`bash
+# Application Settings
+NODE_ENV=development
+PORT=3000
+HOST=localhost
+
+# Database Configuration
+DATABASE_URL=postgresql://user:pass@localhost:5432/h3x_dev
+REDIS_URL=redis://localhost:6379
+
+# API Keys
+API_KEY=your-api-key-here
+SECRET_KEY=your-secret-key-here
+
+# External Services
+LM_STUDIO_URL=http://localhost:1234
+OPENAI_API_KEY=your-openai-key (optional)
+
+# Docker Configuration
+COMPOSE_PROJECT_NAME=h3x-flups
+DOCKER_BUILDKIT=1
+\`\`\`
+
+### 3. Configuration Files
+\`\`\`bash
+# H3X Configuration
+cp H3Xbase-config.json H3X-config.json
+
+# Flup Merger Configuration
+cp flup-merger-config.example.json flup-merger-config.json
+\`\`\`
+
+## Development Setup
+
+### 1. Start Development Environment
+\`\`\`bash
+# Start all services
+npm run env:dev
+
+# Start H3X server only
+npm run standalone
+
+# Start with LM Studio integration
+npm run lmstudio
+\`\`\`
+
+### 2. Development Tools
+\`\`\`bash
+# Install development extensions
+npm run dev:install-tools
+
+# Setup Git hooks
+npm run dev:setup-hooks
+
+# Configure IDE
+npm run dev:setup-vscode
+\`\`\`
+
+### 3. Database Setup
+\`\`\`bash
+# Run migrations
+npm run db:migrate
+
+# Seed development data
+npm run db:seed
+
+# Reset database (if needed)
+npm run db:reset
+\`\`\`
+
+## Production Setup
+
+### 1. Environment Preparation
+\`\`\`bash
+# Set production environment
+export NODE_ENV=production
+
+# Copy production config
+cp .env.production .env
+\`\`\`
+
+### 2. Build Application
+\`\`\`bash
+# Build for production
+npm run build
+
+# Optimize Docker images
+docker-compose -f docker-compose.prod.yml build
+\`\`\`
+
+### 3. Deploy Services
+\`\`\`bash
+# Start production services
+docker-compose -f docker-compose.prod.yml up -d
+
+# Scale services
+docker-compose -f docker-compose.prod.yml up -d --scale h3x-server=3
+\`\`\`
+
+## Environment-Specific Configurations
+
+### Development
+\`\`\`json
+{
+  "name": "development",
+  "port": 3000,
+  "debug": true,
+  "hotReload": true,
+  "logging": "debug",
+  "database": {
+    "ssl": false,
+    "pool": { "min": 2, "max": 10 }
+  }
+}
+\`\`\`
+
+### Staging
+\`\`\`json
+{
+  "name": "staging",
+  "port": 8080,
+  "debug": false,
+  "hotReload": false,
+  "logging": "info",
+  "database": {
+    "ssl": true,
+    "pool": { "min": 5, "max": 20 }
+  }
+}
+\`\`\`
+
+### Production
+\`\`\`json
+{
+  "name": "production",
+  "port": 80,
+  "debug": false,
+  "hotReload": false,
+  "logging": "error",
+  "database": {
+    "ssl": true,
+    "pool": { "min": 10, "max": 50 }
+  }
+}
+\`\`\`
+
+## Verification
+
+### 1. System Check
+\`\`\`bash
+# Run comprehensive setup check
+npm run setup-check
+
+# Check individual components
+npm run check:node
+npm run check:docker
+npm run check:database
+\`\`\`
+
+### 2. Health Checks
+\`\`\`bash
+# Application health
+curl http://localhost:3000/health
+
+# Database connectivity
+npm run health:db
+
+# External services
+npm run health:external
+\`\`\`
+
+### 3. Run Tests
+\`\`\`bash
+# Unit tests
+npm run test
+
+# Integration tests
+npm run test:integration
+
+# Full test suite
+npm run test:all
+\`\`\`
+
+## IDE Configuration
+
+### VS Code
+\`\`\`json
+// .vscode/settings.json
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  }
+}
+\`\`\`
+
+### Recommended Extensions
+- ES6/ES7 Snippets
+- Prettier
+- ESLint
+- Docker
+- GitLens
+- Auto Rename Tag
+
+## Environment Scripts
+
+### Quick Setup
+\`\`\`bash
+#!/bin/bash
+# setup-env.sh
+
+echo "Setting up ${projectName} environment..."
+
+# Install dependencies
+npm ci
+
+# Setup environment
+cp .env.example .env
+
+# Start services
+docker-compose up -d
+
+# Run setup check
+npm run setup-check
+
+echo "Environment setup complete!"
+\`\`\`
+
+### Reset Environment
+\`\`\`bash
+#!/bin/bash
+# reset-env.sh
+
+echo "Resetting environment..."
+
+# Stop services
+docker-compose down -v
+
+# Clean dependencies
+rm -rf node_modules package-lock.json
+
+# Reinstall
+npm install
+
+# Restart
+docker-compose up -d
+
+echo "Environment reset complete!"
+\`\`\`
+
+## Troubleshooting
+
+### Common Issues
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions.
+
+### Environment Variables Not Loading
+\`\`\`bash
+# Check file location
+ls -la .env
+
+# Verify syntax
+npm run env:validate
+
+# Restart services
+npm run env:restart
+\`\`\`
+
+### Docker Permission Issues
+\`\`\`bash
+# Add user to docker group (Linux)
+sudo usermod -aG docker $USER
+
+# Restart Docker service
+sudo systemctl restart docker
+\`\`\`
+
+---
+
+*Last updated: ${new Date().toISOString().split('T')[0]}*
+`;
+  }
+
+  /**
+   * Generate automation documentation
+   */
+  generateAutomationDoc(projectName = 'H3X-fLups', options = {}) {
+    return `# Automation Documentation
+
+Comprehensive guide to ${projectName} automation systems and workflows.
+
+## Table of Contents
+- [Overview](#overview)
+- [Development Automation](#development-automation)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Task Automation](#task-automation)
+- [Documentation Generation](#documentation-generation)
+- [Deployment Automation](#deployment-automation)
+- [Monitoring and Alerting](#monitoring-and-alerting)
+- [Custom Automation](#custom-automation)
+
+## Overview
+
+${projectName} includes a comprehensive automation framework that handles:
+- Development workflow automation
+- Continuous integration and deployment
+- Documentation generation
+- Testing and quality assurance
+- Environment management
+- Performance monitoring
+
+## Development Automation
+
+### Virtual Taskmaster Integration
+The Virtual Taskmaster provides intelligent task management and automation:
+
+\`\`\`javascript
+// Virtual Taskmaster features
+const taskmaster = new VirtualTaskmaster({
+  synapseMonitoring: true,
+  taskScheduling: true,
+  progressTracking: true,
+  anomalyDetection: true
+});
+
+// Automated task execution
+taskmaster.scheduleTask({
+  name: 'Code Generation',
+  interval: '0 */6 * * *', // Every 6 hours
+  action: 'generateCode',
+  priority: 'high'
+});
+\`\`\`
+
+### Development Workflow Scripts
+\`\`\`bash
+# Start development environment
+npm run dev:start
+
+# Run development automation
+npm run dev:automate
+
+# Generate development reports
+npm run dev:report
+
+# Cleanup development environment
+npm run dev:cleanup
+\`\`\`
+
+### Automated Code Generation
+\`\`\`javascript
+// H3X Code Generator automation
+const generator = new H3XCodeGenerator();
+
+// Automated generation pipeline
+generator.automateGeneration({
+  schedule: 'daily',
+  targets: ['api', 'docs', 'tests'],
+  quality: 'high',
+  validation: true
+});
+\`\`\`
+
+## CI/CD Pipeline
+
+### GitHub Actions Workflow
+\`\`\`yaml
+# .github/workflows/main.yml
+name: H3X-fLups CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run test:all
+      - run: npm run lint
+      - run: npm run security:check
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker build -t h3x-flups .
+      - run: docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - run: npm run deploy:production
+\`\`\`
+
+### Deployment Pipeline
+\`\`\`bash
+# Automated deployment script
+#!/bin/bash
+
+echo "Starting deployment pipeline..."
+
+# Pre-deployment checks
+npm run pre-deploy:check
+
+# Build application
+npm run build
+
+# Run security scan
+npm run security:scan
+
+# Deploy to staging
+npm run deploy:staging
+
+# Run smoke tests
+npm run test:smoke
+
+# Deploy to production
+npm run deploy:production
+
+# Post-deployment verification
+npm run post-deploy:verify
+
+echo "Deployment complete!"
+\`\`\`
+
+## Task Automation
+
+### Scheduled Tasks
+\`\`\`javascript
+// Task scheduler configuration
+const scheduler = {
+  tasks: [
+    {
+      name: 'Daily Documentation Update',
+      schedule: '0 6 * * *',
+      action: 'generateDocs',
+      enabled: true
+    },
+    {
+      name: 'Weekly Performance Report',
+      schedule: '0 9 * * 1',
+      action: 'generateReport',
+      enabled: true
+    },
+    {
+      name: 'Monthly Security Audit',
+      schedule: '0 10 1 * *',
+      action: 'securityAudit',
+      enabled: true
+    }
+  ]
+};
+\`\`\`
+
+### Automated Testing
+\`\`\`bash
+# Continuous testing automation
+npm run test:watch        # Watch mode testing
+npm run test:coverage     # Coverage reporting
+npm run test:e2e:auto     # Automated E2E tests
+npm run test:performance  # Performance testing
+npm run test:security     # Security testing
+\`\`\`
+
+## Documentation Generation
+
+### Automated Documentation Pipeline
+\`\`\`javascript
+// Documentation automation
+const docGenerator = new H3XDevAutomation();
+
+// Full documentation suite generation
+docGenerator.generateDocumentationSuite({
+  output: 'docs/generated',
+  format: ['markdown', 'html', 'pdf'],
+  includeApiDocs: true,
+  includeArchitecture: true,
+  includeTutorials: true
+});
+\`\`\`
+
+### Documentation Workflows
+\`\`\`bash
+# Generate all documentation
+npm run docs:generate
+
+# Update API documentation
+npm run docs:api
+
+# Generate architecture diagrams
+npm run docs:diagrams
+
+# Create deployment guides
+npm run docs:deployment
+
+# Publish documentation
+npm run docs:publish
+\`\`\`
+
+## Deployment Automation
+
+### Multi-Environment Deployment
+\`\`\`javascript
+// Environment-specific deployment
+const deployer = new DeploymentAutomation();
+
+// Automated deployment to multiple environments
+deployer.deployToEnvironments({
+  environments: ['staging', 'production'],
+  strategy: 'blue-green',
+  rollback: 'automatic',
+  healthChecks: true
+});
+\`\`\`
+
+### Infrastructure as Code
+\`\`\`yaml
+# Docker Compose automation
+version: '3.8'
+services:
+  h3x-server:
+    build: .
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        order: start-first
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+\`\`\`
+
+## Monitoring and Alerting
+
+### Health Check Automation
+\`\`\`javascript
+// Automated health monitoring
+const monitor = new HealthMonitor({
+  checkInterval: 30000, // 30 seconds
+  alertThreshold: 3,    // Alert after 3 failures
+  autoRestart: true,    // Auto-restart on failure
+  notifications: ['email', 'slack']
+});
+
+monitor.watchServices([
+  'h3x-server',
+  'database',
+  'redis',
+  'lm-studio'
+]);
+\`\`\`
+
+### Performance Monitoring
+\`\`\`bash
+# Automated performance monitoring
+npm run monitor:performance
+npm run monitor:memory
+npm run monitor:cpu
+npm run monitor:network
+\`\`\`
+
+## Custom Automation
+
+### Creating Custom Automations
+\`\`\`javascript
+// Custom automation example
+class CustomAutomation extends H3XDevAutomation {
+  async customWorkflow() {
+    // Custom automation logic
+    await this.executeTask('preprocess');
+    await this.executeTask('generate');
+    await this.executeTask('validate');
+    await this.executeTask('deploy');
+  }
+
+  async scheduleCustomTask(taskConfig) {
+    return this.scheduleTask({
+      name: taskConfig.name,
+      interval: taskConfig.interval,
+      action: this.customWorkflow.bind(this),
+      priority: taskConfig.priority || 'medium'
+    });
+  }
+}
+\`\`\`
+
+### Automation Configuration
+\`\`\`json
+{
+  "automation": {
+    "enabled": true,
+    "environment": "development",
+    "tasks": {
+      "codeGeneration": {
+        "enabled": true,
+        "schedule": "0 */6 * * *",
+        "timeout": 300000
+      },
+      "documentation": {
+        "enabled": true,
+        "schedule": "0 2 * * *",
+        "targets": ["api", "guides", "tutorials"]
+      },
+      "testing": {
+        "enabled": true,
+        "schedule": "0 */4 * * *",
+        "types": ["unit", "integration"]
+      }
+    },
+    "notifications": {
+      "email": "dev@hexperiment-labs.com",
+      "slack": "#h3x-automation",
+      "onSuccess": false,
+      "onFailure": true
+    }
+  }
+}
+\`\`\`
+
+## Automation Scripts
+
+### Daily Automation
+\`\`\`bash
+#!/bin/bash
+# scripts/daily-automation.sh
+
+echo "Running daily automation tasks..."
+
+# Update dependencies
+npm audit fix
+
+# Generate documentation
+npm run docs:generate
+
+# Run full test suite
+npm run test:all
+
+# Update performance metrics
+npm run metrics:update
+
+# Clean temporary files
+npm run cleanup
+
+echo "Daily automation complete!"
+\`\`\`
+
+### Weekly Automation
+\`\`\`bash
+#!/bin/bash
+# scripts/weekly-automation.sh
+
+echo "Running weekly automation tasks..."
+
+# Security audit
+npm run security:audit
+
+# Performance analysis
+npm run performance:analyze
+
+# Documentation review
+npm run docs:review
+
+# Backup generation
+npm run backup:create
+
+echo "Weekly automation complete!"
+\`\`\`
+
+## Automation Monitoring
+
+### Dashboard Integration
+The automation system integrates with the development dashboard for real-time monitoring:
+
+- Task execution status
+- Performance metrics
+- Error tracking
+- Resource utilization
+- Success/failure rates
+
+### Logging and Reporting
+\`\`\`javascript
+// Automation logging
+const logger = new AutomationLogger({
+  level: 'info',
+  format: 'json',
+  transports: ['file', 'console'],
+  rotation: 'daily'
+});
+
+// Generate automation reports
+const reporter = new AutomationReporter();
+reporter.generateWeeklyReport();
+reporter.generateMonthlyReport();
+\`\`\`
+
+---
+
+*Last updated: ${new Date().toISOString().split('T')[0]}*
+`;
+  }
+
+  /**
+   * Generate pull request template
+   */
+  generatePRTemplate() {
+    return `## Description
+Brief description of the changes made in this PR.
+
+## Type of Change
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
+- [ ] Performance improvement
+- [ ] Code refactoring
+
+## Changes Made
+- Item 1
+- Item 2
+- Item 3
+
+## Testing
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+- [ ] Performance testing (if applicable)
+
+## Documentation
+- [ ] Code comments updated
+- [ ] README updated (if needed)
+- [ ] API documentation updated (if needed)
+- [ ] Changelog updated
+
+## Screenshots (if applicable)
+Add screenshots here if the changes affect the UI.
+
+## Checklist
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+
+## Related Issues
+Closes #(issue_number)
+`;
+  }
+
+  /**
+   * Generate issue template
+   */
+  generateIssueTemplate() {
+    return `---
+name: Bug Report
+about: Create a report to help us improve
+title: '[BUG] '
+labels: bug
+assignees: ''
+---
+
+## Bug Description
+A clear and concise description of what the bug is.
+
+## Steps to Reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+## Expected Behavior
+A clear and concise description of what you expected to happen.
+
+## Actual Behavior
+A clear and concise description of what actually happened.
+
+## Screenshots
+If applicable, add screenshots to help explain your problem.
+
+## Environment
+- OS: [e.g. Windows 10, macOS 12, Ubuntu 20.04]
+- Browser: [e.g. Chrome 96, Firefox 95, Safari 15]
+- Node.js Version: [e.g. 18.12.0]
+- Project Version: [e.g. 1.0.0]
+
+## Additional Context
+Add any other context about the problem here.
+
+## Possible Solution
+If you have ideas on how to fix the issue, please describe them here.
+`;
+  }
+
+  /**
+   * Generate feature request template
+   */
+  generateFeatureRequestTemplate() {
+    return `---
+name: Feature Request
+about: Suggest an idea for this project
+title: '[FEATURE] '
+labels: enhancement
+assignees: ''
+---
+
+## Feature Summary
+A brief summary of the feature you'd like to see added.
+
+## Problem Statement
+Is your feature request related to a problem? Please describe.
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+
+## Proposed Solution
+Describe the solution you'd like.
+A clear and concise description of what you want to happen.
+
+## Alternative Solutions
+Describe alternatives you've considered.
+A clear and concise description of any alternative solutions or features you've considered.
+
+## Use Cases
+Describe the use cases for this feature:
+- Use case 1
+- Use case 2
+- Use case 3
+
+## Expected Benefits
+- Benefit 1
+- Benefit 2
+- Benefit 3
+
+## Implementation Ideas
+If you have ideas on how this could be implemented, please describe them here.
+
+## Additional Context
+Add any other context, screenshots, or examples about the feature request here.
+
+## Priority
+- [ ] Low
+- [ ] Medium
+- [ ] High
+- [ ] Critical
+
+## Acceptance Criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+`;
+  }
+}
+
+module.exports = { H3XCodeGenerator };

@@ -9,6 +9,7 @@ The environment management system provides easy switching between development an
 ## Available Environments
 
 ### Development Environment (`dev`)
+
 - **Purpose**: Local development with hot reload, debugging capabilities, and relaxed security
 - **Features**:
   - Hot reload for code changes
@@ -20,6 +21,7 @@ The environment management system provides easy switching between development an
   - Manual restart policy for better control
 
 ### Production Environment (`prod`)
+
 - **Purpose**: Production deployment with optimized performance, security, and monitoring
 - **Features**:
   - Optimized Docker images
@@ -143,21 +145,25 @@ npm run env:status
 ### Environment Switching Workflow
 
 1. **Check Current Status**:
+
    ```bash
    npm run env:status
    ```
 
 2. **Switch Environment**:
+
    ```bash
    npm run env:quick switch prod
    ```
 
 3. **Start New Environment**:
+
    ```bash
    npm run env:prod:build
    ```
 
 4. **Verify Switch**:
+
    ```bash
    npm run env:status
    ```
@@ -165,6 +171,7 @@ npm run env:status
 ## Environment Variables
 
 ### Development Variables
+
 ```bash
 NODE_ENV=development
 GO_ENV=development
@@ -175,6 +182,7 @@ CORS_ALLOWED_ORIGINS=http://localhost:3978,http://localhost:8081,http://localhos
 ```
 
 ### Production Variables
+
 ```bash
 NODE_ENV=production
 GO_ENV=production
@@ -189,12 +197,14 @@ CORS_ALLOWED_ORIGINS=https://yourdomain.com
 ### Common Issues
 
 1. **Port Conflicts**:
+
    ```bash
    # Clean up any hanging containers
    npm run env:quick clean
    ```
 
 2. **Environment Not Switching**:
+
    ```bash
    # Force stop current environment
    ./hexperiment-system-protocol/scripts/env-switcher.ps1 dev -Down
@@ -202,6 +212,7 @@ CORS_ALLOWED_ORIGINS=https://yourdomain.com
    ```
 
 3. **Docker Issues**:
+
    ```bash
    # Clean Docker system
    npm run env:quick clean -Force
@@ -225,12 +236,14 @@ docker volume ls
 ## Security Considerations
 
 ### Development Environment
+
 - Uses development API keys (safe for local use)
 - Relaxed CORS settings for easy testing
 - Debug ports exposed
 - Read-write volume mounts for hot reload
 
 ### Production Environment
+
 - Requires secure API keys (set via environment variables)
 - Strict CORS settings
 - No debug ports exposed
@@ -260,6 +273,7 @@ npm run qol:check
 ### Backup and Recovery
 
 Production environment includes automated backup configuration:
+
 - Daily backups at 2 AM
 - 30-day retention policy
 - Prometheus metrics for monitoring

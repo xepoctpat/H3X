@@ -1,0 +1,136 @@
+# Enhanced Dockerfile for Babillon Unified Web Interface
+# Integrating H3X, SIR, and fLups capabilities
+
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache curl git
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm ci
+
+# Copy source code
+COPY public/ ./public/
+COPY src/ ./src/
+COPY proof/ ./proof/
+COPY flups-integration/ ./flups-integration/
+COPY sir-control-interface.html ./index.html
+
+# Build optimizations
+RUN npm run build 2>/dev/null || echo "No build script found, proceeding with static files"
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apk add --no-cache curl
+
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy built application
+COPY --from=builder /app/public/ ./public/
+COPY --from=builder /app/proof/ ./proof/
+COPY --from=builder /app/src/ ./src/
+COPY --from=builder /app/flups-integration/ ./flups-integration/
+COPY --from=builder /app/index.html ./index.html
+
+# Create enhanced Express server for Babillon unified system
+RUN echo 'const express = require("express"); \
+const path = require("path"); \
+const cors = require("cors"); \
+const app = express(); \
+const PORT = process.env.PORT || 3000; \
+\
+// Middleware \
+app.use(cors()); \
+app.use(express.json()); \
+app.use(express.urlencoded({ extended: true })); \
+\
+// Static file serving \
+app.use("/public", express.static("public")); \
+app.use("/Public", express.static("public")); \
+app.use("/proof", express.static("proof")); \
+app.use("/src", express.static("src")); \
+app.use("/flups", express.static("flups-integration")); \
+\
+// Health check endpoint \
+app.get("/health", (req, res) => { \
+  res.json({ \
+    status: "healthy", \
+    service: "babillon-web", \
+    mode: "unified", \
+    timestamp: new Date().toISOString(), \
+    integrations: { \
+      h3x: process.env.H3X_SERVER_URL ? "enabled" : "disabled", \
+      sir: process.env.SIR_MODE ? "enabled" : "disabled", \
+      flups: "enabled", \
+      lmstudio: process.env.LMSTUDIO_URL ? "enabled" : "disabled" \
+    } \
+  }); \
+}); \
+\
+// Route definitions \
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html"))); \
+app.get("/sir", (req, res) => res.sendFile(path.join(__dirname, "public/sir-epidemic-dashboard.html"))); \
+app.get("/dashboard", (req, res) => res.sendFile(path.join(__dirname, "public/sir-epidemic-dashboard.html"))); \
+app.get("/h3x", (req, res) => res.sendFile(path.join(__dirname, "public/h3x-interface.html"))); \
+app.get("/flups", (req, res) => res.sendFile(path.join(__dirname, "flups-integration/index.html"))); \
+app.get("/babillon", (req, res) => res.sendFile(path.join(__dirname, "index.html"))); \
+\
+// API proxy endpoints \
+app.get("/api/status", async (req, res) => { \
+  try { \
+    const status = { \
+      babillon: "running", \
+      timestamp: new Date().toISOString(), \
+      version: "unified-1.0.0", \
+      services: { \
+        web: "active", \
+        api: process.env.API_URL ? "connected" : "disconnected", \
+        h3x: process.env.H3X_SERVER_URL ? "connected" : "disconnected", \
+        protocol: process.env.PROTOCOL_SERVER_URL ? "connected" : "disconnected", \
+        lmstudio: process.env.LMSTUDIO_URL ? "connected" : "disconnected", \
+        redis: process.env.REDIS_URL ? "connected" : "disconnected", \
+        mongodb: process.env.MONGODB_URL ? "connected" : "disconnected" \
+      } \
+    }; \
+    res.json(status); \
+  } catch (error) { \
+    res.status(500).json({ error: "Status check failed", details: error.message }); \
+  } \
+}); \
+\
+// Start the server \
+app.listen(PORT, "0.0.0.0", () => { \
+  console.log(`Babillon Unified Web Interface running on port ${PORT}`); \
+  console.log(`Health check: http://localhost:${PORT}/health`); \
+  console.log(`SIR Dashboard: http://localhost:${PORT}/sir`); \
+  console.log(`H3X Interface: http://localhost:${PORT}/h3x`); \
+  console.log(`fLups Integration: http://localhost:${PORT}/flups`); \
+  console.log(`API Status: http://localhost:${PORT}/api/status`); \
+});' > server.js
+
+# Create health check script
+RUN echo '#!/bin/sh\ncurl -f http://localhost:3000/health || exit 1' > /health-check.sh && \
+    chmod +x /health-check.sh
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD /health-check.sh
+
+# Start the server
+CMD ["node", "server.js"]

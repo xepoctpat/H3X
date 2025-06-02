@@ -1,5 +1,11 @@
 {
   "recommendations": [
-    "TeamsDevApp.ms-teams-vscode-extension"
+    "ms-vscode.vscode-typescript-next",
+    "ms-vscode.vscode-json",
+    "ms-vscode-remote.remote-containers",
+    "formulahendry.docker-extension-pack",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }

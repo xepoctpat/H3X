@@ -1,0 +1,18 @@
+﻿{
+    "createdAt":  "2025-05-29T21:44:02.015Z",
+    "checkpointDate":  "2025-05-29",
+    "checkpointTime":  "21-44-01",
+    "failedBackups":  0,
+    "successfulBackups":  1,
+    "backupDetails":  [
+                          {
+                              "LoopType":  "cFLup",
+                              "Size":  0,
+                              "ArchiveFile":  ".\\checkpoints\\cFLup-checkpoint-2025-05-29-21-44-01.json"
+                          }
+                      ],
+    "failedLoopTypes":  [
+
+                        ],
+    "totalLoopTypes":  5
+}

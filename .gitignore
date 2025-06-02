@@ -1,24 +1,37 @@
-# TeamsFx files
-env/.env.*.user
-env/.env.local
-env/.env.sandbox
-.localConfigs
-.localConfigs.playground
-.localConfigs
-.notification.localstore.json
-.notification.playgroundstore.json
-appPackage/build
+# H3X Hexperiment Labs - Files to ignore
 
-# dependencies
+# Environment files with secrets
+env/.env.*.user
+.env
+
+# Dependencies
 node_modules/
 
-# misc
-.env
-.deployment
-.DS_Store
+# Logs
+*.log
+logs/
 
-# build
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Build output
 lib/
+dist/
+build/
 
-# Dev tool directories
-/devTools/
+# Docker volumes and temp files
+.docker-volumes/
+.tmp/
+
+# IDE specific files
+.vscode/settings.json
+.idea/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Deployment artifacts
+.deployment

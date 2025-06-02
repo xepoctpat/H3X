@@ -1,0 +1,365 @@
+# SIR (System Intermediary Relayer) Container
+# Implements fLups formal logic with action-driven temporal evolution
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies for SIR operations
+RUN apk add --no-cache \
+    curl \
+    wget \
+    redis-tools \
+    netcat-openbsd \
+    bash
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node.js dependencies
+RUN npm install --production
+
+# Create SIR-specific directories
+RUN mkdir -p /app/sir-relay \
+             /app/sir-config \
+             /app/sir-logs \
+             /app/sir-state
+
+# Copy SIR application files
+COPY src/ ./src/
+COPY archive/obsolete-backup-2025-05-28-t19-24-42/Sir-Interface.js ./sir-relay/
+COPY sir-control-interface.html ./public/
+COPY Public/ ./Public/
+
+# Create SIR relay entry point
+COPY <<EOF /app/sir-relay/sir-relay-server.js
+#!/usr/bin/env node
+
+/**
+ * SIR System Intermediary Relayer
+ * Implements fLups formal logic: action-driven temporal evolution
+ * Acts as host mimic and system intermediary
+ */
+
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+const redis = require('redis');
+const chalk = require('chalk');
+
+class SIRRelayServer {
+    constructor() {
+        this.app = express();
+        this.server = http.createServer(this.app);
+        this.wss = new WebSocket.Server({ server: this.server });
+        this.port = process.env.SIR_PORT || 9001;
+        
+        // fLups system state tracking
+        this.systemState = {
+            currentState: 'flup+',
+            actionQueue: [],
+            timeCounter: 0,
+            relationalTime: 0,
+            lastAction: null,
+            hostMimicActive: process.env.HOST_MIMIC_ENABLED === 'true'
+        };
+        
+        this.setupMiddleware();
+        this.setupRoutes();
+        this.setupWebSocket();
+        this.setupRedisConnection();
+        this.initializeSIRLogic();
+    }
+
+    setupMiddleware() {
+        this.app.use(express.json());
+        this.app.use(express.static('/app/Public'));
+        
+        // CORS for SIR relay operations
+        this.app.use((req, res, next) => {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+            next();
+        });
+    }
+
+    setupRoutes() {
+        // SIR System Health Check
+        this.app.get('/health', (req, res) => {
+            res.json({
+                status: 'operational',
+                service: 'SIR System Intermediary Relayer',
+                mode: this.systemState.hostMimicActive ? 'HOST_MIMIC' : 'RELAY',
+                systemState: this.systemState.currentState,
+                relationalTime: this.systemState.relationalTime,
+                timestamp: new Date().toISOString()
+            });
+        });
+
+        // SIR State Endpoint (implements fLups formal logic)
+        this.app.get('/sir/state', (req, res) => {
+            res.json({
+                currentState: this.systemState.currentState,
+                actionQueue: this.systemState.actionQueue,
+                timeCounter: this.systemState.timeCounter,
+                relationalTime: this.systemState.relationalTime,
+                lastAction: this.systemState.lastAction,
+                hostMimicActive: this.systemState.hostMimicActive
+            });
+        });
+
+        // SIR Action Execution (action-driven time evolution)
+        this.app.post('/sir/action', (req, res) => {
+            const { action, parameters } = req.body;
+            const result = this.executeAction(action, parameters);
+            res.json(result);
+        });
+
+        // Host Mimic Interface
+        this.app.post('/sir/mimic', (req, res) => {
+            if (!this.systemState.hostMimicActive) {
+                return res.status(400).json({ 
+                    error: 'Host mimic not enabled',
+                    currentMode: 'RELAY_ONLY'
+                });
+            }
+            
+            const { targetUrl, method, data } = req.body;
+            this.mimicHostBehavior(targetUrl, method, data)
+                .then(result => res.json(result))
+                .catch(error => res.status(500).json({ error: error.message }));
+        });
+    }
+
+    setupWebSocket() {
+        this.wss.on('connection', (ws) => {
+            console.log(chalk.blue('🔗 New SIR WebSocket connection established'));
+            
+            // Send current system state
+            ws.send(JSON.stringify({
+                type: 'sir_state_update',
+                state: this.systemState
+            }));
+
+            ws.on('message', (message) => {
+                try {
+                    const data = JSON.parse(message);
+                    this.handleWebSocketMessage(ws, data);
+                } catch (error) {
+                    ws.send(JSON.stringify({
+                        type: 'error',
+                        message: 'Invalid message format'
+                    }));
+                }
+            });
+        });
+    }
+
+    async setupRedisConnection() {
+        try {
+            this.redis = redis.createClient({
+                url: process.env.REDIS_URL || 'redis://localhost:6379'
+            });
+            await this.redis.connect();
+            console.log(chalk.green('📡 SIR Redis connection established'));
+        } catch (error) {
+            console.log(chalk.yellow('⚠️  SIR operating without Redis persistence'));
+        }
+    }
+
+    initializeSIRLogic() {
+        console.log(chalk.blue.bold(\`
+╔══════════════════════════════════════════════════════════════╗
+║               SIR SYSTEM INTERMEDIARY RELAYER               ║
+║            Implementing fLups Formal Logic                  ║
+║        Action-Driven Temporal Evolution Active              ║
+╚══════════════════════════════════════════════════════════════╝
+        \`));
+
+        // Start action processing loop (implements relational time)
+        this.startActionLoop();
+    }
+
+    executeAction(actionType, parameters = {}) {
+        const previousState = this.systemState.currentState;
+        
+        // Implement fLups state transitions based on formal proof
+        let newState = previousState;
+        let timeAdvanced = false;
+
+        switch (actionType) {
+            case 'transmit':
+                if (previousState === 'flup+') {
+                    newState = 'flup-';
+                    timeAdvanced = true;
+                }
+                break;
+            
+            case 'process':
+                if (previousState === 'flup-') {
+                    newState = 'cflup-n';
+                    timeAdvanced = true;
+                }
+                break;
+            
+            case 'receive':
+                if (previousState === 'cflup-n') {
+                    newState = 'flup+';
+                    timeAdvanced = true;
+                }
+                break;
+            
+            default:
+                // No valid action = time stops (frozen state)
+                timeAdvanced = false;
+        }
+
+        // Update system state
+        this.systemState.currentState = newState;
+        this.systemState.lastAction = {
+            type: actionType,
+            parameters,
+            timestamp: new Date().toISOString(),
+            previousState,
+            newState
+        };
+
+        // Increment time only if action was valid
+        if (timeAdvanced) {
+            this.systemState.timeCounter += 1;
+            this.systemState.relationalTime += 1;
+        }
+
+        // Broadcast state update
+        this.broadcastStateUpdate();
+
+        return {
+            success: true,
+            previousState,
+            newState,
+            timeAdvanced,
+            currentTime: this.systemState.relationalTime,
+            action: this.systemState.lastAction
+        };
+    }
+
+    async mimicHostBehavior(targetUrl, method = 'GET', data = null) {
+        if (!this.systemState.hostMimicActive) {
+            throw new Error('Host mimic functionality disabled');
+        }
+
+        try {
+            // Implement host mimicking behavior
+            const response = await fetch(targetUrl, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-SIR-Relay': 'true',
+                    'User-Agent': 'SIR-System-Intermediary-Relayer/1.0'
+                },
+                body: data ? JSON.stringify(data) : null
+            });
+
+            const result = await response.json();
+            
+            // Execute mimic action in fLups system
+            this.executeAction('transmit', {
+                mimicTarget: targetUrl,
+                mimicMethod: method,
+                mimicResult: result
+            });
+
+            return {
+                success: true,
+                originalResponse: result,
+                sirState: this.systemState.currentState,
+                relationalTime: this.systemState.relationalTime
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message,
+                sirState: this.systemState.currentState
+            };
+        }
+    }
+
+    startActionLoop() {
+        // Continuous action processing (implements temporal evolution)
+        setInterval(() => {
+            if (this.systemState.actionQueue.length > 0) {
+                const nextAction = this.systemState.actionQueue.shift();
+                this.executeAction(nextAction.type, nextAction.parameters);
+            }
+        }, 1000);
+    }
+
+    handleWebSocketMessage(ws, data) {
+        switch (data.type) {
+            case 'sir_action_request':
+                const result = this.executeAction(data.action, data.parameters);
+                ws.send(JSON.stringify({
+                    type: 'sir_action_response',
+                    result
+                }));
+                break;
+            
+            case 'sir_state_request':
+                ws.send(JSON.stringify({
+                    type: 'sir_state_response',
+                    state: this.systemState
+                }));
+                break;
+        }
+    }
+
+    broadcastStateUpdate() {
+        const stateUpdate = {
+            type: 'sir_state_update',
+            state: this.systemState,
+            timestamp: new Date().toISOString()
+        };
+
+        this.wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(stateUpdate));
+            }
+        });
+    }
+
+    start() {
+        this.server.listen(this.port, () => {
+            console.log(chalk.green(\`🚀 SIR System Intermediary Relayer listening on port \${this.port}\`));
+            console.log(chalk.blue(\`📊 System State: \${this.systemState.currentState}\`));
+            console.log(chalk.blue(\`⏱️  Relational Time: \${this.systemState.relationalTime}\`));
+            console.log(chalk.blue(\`🎭 Host Mimic: \${this.systemState.hostMimicActive ? 'ENABLED' : 'DISABLED'}\`));
+        });
+    }
+}
+
+// Start SIR Relay Server
+const sirRelay = new SIRRelayServer();
+sirRelay.start();
+
+module.exports = SIRRelayServer;
+EOF
+
+# Make the relay server executable
+RUN chmod +x /app/sir-relay/sir-relay-server.js
+
+# Set environment variables for SIR
+ENV NODE_ENV=production
+ENV SIR_MODE=relayer
+ENV SIR_PORT=9001
+ENV HOST_MIMIC_ENABLED=true
+ENV LOG_LEVEL=info
+
+# Health check for SIR system
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:9001/health || exit 1
+
+# Expose SIR control port
+EXPOSE 9001
+
+# Start SIR System Intermediary Relayer
+CMD ["node", "/app/sir-relay/sir-relay-server.js"]

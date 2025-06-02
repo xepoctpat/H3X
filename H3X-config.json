@@ -1,0 +1,9 @@
+{
+  "timeAggregation": true,
+  "logDiffs": true,
+  "proofSync": true,
+  "verbose": true,
+  "enableSwapping": true,
+  "hexLatticeMode": true,
+  "triadPerfection": true
+}

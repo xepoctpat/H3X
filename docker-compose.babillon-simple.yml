@@ -1,0 +1,103 @@
+# Babillon Unified System - Simplified Initial Deployment
+version: '3.8'
+
+services:
+  # Core Database Services
+  babillon-mongodb:
+    image: mongo:6.0
+    container_name: babillon-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=babillon
+      - MONGO_INITDB_ROOT_PASSWORD=babillon-secure-password
+      - MONGO_INITDB_DATABASE=babillon
+    volumes:
+      - babillon_mongodb_data:/data/db
+    networks:
+      - babillon-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/babillon --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  babillon-redis:
+    image: redis:7-alpine
+    container_name: babillon-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - babillon_redis_data:/data
+    networks:
+      - babillon-network
+    restart: unless-stopped
+
+  # Simplified Babillon Web
+  babillon-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon
+    container_name: babillon-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URL=mongodb://babillon-mongodb:27017/babillon
+      - REDIS_URL=redis://babillon-redis:6379
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-mongodb
+      - babillon-redis
+    restart: unless-stopped
+
+  # Simplified Babillon API
+  babillon-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.babillon-api
+    container_name: babillon-api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MONGODB_URL=mongodb://babillon-mongodb:27017/babillon
+      - REDIS_URL=redis://babillon-redis:6379
+    networks:
+      - babillon-network
+    depends_on:
+      - babillon-mongodb
+      - babillon-redis
+    restart: unless-stopped
+
+  # Monitoring
+  babillon-prometheus:
+    image: prom/prometheus:latest
+    container_name: babillon-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/monitoring/prometheus-simple.yml:/etc/prometheus/prometheus.yml:ro
+      - babillon_prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - babillon-network
+    restart: unless-stopped
+
+volumes:
+  babillon_mongodb_data:
+  babillon_redis_data:
+  babillon_prometheus_data:
+
+networks:
+  babillon-network:
+    external: true
+    name: babillon-unified-network

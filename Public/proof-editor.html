@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Proof Editor & Visualizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/proof-editor.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <div class="proof-editor-container">
+    <header>
+      <h1>Proof Editor & Visualizer</h1>
+      <label for="proof-file-select" class="visually-hidden">Select proof file</label>
+      <select id="proof-file-select" aria-label="Select proof file"></select>
+      <button id="load-file">Load</button>
+    </header>
+    <main>
+      <section class="editor-section">
+        <h2>Markdown Editor</h2>
+        <label for="markdown-editor" class="visually-hidden">Markdown editor</label>
+        <textarea id="markdown-editor" rows="20" placeholder="Enter your markdown content here"></textarea>
+        <button id="save-file">Save Changes</button>
+      </section>
+      <section class="preview-section">
+        <h2>Live Preview</h2>
+        <div id="markdown-preview" class="preview"></div>
+      </section>
+      <section class="visual-section">
+        <h2>Graphical Representation (Mermaid)</h2>
+        <div id="mermaid-diagram" class="mermaid"></div>
+      </section>
+    </main>
+    <footer>
+      <span id="status-msg"></span>
+    </footer>
+  </div>
+  <script src="js/proof-editor.js"></script>
+</body>
+</html>

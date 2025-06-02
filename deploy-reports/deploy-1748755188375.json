@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-06-01T05:19:48.375Z",
+  "environment": "development",
+  "deployTarget": "local",
+  "duration": 13420,
+  "success": false,
+  "errors": [
+    "Build failed: Command failed: docker-compose -f docker-compose.unified.yml build\ntime=\"2025-06-01T07:19:48+02:00\" level=warning msg=\"The \\\"FINANCIAL_API_KEY\\\" variable is not set. Defaulting to a blank string.\"\ntime=\"2025-06-01T07:19:48+02:00\" level=warning msg=\"The \\\"WEATHER_API_KEY\\\" variable is not set. Defaulting to a blank string.\"\nservice \"mongodb-init\" depends on undefined service \"mongodb\": invalid compose project\n"
+  ],
+  "system": {
+    "name": "H3X Unified System",
+    "version": "2.0.0"
+  }
+}

@@ -1,0 +1,17 @@
+# Dockerfile for Babillon Agent Controller
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install dependencies
+RUN npm init -y && \
+    npm install express ws axios uuid
+
+# Copy the agents server file
+COPY agents-server.js .
+
+# Expose ports (HTTP API and WebSocket)
+EXPOSE 3002 3003
+
+# Start the agents server
+CMD ["node", "agents-server.js"]

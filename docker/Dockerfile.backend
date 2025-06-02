@@ -1,0 +1,31 @@
+# H3X Backend API Server Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache curl
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy application code
+COPY src/backend/ ./src/backend/
+COPY H3X-merger.js ./
+COPY H3X-config.json ./
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Expose port
+EXPOSE 3008
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3008/api/health || exit 1
+
+# Start the backend server
+CMD ["node", "src/backend/h3x-api-server.js"]

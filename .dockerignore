@@ -1,44 +1,70 @@
 # Include any files or directories that you don't want to be copied to your
 # container here (e.g., local build artifacts, temporary files, etc.).
-#
-# For more help, visit the .dockerignore file reference guide at
-# https://docs.docker.com/engine/reference/builder/#dockerignore-file
 
-# Development and build artifacts
+# Node modules and build artifacts
 node_modules
 **/node_modules
+Node_Modules
+**/Node_Modules
 npm-debug.log
 **/npm-debug.log
 *.log
 logs/
+**/logs
+
+# Environment files
 *.env
 *.env.*
 .env
 .env.*
+.current-env
+.localconfigs*
+.Localconfigs*
 
-# Development tools and configs that shouldn't be in production
+# Development tools and IDE files
+devtools/
 Devtools/
 **/.github
+.Github/
 .vscode/
+.Vscode/
 **/.vscode
 .github/
 .git/
+.Git/
 .gitignore
+.Gitignore
 **/.git
 **/.gitignore
+.husky/
 
 # Documentation and non-essential files
 *.md
 *.docx
 *.pdf
+*.html
+!sir-control-interface.html
 LICENSE
 README.md
 
 # Docker related files
 Dockerfile*
+dockerfile*
 docker-compose*
 .dockerignore
 **/.dockerignore
+
+# Build and deployment artifacts
+**/bin
+**/obj
+**/target
+**/charts
+**/secrets.dev.yaml
+**/values.dev.yaml
+archive/
+infra/
+scripts/
+docs/
 
 # IDE and editor files
 **/.DS_Store
@@ -51,14 +77,15 @@ docker-compose*
 **/*.dbmdl
 **/*.jfm
 
-# Build artifacts
-**/bin
-**/obj
-**/target
-**/charts
-**/secrets.dev.yaml
-**/values.dev.yaml
-
 # Python cache
 **/__pycache__
 **/.venv
+
+# Application packages and other artifacts
+apppackage/
+env/
+*.backup-*
+test-*.js
+web.config
+*.yml
+*.yaml

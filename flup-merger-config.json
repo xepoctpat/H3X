@@ -1,0 +1,7 @@
+{
+  "timeAggregation": true,
+  "diffLogging": true,
+  "proofSync": false,
+  "verbose": true,
+  "enableSwapping": true
+}

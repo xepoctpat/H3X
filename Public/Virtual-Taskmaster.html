@@ -52,15 +52,15 @@
             <!-- Task Creation Panel -->
             <section class="panel task-creation">
                 <h2>⬡ Task Genesis</h2>
-                <form id="taskCreationForm" class="neural-form">
+                <form id="task-creation-form" class="neural-form">
                     <div class="input-group">
                         <label for="taskTitle">Task Neural Pattern:</label>
-                        <input type="text" id="taskTitle" placeholder="Enter task description..." required>
+                        <input type="text" id="task-title" placeholder="Enter task description..." required>
                     </div>
                     
                     <div class="input-group">
                         <label for="taskPriority">Priority Matrix:</label>
-                        <select id="taskPriority">
+                        <select id="task-priority">
                             <option value="critical">🔴 Critical - Immediate Action</option>
                             <option value="high">🟠 High - Urgent Processing</option>
                             <option value="medium" selected>🟡 Medium - Standard Flow</option>
@@ -70,7 +70,7 @@
                     
                     <div class="input-group">
                         <label for="taskCategory">Neural Category:</label>
-                        <select id="taskCategory">
+                        <select id="task-category">
                             <option value="creative">🎨 Creative Genesis</option>
                             <option value="analytical">📊 Matrix Analysis</option>
                             <option value="coordination">🔗 Synapse Coordination</option>
@@ -81,12 +81,12 @@
                     
                     <div class="input-group">
                         <label for="taskDeadline">Temporal Boundary:</label>
-                        <input type="datetime-local" id="taskDeadline">
+                        <input type="datetime-local" id="task-deadline">
                     </div>
                     
                     <div class="input-group">
                         <label for="taskNotes">Neural Context:</label>
-                        <textarea id="taskNotes" rows="3" placeholder="Additional context, dependencies, or special instructions..."></textarea>
+                        <textarea id="task-notes" rows="3" placeholder="Additional context, dependencies, or special instructions..."></textarea>
                     </div>
                     
                     <button type="submit" class="neural-button primary">
@@ -99,7 +99,7 @@
             <!-- Active Tasks Display -->
             <section class="panel active-tasks">
                 <h2>◊ Active Neural Threads</h2>
-                <div id="tasksList" class="tasks-container">
+                <div id="tasks-list" class="tasks-container">
                     <!-- Dynamic task items will be inserted here -->
                     <div class="task-item sample">
                         <div class="task-header">
@@ -125,7 +125,7 @@
             <section class="panel virtual-assistant">
                 <h2>🤖 Neural Assistant</h2>
                 <div class="assistant-interface">
-                    <div id="assistantChat" class="chat-container">
+                    <div id="assistant-chat" class="chat-container">
                         <div class="chat-message assistant">
                             <span class="avatar">🧠</span>
                             <div class="message-content">
@@ -136,8 +136,8 @@
                     </div>
                     
                     <div class="assistant-input">
-                        <input type="text" id="assistantInput" placeholder="Ask for task suggestions, analysis, or optimization...">
-                        <button id="sendAssistant" class="neural-button secondary">
+                        <input type="text" id="assistant-input" placeholder="Ask for task suggestions, analysis, or optimization...">
+                        <button id="send-assistant" class="neural-button secondary">
                             <span>Send</span>
                         </button>
                     </div>
@@ -156,31 +156,31 @@
                 <div class="analytics-grid">
                     <div class="metric-card">
                         <h3>Active Tasks</h3>
-                        <span class="metric-value" id="activeTasksCount">12</span>
+                        <span class="metric-value" id="active-tasks-count">12</span>
                         <span class="metric-trend positive">+2 today</span>
                     </div>
                     
                     <div class="metric-card">
                         <h3>Completion Rate</h3>
-                        <span class="metric-value" id="completionRate">89%</span>
+                        <span class="metric-value" id="completion-rate">89%</span>
                         <span class="metric-trend positive">+5% this week</span>
                     </div>
                     
                     <div class="metric-card">
                         <h3>Avg. Processing Time</h3>
-                        <span class="metric-value" id="avgProcessingTime">2.4h</span>
+                        <span class="metric-value" id="avg-processing-time">2.4h</span>
                         <span class="metric-trend negative">-0.3h improvement</span>
                     </div>
                     
                     <div class="metric-card">
                         <h3>Neural Efficiency</h3>
-                        <span class="metric-value" id="neuralEfficiency">94%</span>
+                        <span class="metric-value" id="neural-efficiency">94%</span>
                         <span class="metric-trend positive">Optimal</span>
                     </div>
                 </div>
                 
                 <div class="chart-container">
-                    <canvas id="taskChart" width="400" height="200"></canvas>
+                    <canvas id="task-chart" width="400" height="200"></canvas>
                 </div>
             </section>
         </main>

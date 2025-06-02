@@ -1,0 +1,29 @@
+const fs = require('fs');
+const path = require('path');
+
+// Services that need health endpoints
+const services = [
+    { name: 'web', port: 3000, path: '/health' },
+    { name: 'api', port: 5000, path: '/api/health' },
+    { name: 'agents', port: 8001, path: '/health' },
+    { name: 'h3x', port: 8080, path: '/health' },
+    { name: 'sir', port: 8002, path: '/health' }
+];
+
+// Find and update service files
+function findServiceFiles() {
+    const patterns = ['server.js', 'index.js', 'app.js', 'main.js'];
+    const searchPaths = [
+        'src', 'services', 'apps', 'packages'
+    ];
+    
+    searchPaths.forEach(dir => {
+        if (fs.existsSync(dir)) {
+            console.log(`Searching in ${dir}...`);
+            // Implementation to find and update files
+        }
+    });
+}
+
+console.log('Adding health endpoints to services...');
+findServiceFiles();

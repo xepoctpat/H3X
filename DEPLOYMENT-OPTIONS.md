@@ -7,10 +7,12 @@ The H3X system is now deployed using Docker containers for maximum portability a
 ### ✅ Docker Compose Deployment (Recommended)
 
 **Prerequisites:**
+
 - Docker Desktop or Docker Engine
 - Docker Compose
 
 **Deployment Steps:**
+
 ```bash
 # 1. Start all services
 docker-compose up -d
@@ -23,10 +25,12 @@ docker-compose logs -f
 ```
 
 **Services:**
+
 - **h3x-server** (Port 4978): Main application server
 - **protocol-server** (Port 8081): Hexperiment protocol coordination
 
 **Benefits:**
+
 - ✅ Consistent environment across all platforms
 - ✅ Automatic service discovery and networking
 - ✅ Built-in health checks and restart policies

@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # H3X Frontend Application
+  h3x-frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - H3X_API_URL=http://h3x-backend:3008
+      - H3X_WS_URL=ws://h3x-websocket:3009
+    depends_on:
+      - h3x-backend
+      - h3x-websocket
+    networks:
+      - h3x-network
+
+  # H3X Backend API Server
+  h3x-backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - "3008:3008"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URL=mongodb://h3x-database:27017/h3x
+      - REDIS_URL=redis://h3x-redis:6379
+    volumes:
+      - ./H3X-config.json:/app/H3X-config.json
+      - ./logs:/app/logs
+      - h3x-data:/app/data
+    depends_on:
+      - h3x-database
+      - h3x-redis
+    networks:
+      - h3x-network
+
+  # H3X WebSocket Server
+  h3x-websocket:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.websocket
+    ports:
+      - "3009:3009"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://h3x-redis:6379
+    depends_on:
+      - h3x-redis
+    networks:
+      - h3x-network
+
+  # H3X UI Server
+  h3x-ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ui
+    ports:
+      - "3007:3007"
+    environment:
+      - NODE_ENV=production
+      - H3X_API_URL=http://h3x-backend:3008
+    depends_on:
+      - h3x-backend
+    networks:
+      - h3x-network
+
+  # H3X Custom Database (MongoDB)
+  h3x-database:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=h3x
+      - MONGO_INITDB_ROOT_PASSWORD=h3x_secure_password
+      - MONGO_INITDB_DATABASE=h3x
+    volumes:
+      - h3x-mongodb-data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - h3x-network
+
+  # Redis for caching and real-time features
+  h3x-redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - h3x-redis-data:/data
+    networks:
+      - h3x-network
+  # Nginx reverse proxy
+  h3x-nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - h3x-frontend
+      - h3x-ui
+    networks:
+      - h3x-network
+
+  # Monitoring with Prometheus
+  h3x-prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - h3x-prometheus-data:/prometheus
+    networks:
+      - h3x-network
+
+  # Grafana for visualization
+  h3x-grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=h3x_admin
+    volumes:
+      - h3x-grafana-data:/var/lib/grafana
+    depends_on:
+      - h3x-prometheus
+    networks:
+      - h3x-network
+
+volumes:
+  h3x-data:
+  h3x-mongodb-data:
+  h3x-redis-data:
+  h3x-prometheus-data:
+  h3x-grafana-data:
+
+networks:
+  h3x-network:
+    driver: bridge

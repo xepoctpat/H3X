@@ -104,7 +104,7 @@ const browserConfig = {
 
 Your project already supports multiple storage patterns:
 
-**1. Local Browser Storage**
+#### 1. Local Browser Storage
 
 ```javascript
 // Already implemented in interfaces
@@ -112,7 +112,7 @@ localStorage.setItem('hexSettings', JSON.stringify(userPreferences));
 sessionStorage.setItem('workflowState', JSON.stringify(currentState));
 ```
 
-**2. Microsoft Graph Integration**
+#### 2. Microsoft Graph Integration
 
 ```javascript
 // Recommended for M365 Agents
@@ -124,7 +124,7 @@ const graphStorage = {
 };
 ```
 
-**3. Hybrid Storage Strategy**
+#### 3. Hybrid Storage Strategy
 
 ```javascript
 const storageStrategy = {
@@ -178,7 +178,7 @@ npm run dev:teamsfx:playground
 # ✅ Browser-based interface testing
 ```
 
-**2. Teams App Integration**
+#### 2. Teams App Integration
 
 ```bash
 npm run dev:teamsfx
@@ -187,7 +187,7 @@ npm run dev:teamsfx
 # ✅ Chat-based agent interactions
 ```
 
-**3. Standalone Browser Mode**
+#### 3. Standalone Browser Mode
 
 ```bash
 npm run standalone
@@ -234,21 +234,21 @@ const deploymentModes = {
 
 ### **🟢 HIGH M365 AGENT POTENTIAL**
 
-**1. HEX-GENESIS Creative Interface**
+#### 1. HEX-GENESIS Creative Interface
 
 - **Use Case:** Content creation assistant in Teams/Outlook
 - **Browser Fit:** Perfect - form-based input, rich output
 - **Storage Needs:** User preferences, creation history
 - **M365 Integration:** SharePoint document creation, Teams channel posting
 
-**2. SYNAPSE-TASKFLOW Orchestration**
+#### 2. SYNAPSE-TASKFLOW Orchestration
 
 - **Use Case:** Task management across M365 apps
 - **Browser Fit:** Excellent - workflow visualization
 - **Storage Needs:** Task states, workflow definitions
 - **M365 Integration:** Planner, Outlook tasks, Teams channels
 
-**3. NODE-NEURAL Dashboard**
+#### 3. NODE-NEURAL Dashboard
 
 - **Use Case:** Central control panel for M365 productivity
 - **Browser Fit:** Ideal - dashboard interfaces are browser-native
@@ -257,7 +257,7 @@ const deploymentModes = {
 
 ### **🟡 MODERATE M365 AGENT POTENTIAL (Without Real-time)**
 
-**4. CORTEX-BURRENT Real-time**
+#### 4. CORTEX-BURRENT Real-time
 
 - **Use Case:** Data visualization and polling-based updates
 - **Browser Fit:** Good - can work with periodic updates

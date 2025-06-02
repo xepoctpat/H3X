@@ -1,0 +1,55 @@
+# Babillon Unified System - Prometheus Configuration
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'babillon-unified'
+    environment: 'production'
+
+rule_files: []
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # Babillon Web Interface
+  - job_name: 'babillon-web'
+    static_configs:
+      - targets: ['babillon-web:3000']
+    scrape_interval: 15s
+    metrics_path: /metrics
+    scheme: http
+
+  # Babillon API Server
+  - job_name: 'babillon-api'
+    static_configs:
+      - targets: ['babillon-api:3001']
+    scrape_interval: 15s
+    metrics_path: /metrics
+    scheme: http
+
+  # MongoDB
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['babillon-mongodb:27017']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scheme: http
+
+  # Redis
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['babillon-redis:6379']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scheme: http
