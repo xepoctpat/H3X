@@ -80,7 +80,7 @@ if (-not $hasGitHub -and -not $SkipPR) {
 
 # Ensure GitHub CLI is authenticated if we're creating a PR
 if (-not $SkipPR) {
-    $ghStatus = gh auth status 2>&1
+    gh auth status 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-ColorOutput "⚠️ GitHub CLI not authenticated. Please run 'gh auth login' first." "Yellow"
         Write-ColorOutput "ℹ️ Will commit changes but cannot create PR." "Cyan"

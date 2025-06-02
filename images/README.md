@@ -20,10 +20,13 @@ images/
 
 1. **Place your TAR files here**
 2. **Run import command**:
+
    ```powershell
    .\docker-import-helper.ps1 -Operation import-custom
    ```
+
 3. **Or use batch import**:
+
    ```powershell
    .\docker-manage.ps1 -Command batch-import -ConfigFile "docker-import-config.json"
    ```
@@ -48,6 +51,7 @@ docker save -o images/h3x-frontend.tar h3x-frontend:latest
 ## Note
 
 This directory is ignored by Git (see .gitignore) due to potentially large file sizes. Share TAR files through other means like:
+
 - Private file shares
 - Container registries
 - Cloud storage

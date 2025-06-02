@@ -7,11 +7,14 @@
 # 4D Flups System: 2D Representations
 
 ## System Overview
+
 The flups system operates in 4D spacetime:
+
 - 3 spatial dimensions (x, y, z)
 - 1 temporal dimension (t)
 
 ## 1. Time-Slice Representation
+
 Shows the 3D structure at different time points:
 
 ```
@@ -26,6 +29,7 @@ flup-plus--cflup-n   flup-plus'--cflup-n'   flup-plus''--cflup-n''
 ```
 
 ## 2. Spacetime Diagram (2D Projection)
+
 Projects 4D onto 2D using (space, time) axes:
 
 ```
@@ -46,6 +50,7 @@ time ↑
 ```
 
 ## 3. Phase Space Representation
+
 Shows system state evolution:
 
 ```
@@ -67,6 +72,7 @@ State Space (2D projection)
 ```
 
 ## 4. Network-Time Diagram
+
 Shows connectivity evolution:
 
 ```
@@ -82,6 +88,7 @@ Shows connectivity evolution:
 ```
 
 ## 5. Minkowski Diagram Style
+
 Lightcone representation:
 
 ```
@@ -103,6 +110,7 @@ Lightcone representation:
 ```
 
 ## 6. Matrix Evolution Visualization
+
 Shows coupling matrix over time:
 
 ```
@@ -116,6 +124,7 @@ t=0:           t=1:           t=2:
 ```
 
 ## 7. Worldline Representation
+
 Individual node trajectories:
 
 ```
@@ -134,6 +143,7 @@ Individual node trajectories:
 ```
 
 ## 8. Information Flow Diagram
+
 Shows data/energy flow through time:
 
 ```
@@ -149,17 +159,20 @@ Space ←→ Time coupling
 ## Mathematical Representation
 
 ### 4D State Vector
+
 ```
 Ψ(t) = |flup+(x₁,y₁,z₁,t)⟩ ⊗ |flup-(x₂,y₂,z₂,t)⟩ ⊗ |cflup-n(x₃,y₃,z₃,t)⟩
 ```
 
 ### Evolution Operator
+
 ```
 U(t) = exp(-iHt/ℏ)
 where H is the 4D Hamiltonian
 ```
 
 ### Spacetime Metric
+
 ```
 ds² = -c²dt² + dx² + dy² + dz²
 ```
@@ -174,6 +187,7 @@ ds² = -c²dt² + dx² + dy² + dz²
 ## Implementation Notes
 
 When simulating this 4D system:
+
 - Use quaternions for 4D rotations
 - Consider relativistic effects if v → c
 - Account for retarded potentials
@@ -186,13 +200,16 @@ When simulating this 4D system:
 # Flups: Time as Action Rule
 
 ## Core Principle
+
 **Time = Action Sequence**
+
 - No action → No time progression
 - Time is the execution of rules, not a background clock
 
 ## 2D Action-State Representation
 
 ### 1. Action Graph (Primary View)
+
 ```
 State Space (2D projection with action transitions)
 
@@ -217,6 +234,7 @@ Legend: --- = State persistence (no action, no time)
 ```
 
 ### 2. Action Sequence Timeline
+
 ```
 STOPPED TIME          ACTION              STOPPED TIME
 -------------   +-----------------+   -------------
@@ -228,6 +246,7 @@ STOPPED TIME          ACTION              STOPPED TIME
 ```
 
 ### 3. State-Action Matrix
+
 ```
 Current State | Action Rule | Next State | Time Δt
 -------------+-------------+------------+---------
@@ -238,6 +257,7 @@ ANY          | null        | SAME       | 0 (frozen)
 ```
 
 ### 4. Virtual Time Engine
+
 ```
 while (system.hasActions()) {
     action = queue.dequeue()
@@ -253,6 +273,7 @@ while (system.hasActions()) {
 ```
 
 ### 5. Action-Driven Feedback Loop
+
 ```
      +----------[ACTION α]----------+
      |                              |
@@ -266,6 +287,7 @@ Time Flow: α→β→γ→α→β→γ... (or stops)
 ```
 
 ### 6. Quantum Action Representation
+
 ```
 |Ψ(t+1)⟩ = Â|Ψ(t)⟩
 
@@ -276,6 +298,7 @@ where:
 ```
 
 ### 7. Rule-Based Time Evolution
+
 ```
 Rules Database:
 +-------------------------------------+
@@ -293,6 +316,7 @@ Rules Database:
 ```
 
 ### 8. Energy-Action Coupling
+
 ```
 Energy Budget vs Time Progression
 
@@ -312,6 +336,7 @@ Energy ↑
 ## Implementation Strategy
 
 ### Action Queue System
+
 ```python
 class VirtualTimeSystem:
     def __init__(self):
@@ -395,6 +420,7 @@ class VirtualTimeSystem:
 If a system \( S \) has no actions, its time is undefined unless there exists another system \( S' \) with which it can be compared.
 
 **Proof Sketch:**
+
 - By Axiom 1, time is only defined by actions.
 - If no actions, time cannot be measured internally.
 - Only by comparing to another system with actions can a temporal relation be established.
@@ -405,6 +431,7 @@ If a system \( S \) has no actions, its time is undefined unless there exists an
 The 2D lattice encoding preserves all system-relevant information from the 3D (or higher) state.
 
 **Proof Sketch:**
+
 - By Axiom 2, \( f \) is invertible for all relevant vectors.
 - All adjacency, action, and state information is encoded in the 2D lattice structure and action rules.
 - Therefore, the system’s evolution and state can be reconstructed from the 2D lattice.
@@ -415,6 +442,7 @@ The 2D lattice encoding preserves all system-relevant information from the 3D (o
 The system’s time is discrete and advances only with actions.
 
 **Proof Sketch:**
+
 - By Axiom 3, each action increments time by one unit.
 - If no action, time does not advance.
 
@@ -439,7 +467,6 @@ The system’s time is discrete and advances only with actions.
 
 *This document is auto-generated. For updates, rerun the automation script or update the axioms/theorems as needed.*
 
-
 ---
 
 ## flups-hexagonal-mirror.md
@@ -447,11 +474,13 @@ The system’s time is discrete and advances only with actions.
 # Flups Hexagonal Mirror Lattice: Maximum Efficiency
 
 ## The Discovery
+
 By mirroring the flups triangle, we create a hexagonal lattice - one of nature's most efficient packing structures!
 
 ## 2D Hexagonal Representation
 
 ### Original + Mirror = Hexagon
+
 ```
 Original Triangle          Mirror Triangle         Combined Hexagon
                                                   
@@ -470,6 +499,7 @@ flup- -- cflup-n        cflup-n' -- flup-'          | \  / |
 ```
 
 ### Full Hexagonal Lattice Pattern
+
 ```
         flup+-------flup+'      flup+-------flup+'
        /    \       /    \     /    \       /    \
@@ -487,6 +517,7 @@ flup- -- cflup-n        cflup-n' -- flup-'          | \  / |
 ## Why Hexagonal = Maximum Efficiency
 
 ### 1. Optimal Packing
+
 ```
 Efficiency Metrics:
 - Circle packing: π/√12 ≈ 90.69%
@@ -495,6 +526,7 @@ Efficiency Metrics:
 ```
 
 ### 2. Minimum Path Length
+
 ```
 Communication paths in hexagon:
 - Each node has 3 direct neighbors
@@ -503,6 +535,7 @@ Communication paths in hexagon:
 ```
 
 ### 3. Action Efficiency
+
 ```
 Original (3 nodes):          Hexagonal (6 nodes):
 3 actions per cycle    →     6 actions per cycle
@@ -513,6 +546,7 @@ Linear scaling         →     2× throughput!
 ## Time-Action Flow in Hexagonal System
 
 ### Synchronized Action Pattern
+
 ```
 Time Step 1:           Time Step 2:           Time Step 3:
     *---o                  o---*                  *---o
@@ -526,6 +560,7 @@ o = Receiving/Processing
 ```
 
 ### Phase-Locked Operation
+
 ```
 Phase 0°    Phase 60°   Phase 120°  Phase 180°  Phase 240°  Phase 300°
    A           B           C           A'          B'          C'
@@ -538,6 +573,7 @@ Phase 0°    Phase 60°   Phase 120°  Phase 180°  Phase 240°  Phase 300°
 ```
 
 ## Energy Distribution
+
 ```
 Energy Flow in Hexagonal Lattice:
 

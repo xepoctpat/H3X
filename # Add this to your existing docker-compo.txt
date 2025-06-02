@@ -1,0 +1,37 @@
+# Add this to your existing docker-compose.yml
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: babillon-postgres
+    environment:
+      POSTGRES_DB: babillon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - babillon-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: babillon-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - babillon-web
+      - babillon-api
+    networks:
+      - babillon-network
+
+volumes:
+  postgres_data:

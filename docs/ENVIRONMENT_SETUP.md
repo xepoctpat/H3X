@@ -11,23 +11,27 @@ Complete setup guide for H3X-fLups.
 ## Installation Steps
 
 ### 1. Clone Repository
+
 ```bash
 git clone https://github.com/your-org/H3X-fLups.git
 cd H3X-fLups
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 3. Environment Configuration
+
 ```bash
 cp .env.example .env
 # Edit .env with your settings
 ```
 
 ### 4. Start Services
+
 ```bash
 npm run env:dev
 ```
@@ -41,4 +45,4 @@ npm run test
 
 ---
 
-*Last updated: 2025-06-01*
+Last updated: 2025-06-01

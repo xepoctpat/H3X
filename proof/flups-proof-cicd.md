@@ -3,10 +3,12 @@
 This document describes how to integrate proof automation into your CI/CD pipeline for the fLups project.
 
 ## 1. Prerequisites
+
 - Node.js and/or PowerShell available on your build agents
 - (Optional) Pandoc for PDF/HTML export
 
 ## 2. Recommended Directory Structure
+
 - Place all proof files in the `proof/` folder
 - Place automation scripts as `proof/automation.js` and/or `proof/automation.ps1`
 
@@ -46,10 +48,12 @@ jobs:
 ```
 
 ## 4. Local Automation
+
 - Run `node proof/automation.js` or `pwsh proof/automation.ps1` after editing any proof part.
 - For PDF export, install Pandoc and run the export command as shown above.
 
 ## 5. Tips
+
 - Keep each proof part modular for easy automation and review.
 - Use markdown with LaTeX for math, or export to PDF for publication.
 - Validate output files in CI before publishing.

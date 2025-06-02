@@ -47,17 +47,20 @@ The H3X Unified System is the complete integration of H3X (Hexperiment Labs SIR 
 ### Installation
 
 1. **Clone and Setup**
+
    ```bash
    cd e:\H3X
    npm install
    ```
 
 2. **Create Docker Network**
+
    ```bash
    npm run network:create
    ```
 
 3. **Configure Environment**
+
    ```bash
    # Copy and edit environment file
    cp env/.env.unified-dev env/.env.local
@@ -65,16 +68,19 @@ The H3X Unified System is the complete integration of H3X (Hexperiment Labs SIR 
    ```
 
 4. **Start the Unified System**
+
    ```bash
    npm run unified:start
    ```
 
 5. **Initialize Databases**
+
    ```bash
    npm run init:databases
    ```
 
 6. **Run Integration Tests**
+
    ```bash
    npm run test:unified
    ```
@@ -170,6 +176,7 @@ The system uses environment files in the `env/` directory:
 ### Key Configuration Sections
 
 #### Core System
+
 ```env
 NODE_ENV=production
 H3X_MODE=unified
@@ -177,12 +184,14 @@ H3X_LOG_LEVEL=info
 ```
 
 #### Database Connections
+
 ```env
 MONGODB_URI=mongodb://mongodb:27017/h3x_unified
 REDIS_URL=redis://redis:6379
 ```
 
 #### External APIs
+
 ```env
 WEATHER_API_KEY=your_openweather_api_key
 ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
@@ -190,6 +199,7 @@ FINNHUB_API_KEY=your_finnhub_key
 ```
 
 #### Feedback Loop Tuning
+
 ```env
 FEEDBACK_LEARNING_RATE=0.01
 FEEDBACK_MOMENTUM_FACTOR=0.9
@@ -201,17 +211,20 @@ PULSE_FREQUENCY=0.1
 ### Docker Compose Production
 
 1. **Update Environment**
+
    ```bash
    cp env/.env.unified env/.env.production
    # Edit production settings
    ```
 
 2. **Build Production Images**
+
    ```bash
    npm run unified:build
    ```
 
 3. **Deploy**
+
    ```bash
    docker-compose -f docker-compose.unified.yml --env-file env/.env.production up -d
    ```
@@ -285,6 +298,7 @@ docker-compose -f docker-compose.unified.yml config > backup/compose-config.yml
 ### Common Issues
 
 1. **Services Won't Start**
+
    ```bash
    # Check Docker daemon
    docker version
@@ -297,6 +311,7 @@ docker-compose -f docker-compose.unified.yml config > backup/compose-config.yml
    ```
 
 2. **Database Connection Issues**
+
    ```bash
    # Check database containers
    docker-compose -f docker-compose.unified.yml ps mongodb redis
@@ -307,6 +322,7 @@ docker-compose -f docker-compose.unified.yml config > backup/compose-config.yml
    ```
 
 3. **API Integration Problems**
+
    ```bash
    # Test individual services
    curl http://localhost:3001/api/weather/health
@@ -315,6 +331,7 @@ docker-compose -f docker-compose.unified.yml config > backup/compose-config.yml
    ```
 
 4. **Performance Issues**
+
    ```bash
    # Check resource usage
    docker stats

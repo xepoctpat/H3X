@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Babillon Unified System represents the complete integration of the H3X enterprise architecture with the Babillon platform, creating a comprehensive, enterprise-grade system with advanced AI capabilities, real-time data processing, and sophisticated monitoring.
+The Babillon Unified System represents the complete integration of the H3X enterprise
+architecture with the Babillon platform, creating a comprehensive, enterprise-grade system
+with advanced AI capabilities, real-time data processing, and sophisticated monitoring.
 
 ## Architecture
 
@@ -28,25 +30,25 @@ The Babillon Unified System represents the complete integration of the H3X enter
 
 ### Enterprise Services
 
-4. **H3X Server** (`babillon-h3x-server`)
+1. **H3X Server** (`babillon-h3x-server`)
    - Core H3X system integration
    - Advanced analytics and processing
    - AI model coordination
    - System protocol management
 
-5. **Protocol Server** (`babillon-protocol`)
+2. **Protocol Server** (`babillon-protocol`)
    - Hexperiment System Protocol implementation
    - Cross-system communication
    - API gateway functionality
    - Service mesh coordination
 
-6. **LMStudio AI** (`babillon-lmstudio`)
+3. **LMStudio AI** (`babillon-lmstudio`)
    - Local AI model serving
    - GPU acceleration support
    - Model switching and optimization
    - Inference pipeline management
 
-7. **SIR Controller** (`babillon-sir-controller`)
+4. **SIR Controller** (`babillon-sir-controller`)
    - Super Intelligent Regulator
    - Host system mimicking
    - Advanced behavioral analysis
@@ -54,77 +56,74 @@ The Babillon Unified System represents the complete integration of the H3X enter
 
 ### Data & Storage
 
-8. **MongoDB** (`babillon-mongodb`)
+1. **MongoDB** (`babillon-mongodb`)
    - Primary document database
    - User data, configurations, logs
    - GridFS for file storage
    - Replica set configuration
 
-9. **Redis** (`babillon-redis`)
+2. **Redis** (`babillon-redis`)
    - High-performance caching
    - Session storage
    - Real-time data buffering
    - Pub/Sub messaging
 
-10. **PostgreSQL** (`babillon-postgresql`)
-    - Structured data storage
-    - Analytics and reporting
-    - Backup and archival
-    - ACID compliance
+3. **PostgreSQL** (`babillon-postgresql`)
+   - Structured data storage
+   - Analytics and reporting
+   - Backup and archival
+   - ACID compliance
 
 ### Infrastructure
 
-11. **Nginx Proxy** (`babillon-nginx`)
-    - Reverse proxy and load balancer
-    - SSL/TLS termination
-    - Rate limiting and security
-    - Static file serving
+1. **Nginx Proxy** (`babillon-nginx`)
+   - Reverse proxy and load balancer
+   - SSL/TLS termination   - Rate limiting and security
+   - Static file serving
 
-12. **Prometheus** (`babillon-prometheus`)
-    - Metrics collection and storage
-    - Alert rule evaluation
-    - Service discovery
-    - Custom metrics aggregation
+2. **Prometheus** (`babillon-prometheus`)
+   - Metrics collection and storage
+   - Alert rule evaluation
+   - Service discovery
+   - Custom metrics aggregation
 
-13. **Grafana** (`babillon-grafana`)
-    - Visualization and dashboards
-    - Alert management
-    - Performance monitoring
-    - Custom reporting
+3. **Grafana** (`babillon-grafana`)
+   - Visualization and dashboards
+   - Alert management
+   - Performance monitoring
+   - Custom reporting
 
 ### Real-time Data Services
 
-14. **Weather Service** (`babillon-data-weather`)
-    - Real-time weather data ingestion
-    - API integration with multiple providers
-    - Data normalization and processing
-    - Historical data storage
+1. **Weather Service** (`babillon-data-weather`)
+   - Real-time weather data ingestion
+   - API integration with multiple providers   - Data normalization and processing
+   - Historical data storage
 
-15. **Financial Service** (`babillon-data-financial`)
-    - Market data streaming
-    - Financial indicators calculation
-    - Portfolio tracking
-    - Risk assessment metrics
+2. **Financial Service** (`babillon-data-financial`)
+   - Market data streaming
+   - Financial indicators calculation
+   - Portfolio tracking
+   - Risk assessment metrics
 
-16. **News Service** (`babillon-data-news`)
-    - News aggregation and processing
-    - Sentiment analysis
-    - Trend detection
-    - Content classification
+3. **News Service** (`babillon-data-news`)
+   - News aggregation and processing
+   - Sentiment analysis
+   - Trend detection
+   - Content classification
 
 ### Advanced Features
 
-17. **Feedback Processor** (`babillon-feedback-processor`)
-    - User feedback analysis
-    - Sentiment processing
-    - Behavioral pattern recognition
-    - Recommendation engine
+1. **Feedback Processor** (`babillon-feedback-processor`)
+   - User feedback analysis
+   - Sentiment processing
+   - Behavioral pattern recognition   - Recommendation engine
 
-18. **Frontend Interface** (`babillon-frontend`)
-    - Advanced UI components
-    - Real-time data visualization
-    - Interactive dashboards
-    - Mobile-responsive design
+2. **Frontend Interface** (`babillon-frontend`)
+   - Advanced UI components
+   - Real-time data visualization
+   - Interactive dashboards
+   - Mobile-responsive design
 
 ## Quick Start
 
@@ -138,26 +137,31 @@ The Babillon Unified System represents the complete integration of the H3X enter
 ### Installation
 
 1. **Clone and Navigate**
+
    ```powershell
    cd e:\H3X-fLups
    ```
 
 2. **Create Network**
+
    ```powershell
    npm run babillon:network:create
    ```
 
 3. **Initialize Databases**
+
    ```powershell
    npm run babillon:db:init
    ```
 
 4. **Start Unified System**
+
    ```powershell
    npm run babillon:unified:start
    ```
 
 5. **Verify Health**
+
    ```powershell
    npm run babillon:health:all
    ```
@@ -176,11 +180,13 @@ The Babillon Unified System represents the complete integration of the H3X enter
 ### Environment Variables
 
 Copy and customize the environment file:
+
 ```powershell
 cp configs\env\.env.unified .env
 ```
 
 Key configurations:
+
 - Database credentials
 - API keys for external services
 - Security tokens and secrets
@@ -189,6 +195,7 @@ Key configurations:
 ### Service Configuration
 
 Individual service configurations are located in:
+
 - `configs/nginx/` - Proxy configuration
 - `configs/monitoring/` - Prometheus/Grafana setup
 - `configs/env/` - Environment templates
@@ -196,6 +203,7 @@ Individual service configurations are located in:
 ## Management Commands
 
 ### System Control
+
 ```powershell
 # Start all services
 npm run babillon:unified:start
@@ -214,6 +222,7 @@ npm run babillon:unified:status
 ```
 
 ### Individual Services
+
 ```powershell
 # Start specific services
 npm run babillon:unified:web
@@ -228,6 +237,7 @@ npm run babillon:logs:h3x
 ```
 
 ### Health & Monitoring
+
 ```powershell
 # Comprehensive health check
 npm run babillon:health:all
@@ -242,6 +252,7 @@ npm run babillon:test:unified-quick
 ```
 
 ### Database Management
+
 ```powershell
 # Initialize databases
 npm run babillon:db:init
@@ -257,6 +268,7 @@ npm run babillon:db:migrate
 ```
 
 ### Scaling
+
 ```powershell
 # Scale web interfaces
 npm run babillon:scale:web
@@ -269,6 +281,7 @@ npm run babillon:scale:agents
 ```
 
 ### Maintenance
+
 ```powershell
 # Update all services
 npm run babillon:update
@@ -285,6 +298,7 @@ npm run babillon:unified:build-no-cache
 ### Metrics Collection
 
 The system collects comprehensive metrics:
+
 - **Application metrics**: Request rates, response times, error rates
 - **System metrics**: CPU, memory, disk, network usage
 - **Database metrics**: Connection pools, query performance
@@ -293,6 +307,7 @@ The system collects comprehensive metrics:
 ### Dashboards
 
 Pre-configured Grafana dashboards:
+
 - **System Overview**: High-level system health
 - **Application Performance**: Service-specific metrics
 - **Infrastructure**: Hardware and container metrics
@@ -301,6 +316,7 @@ Pre-configured Grafana dashboards:
 ### Alerting
 
 Automated alerts for:
+
 - Service failures and errors
 - Performance degradation
 - Resource exhaustion
@@ -309,18 +325,21 @@ Automated alerts for:
 ## Security Features
 
 ### Authentication & Authorization
+
 - JWT-based authentication
 - Role-based access control
 - API key management
 - Session management
 
 ### Network Security
+
 - Nginx rate limiting
 - SSL/TLS termination
 - Network isolation
 - Firewall rules
 
 ### Data Protection
+
 - Encryption at rest
 - Secure communication
 - Audit logging
@@ -329,6 +348,7 @@ Automated alerts for:
 ## Development & Testing
 
 ### Development Environment
+
 ```powershell
 # Start development mode
 npm run babillon:dev:unified
@@ -341,6 +361,7 @@ npm run babillon:logs:api
 ```
 
 ### Testing
+
 - Automated health checks
 - Integration testing
 - Performance testing
@@ -366,6 +387,7 @@ npm run babillon:logs:api
    - Review configuration
 
 ### Diagnostic Commands
+
 ```powershell
 # System status
 npm run babillon:unified:status
@@ -385,6 +407,7 @@ npm run babillon:unified:logs
 ### Custom Services
 
 Add custom services to `docker-compose.babillon-unified.yml`:
+
 ```yaml
 your-custom-service:
   build: ./custom-service
@@ -397,6 +420,7 @@ your-custom-service:
 ### External Integrations
 
 Configure external services in `.env`:
+
 - OpenAI/Anthropic API keys
 - Weather/Financial data APIs
 - Webhook endpoints
@@ -405,12 +429,14 @@ Configure external services in `.env`:
 ## Backup & Recovery
 
 ### Automated Backups
+
 - Daily database backups
 - Configuration snapshots
 - Log archival
 - Disaster recovery procedures
 
 ### Recovery Procedures
+
 1. Restore from backup
 2. Rebuild containers
 3. Verify data integrity
@@ -419,16 +445,19 @@ Configure external services in `.env`:
 ## Support & Resources
 
 ### Documentation
+
 - API documentation: `/api/docs`
 - Admin guide: Available in monitoring dashboard
 - Developer docs: `docs/` directory
 
 ### Monitoring
+
 - Health dashboard: http://localhost:80/monitoring
 - Metrics: http://localhost:80/metrics
 - Logs: Centralized logging in monitoring system
 
 ### Community
+
 - GitHub repository
 - Issue tracking
 - Feature requests
@@ -436,4 +465,5 @@ Configure external services in `.env`:
 
 ---
 
-**Babillon Unified System** - Enterprise-grade integration of H3X, SIR, and advanced AI capabilities in a comprehensive, scalable platform.
+**Babillon Unified System** - Enterprise-grade integration of H3X, SIR, and advanced AI capabilities in a
+comprehensive, scalable platform.

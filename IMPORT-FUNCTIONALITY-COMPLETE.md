@@ -11,7 +11,8 @@ The fLups system now has complete manual import functionality for loop type arch
 
 ### 1. CLI Import Commands ✅
 
-#### Primary Commands:
+#### Primary Commands
+
 ```bash
 # Import single archive with options
 node v-merger.js import-loop-archive <file> [options]
@@ -23,12 +24,14 @@ node v-merger.js import-multiple-archives <file1> <file2> ... [options]
 node v-merger.js validate-archive <file>
 ```
 
-#### Available Options:
+#### Available Options
+
 - `--replace`: Replace existing logs instead of merging (default: merge)
 - `--no-validate`: Skip archive integrity validation
 - `--no-counters`: Don't update instance counters from imported data
 
-#### Example Usage:
+#### Example Usage
+
 ```bash
 # Import and merge with existing logs
 node v-merger.js import-loop-archive cFLup-complete-archive-2025-05-29.json
@@ -45,13 +48,15 @@ node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
 
 ### 2. Virtual State Management ✅
 
-#### Enhanced State Loading:
+#### Enhanced State Loading
+
 - **`loadExistingLogsIntoState()`**: Loads all existing log files into memory at startup
 - **Counter Management**: Updates cFLup counter based on highest instance ID found in logs
 - **State Reconstruction**: Properly rebuilds `cFlupInstances`, `fLupOutState`, `fLupRecurseState`, `fLuperState`
 - **Verbose Logging**: Detailed logging of state loading process for debugging
 
-#### Import Processing:
+#### Import Processing
+
 - **Backup Creation**: Automatic backup of existing logs before import
 - **Merge vs Replace**: Support for both merge and complete replacement modes
 - **Counter Updates**: Automatic counter updates based on imported instance IDs
@@ -59,12 +64,14 @@ node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
 
 ### 3. Browser-Side Import Interface ✅
 
-#### User Interface:
+#### User Interface
+
 - **Import Button**: "Import Archive" button in visualization controls
 - **File Picker**: Hidden file input with `.json` filter
 - **Visual Integration**: Seamlessly integrated with existing export controls
 
-#### Import Process:
+#### Import Process
+
 1. **File Selection**: User clicks "Import Archive" → file picker opens
 2. **File Validation**: Validates JSON format and archive structure
 3. **Import Options**: User chooses between MERGE or REPLACE mode
@@ -72,7 +79,8 @@ node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
 5. **Processing**: Archive entries converted to browser log format
 6. **Results**: Progress feedback and final import summary
 
-#### Archive Validation:
+#### Archive Validation
+
 ```javascript
 // Validates required fields
 - loopType (must be valid: cFLup, fLup-out, fLup-recurse, fLuper)
@@ -98,7 +106,8 @@ node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
 }
 ```
 
-#### Import Features:
+#### Import Features
+
 - **Merge Mode**: Adds to existing logs, skips duplicates based on timestamp/summary/instance
 - **Replace Mode**: Clears existing logs for the loop type, imports all entries
 - **Backup Creation**: Automatic backup to localStorage before import
@@ -109,13 +118,15 @@ node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
 
 ### 4. Data Integrity & Compatibility ✅
 
-#### Format Compatibility:
+#### Format Compatibility
+
 - **CLI ↔ Browser**: Archives exported from CLI can be imported to browser and vice versa
 - **Timestamp Preservation**: Original timestamps maintained during import
 - **Metadata Tracking**: Import source and timestamps tracked for audit trail
 - **Instance ID Consistency**: Proper handling of instance IDs across import/export
 
-#### Quality Assurance:
+#### Quality Assurance
+
 - **Validation Pipeline**: Multi-level validation (file format, structure, content)
 - **Backup System**: Automatic backups before any destructive operations
 - **Log Trimming**: Automatic log management to prevent memory bloat
@@ -123,7 +134,8 @@ node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
 
 ## Testing Results ✅
 
-### CLI Testing:
+### CLI Testing
+
 ```bash
 # ✅ Archive validation
 node v-merger.js validate-archive cFLup-complete-archive-2025-05-29.json
@@ -138,7 +150,8 @@ node v-merger.js list-cflups
 # Result: 1 cFLup instance (cFLup-01) with 6 amendments (3 original + 3 imported)
 ```
 
-### Browser Testing:
+### Browser Testing
+
 - ✅ **Interface Loading**: Browser successfully opens with import controls
 - ✅ **File Picker**: Import button triggers file selection dialog
 - ✅ **Integration**: Import controls properly integrated with existing export buttons
@@ -146,16 +159,19 @@ node v-merger.js list-cflups
 
 ## Files Modified
 
-### Core Implementation:
+### Core Implementation
+
 - **`v-merger.js`**: Complete CLI import commands and virtual state loading
 - **`index.allinone.html`**: Browser-side import interface and processing logic
 
-### New CLI Commands Added:
+### New CLI Commands Added
+
 1. `import-loop-archive` - Import single archive with full option support
 2. `import-multiple-archives` - Batch import multiple archives  
 3. `validate-archive` - Validate archive integrity before import
 
-### Enhanced Functions:
+### Enhanced Functions
+
 1. `loadExistingLogsIntoState()` - Load logs into virtual state at startup
 2. `importLoopTypeArchive()` - Process single archive import
 3. `importMultipleArchives()` - Process multiple archive imports
@@ -164,7 +180,8 @@ node v-merger.js list-cflups
 
 ## Usage Examples
 
-### CLI Workflow:
+### CLI Workflow
+
 ```bash
 # 1. Export an archive from one system
 node v-merger.js export-loop-archive cFLup my-backup.json
@@ -180,7 +197,8 @@ node v-merger.js list-cflups
 node v-merger.js loop-status cFLup
 ```
 
-### Browser Workflow:
+### Browser Workflow
+
 1. Open `index.allinone.html` in browser
 2. Click "Import Archive" button
 3. Select `.json` archive file
@@ -191,7 +209,8 @@ node v-merger.js loop-status cFLup
 
 ## Future Enhancements
 
-### Potential Improvements:
+### Potential Improvements
+
 - **Compressed Archives**: Support for `.zip` and `.gz` compressed archives
 - **Batch Browser Import**: Multi-file selection in browser
 - **Import Preview**: Preview archive contents before import
@@ -200,7 +219,8 @@ node v-merger.js loop-status cFLup
 - **Import History**: Track and manage import history
 - **Rollback Functionality**: Undo imports with one-click rollback
 
-### Advanced Features:
+### Advanced Features
+
 - **Incremental Import**: Only import new/changed entries
 - **Conflict Resolution**: Advanced handling of conflicting entries
 - **Import Validation Rules**: Custom validation rules for specific use cases

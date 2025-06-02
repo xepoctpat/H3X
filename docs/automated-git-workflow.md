@@ -5,6 +5,7 @@ This guide explains how to use the automatic commit and PR creation script to st
 ## Overview
 
 The `auto-commit-pr.ps1` script automates the process of:
+
 1. Creating a new branch
 2. Committing your changes
 3. Pushing the branch to the remote repository
@@ -26,6 +27,7 @@ The `auto-commit-pr.ps1` script automates the process of:
 ```
 
 This will:
+
 - Create a timestamped branch
 - Commit all changes with your message
 - Push to remote
@@ -90,3 +92,20 @@ if ($fixesApplied) {
 - The script stages ALL changes in the repository
 - If PR creation fails, changes are still committed and pushed
 - You can manually create a PR from the pushed branch if needed
+
+## Workflow Steps
+
+1. Make code changes
+2. Run the auto-commit script:
+
+    ```powershell
+    ./scripts/auto-commit-pr.ps1 -Message "Describe your change" -Branch "feature/branch-name"
+    ```
+
+3. Push changes to remote
+4. Create a pull request if not done automatically
+
+## Additional Notes
+
+- Ensure you have the required permissions
+- Update the script as needed for your workflow

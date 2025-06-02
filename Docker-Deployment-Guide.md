@@ -29,7 +29,7 @@ docker-compose up --build -d
 
 ### Service Architecture
 
-```
+```text
 ┌─────────────────┐    ┌──────────────────┐
 │   H3X Server    │    │ Protocol Server  │
 │   (Port 4978)   │◄──►│   (Port 8081)    │
@@ -105,6 +105,7 @@ docker-compose up -d
 #### Common Issues
 
 1. **Port Conflicts**
+
    ```bash
    # Check port usage
    netstat -tulpn | grep :4978
@@ -114,6 +115,7 @@ docker-compose up -d
    ```
 
 2. **Container Startup Issues**
+
    ```bash
    # Check container logs
    docker-compose logs h3x-server
@@ -125,6 +127,7 @@ docker-compose up -d
    ```
 
 3. **Network Issues**
+
    ```bash
    # Inspect network
    docker network inspect h3x_h3x-network
@@ -153,4 +156,4 @@ services:
 
 ---
 
-*Generated on 2025-05-28T19:24:43.080Z - H3X Deployment Automation*
+**Generated on:** 2025-05-28T19:24:43.080Z - H3X Deployment Automation

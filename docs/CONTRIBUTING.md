@@ -20,11 +20,13 @@ npm run setup-check
 ## Code Standards
 
 ### Style Guidelines
+
 - Use ESLint configuration
 - Follow Prettier formatting
 - Write clear, documented code
 
 ### Testing Requirements
+
 - Write unit tests for new features
 - Ensure integration tests pass
 - Add E2E tests for major features
@@ -44,4 +46,4 @@ npm run setup-check
 
 ---
 
-*Generated: 2025-06-01T06:39:22.947Z*
+Generated: 2025-06-01T06:39:22.947Z

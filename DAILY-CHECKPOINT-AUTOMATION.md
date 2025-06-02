@@ -1,11 +1,13 @@
 # fLups Daily Checkpoint Automation System
 
 ## Overview
+
 Automated daily backup system for fLups loop database that creates archive checkpoints every day at 22:00 (10 PM) without user intervention.
 
 ## Files Created
 
 ### 1. `daily-checkpoint.ps1` - Main Automation Script
+
 - **Purpose**: Creates daily archive exports of all loop types
 - **Features**:
   - Exports all available loop types (cFLup, fLup, fLuper, fLupOut, fLupRecurse)
@@ -15,6 +17,7 @@ Automated daily backup system for fLups loop database that creates archive check
   - Summary reporting
 
 ### 2. `setup-task-scheduler.ps1` - Windows Task Scheduler Setup
+
 - **Purpose**: Configures Windows Task Scheduler for automatic execution
 - **Features**:
   - Creates scheduled task to run daily at 22:00
@@ -23,6 +26,7 @@ Automated daily backup system for fLups loop database that creates archive check
   - Task status checking and removal options
 
 ### 3. `test-checkpoint.ps1` - Manual Testing Script
+
 - **Purpose**: Tests the checkpoint system manually before automation
 - **Features**:
   - Prerequisites validation
@@ -33,6 +37,7 @@ Automated daily backup system for fLups loop database that creates archive check
 ## Quick Setup
 
 ### Step 1: Test the System
+
 ```powershell
 # Navigate to fLups directory
 cd e:\fLups
@@ -42,6 +47,7 @@ cd e:\fLups
 ```
 
 ### Step 2: Set Up Automation
+
 ```powershell
 # Set up daily automation (run as Administrator for best results)
 .\setup-task-scheduler.ps1
@@ -51,7 +57,9 @@ cd e:\fLups
 ```
 
 ### Step 3: Verify Automation
+
 The system will now automatically:
+
 - Run every day at 22:00 (10 PM)
 - Create checkpoint archives in `.\checkpoints\` directory
 - Log all activities to `checkpoint-automation.log`
@@ -73,16 +81,19 @@ checkpoint-automation.log  # Automation activity log
 ## Features
 
 ### Automatic Export
+
 - **All Loop Types**: Exports cFLup, fLup, fLuper, fLupOut, fLupRecurse
 - **Timestamped Files**: Format: `{LoopType}-checkpoint-YYYY-MM-DD-HH-MM-SS.json`
 - **Summary Archive**: Combined summary with metadata
 
 ### Error Handling
+
 - **Graceful Failures**: Continues with other loop types if one fails
 - **Detailed Logging**: All activities logged with timestamps
 - **Exit Codes**: Proper exit codes for monitoring
 
 ### Maintenance
+
 - **Automatic Cleanup**: Removes archives older than 30 days
 - **Storage Efficient**: Only creates archives for loop types with data
 - **Non-Destructive**: Never modifies original log files
@@ -90,21 +101,25 @@ checkpoint-automation.log  # Automation activity log
 ## Manual Commands
 
 ### Run Checkpoint Now
+
 ```powershell
 .\daily-checkpoint.ps1 -Verbose
 ```
 
 ### Run Without Cleanup
+
 ```powershell
 .\daily-checkpoint.ps1
 ```
 
 ### Check Task Status
+
 ```powershell
 .\setup-task-scheduler.ps1 -Status
 ```
 
 ### Remove Automation
+
 ```powershell
 .\setup-task-scheduler.ps1 -Remove
 ```
@@ -112,6 +127,7 @@ checkpoint-automation.log  # Automation activity log
 ## Monitoring
 
 ### Check Last Run
+
 ```powershell
 # View recent log entries
 Get-Content checkpoint-automation.log -Tail 20
@@ -121,6 +137,7 @@ Get-Content checkpoint-automation.log -Tail 20
 ```
 
 ### Check Backup Files
+
 ```powershell
 # List recent checkpoints
 Get-ChildItem checkpoints -Filter "*.json" | Sort CreationTime -Desc | Select -First 10
@@ -131,6 +148,7 @@ Get-ChildItem checkpoints -Filter "*.json" | Sort CreationTime -Desc | Select -F
 ### Common Issues
 
 1. **PowerShell Execution Policy**
+
    ```powershell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
    ```
@@ -148,6 +166,7 @@ Get-ChildItem checkpoints -Filter "*.json" | Sort CreationTime -Desc | Select -F
    - Check that checkpoints directory can be created
 
 ### Log Analysis
+
 ```powershell
 # View errors only
 Get-Content checkpoint-automation.log | Where-Object { $_ -like "*ERROR*" }
@@ -175,6 +194,7 @@ Get-Content checkpoint-automation.log | Where-Object { $_ -like "*SUCCESS*" }
 ## Integration
 
 This automation system integrates seamlessly with:
+
 - Existing fLups export functionality (`v-merger.js export-loop-type`)
 - Import system for restoring from checkpoints
 - Browser-based fLups interface

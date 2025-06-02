@@ -1,11 +1,14 @@
 # 4D Flups System: 2D Representations
 
 ## System Overview
+
 The flups system operates in 4D spacetime:
+
 - 3 spatial dimensions (x, y, z)
 - 1 temporal dimension (t)
 
 ## 1. Time-Slice Representation
+
 Shows the 3D structure at different time points:
 
 ```
@@ -20,6 +23,7 @@ flup-plus--cflup-n   flup-plus'--cflup-n'   flup-plus''--cflup-n''
 ```
 
 ## 2. Spacetime Diagram (2D Projection)
+
 Projects 4D onto 2D using (space, time) axes:
 
 ```
@@ -40,6 +44,7 @@ time ↑
 ```
 
 ## 3. Phase Space Representation
+
 Shows system state evolution:
 
 ```
@@ -61,6 +66,7 @@ State Space (2D projection)
 ```
 
 ## 4. Network-Time Diagram
+
 Shows connectivity evolution:
 
 ```
@@ -76,6 +82,7 @@ Shows connectivity evolution:
 ```
 
 ## 5. Minkowski Diagram Style
+
 Lightcone representation:
 
 ```
@@ -97,6 +104,7 @@ Lightcone representation:
 ```
 
 ## 6. Matrix Evolution Visualization
+
 Shows coupling matrix over time:
 
 ```
@@ -110,6 +118,7 @@ t=0:           t=1:           t=2:
 ```
 
 ## 7. Worldline Representation
+
 Individual node trajectories:
 
 ```
@@ -128,6 +137,7 @@ Individual node trajectories:
 ```
 
 ## 8. Information Flow Diagram
+
 Shows data/energy flow through time:
 
 ```
@@ -143,17 +153,20 @@ Space ←→ Time coupling
 ## Mathematical Representation
 
 ### 4D State Vector
+
 ```
 Ψ(t) = |flup+(x₁,y₁,z₁,t)⟩ ⊗ |flup-(x₂,y₂,z₂,t)⟩ ⊗ |cflup-n(x₃,y₃,z₃,t)⟩
 ```
 
 ### Evolution Operator
+
 ```
 U(t) = exp(-iHt/ℏ)
 where H is the 4D Hamiltonian
 ```
 
 ### Spacetime Metric
+
 ```
 ds² = -c²dt² + dx² + dy² + dz²
 ```
@@ -168,6 +181,7 @@ ds² = -c²dt² + dx² + dy² + dz²
 ## Implementation Notes
 
 When simulating this 4D system:
+
 - Use quaternions for 4D rotations
 - Consider relativistic effects if v → c
 - Account for retarded potentials

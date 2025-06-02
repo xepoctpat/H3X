@@ -7,10 +7,12 @@ Your H3X project now has comprehensive Docker support with multiple ways to impo
 ## Available Tools
 
 ### 1. PowerShell Management Scripts
+
 - `docker-manage.ps1` - Core Docker operations
 - `docker-import-helper.ps1` - Specialized import operations
 
 ### 2. NPM Scripts
+
 ```bash
 npm run docker:up          # Start all services
 npm run docker:down        # Stop all services  
@@ -78,6 +80,7 @@ npm run docker:setup-dev
 ## Configuration Files
 
 ### docker-import-config.json
+
 ```json
 {
   "images": [
@@ -113,6 +116,7 @@ services:
 ## Common Workflows
 
 ### 1. Fresh Development Setup
+
 ```powershell
 # Clone project and setup Docker environment
 git clone your-repo
@@ -123,6 +127,7 @@ npm run docker:up
 ```
 
 ### 2. Import Custom Images
+
 ```powershell
 # Place TAR files in .\images\ directory
 mkdir images
@@ -136,6 +141,7 @@ npm run docker:up
 ```
 
 ### 3. Production Deployment
+
 ```powershell
 # Import production images
 npm run docker:setup-prod
@@ -148,6 +154,7 @@ npm run docker:status
 ```
 
 ### 4. Backup and Export
+
 ```powershell
 # Export all current images
 npm run docker:export
@@ -156,6 +163,7 @@ npm run docker:export
 ```
 
 ### 5. Registry Operations
+
 ```powershell
 # Login to private registry
 docker login your-registry.com
@@ -170,16 +178,19 @@ docker push your-registry.com/h3x-frontend:latest
 ## Troubleshooting
 
 ### Verify Installation
+
 ```powershell
 npm run docker:verify
 ```
 
 ### Check Service Status
+
 ```powershell
 npm run docker:status
 ```
 
 ### View Logs
+
 ```powershell
 # All services
 npm run docker:logs
@@ -189,6 +200,7 @@ npm run docker:logs
 ```
 
 ### Clean and Reset
+
 ```powershell
 # Stop all services
 npm run docker:down
@@ -202,6 +214,7 @@ npm run docker:up
 ```
 
 ### Import Issues
+
 ```powershell
 # Check image exists
 docker images | findstr h3x

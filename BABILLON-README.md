@@ -2,7 +2,9 @@
 
 ## Overview
 
-The **Babillon** branch is dedicated to building a modular, agentic interface system inspired by the Library of Babel concept. This branch focuses on creating a highly modular architecture where agents can navigate and manipulate structured data through a central SIR (System/Interface/Relay) host.
+The **Babillon** branch is dedicated to building a modular, agentic interface system inspired by the Library of Babel
+concept. This branch focuses on creating a highly modular architecture where agents can navigate and manipulate
+structured data through a central SIR (System/Interface/Relay) host.
 
 ## Architecture
 

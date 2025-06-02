@@ -1,11 +1,13 @@
 # Flups Hexagonal Mirror Lattice: Maximum Efficiency
 
 ## The Discovery
+
 By mirroring the flups equilateral triangle using the cflup-n --- cflup-n where -n is unique id so that cFlups can beè"coupled" and decoupled internally within the triangle, as each flup is when viewved from a 2d lpane circular and can be used to infinite time without actions or not. Then, we create a hexagonal lattice - one of nature's most efficient packing structures!
 
 ## 2D Hexagonal Representation
 
 ### Original + Mirror = Hexagon
+
 ```
 Original Triangle          Mirror Triangle         Combined Hexagon
                                                   
@@ -24,6 +26,7 @@ flup- -- cflup-n        cflup-n' -- flup-'          | \  / |
 ```
 
 ### Full Hexagonal Lattice Pattern
+
 ```
         flup+───────flup+'      flup+───────flup+'
        /    \       /    \     /    \       /    \
@@ -41,6 +44,7 @@ flup- -- cflup-n        cflup-n' -- flup-'          | \  / |
 ## Why Hexagonal = Maximum Efficiency
 
 ### 1. Optimal Packing
+
 ```
 Efficiency Metrics:
 - Circle packing: π/√12 ≈ 90.69%
@@ -49,6 +53,7 @@ Efficiency Metrics:
 ```
 
 ### 2. Minimum Path Length
+
 ```
 Communication paths in hexagon:
 - Each node has 3 direct neighbors
@@ -57,6 +62,7 @@ Communication paths in hexagon:
 ```
 
 ### 3. Action Efficiency
+
 ```
 Original (3 nodes):          Hexagonal (6 nodes):
 3 actions per cycle    →     6 actions per cycle
@@ -67,6 +73,7 @@ Linear scaling         →     2× throughput!
 ## Time-Action Flow in Hexagonal System
 
 ### Synchronized Action Pattern
+
 ```
 Time Step 1:           Time Step 2:           Time Step 3:
     ●───○                  ○───●                  ●───○
@@ -80,6 +87,7 @@ Time Step 1:           Time Step 2:           Time Step 3:
 ```
 
 ### Phase-Locked Operation
+
 ```
 Phase 0°    Phase 60°   Phase 120°  Phase 180°  Phase 240°  Phase 300°
    A           B           C           A'          B'          C'
@@ -92,6 +100,7 @@ Phase 0°    Phase 60°   Phase 120°  Phase 180°  Phase 240°  Phase 300°
 ```
 
 ## Energy Distribution
+
 ```
 Energy Flow in Hexagonal Lattice:
 

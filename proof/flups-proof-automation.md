@@ -34,6 +34,7 @@ console.log('Proof updated:', outputPath);
 ```
 
 ## Notes
+
 - Keep each proof part modular for easy automation.
 - Use markdown with LaTeX for math, or export to PDF for publication.
 - For advanced automation, use Pandoc or LaTeX toolchains.

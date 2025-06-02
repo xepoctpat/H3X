@@ -1,10 +1,13 @@
 # H3X Docker Image Import Guide
 
 ## Overview
+
 This guide covers various methods to import existing Docker images into your H3X project. Your project already has a comprehensive Docker setup with multi-service orchestration.
 
 ## Current H3X Docker Architecture
+
 Your project includes these services:
+
 - **h3x-frontend**: Main React/TypeScript application
 - **h3x-backend**: Node.js API server
 - **h3x-websocket**: WebSocket server for real-time communication
@@ -17,6 +20,7 @@ Your project includes these services:
 ## Method 1: Import from TAR Files
 
 ### Using PowerShell Management Script
+
 ```powershell
 # Import a Docker image from TAR file
 .\docker-manage.ps1 -Command import -ImagePath "C:\path\to\your-image.tar" -ImageName "h3x-custom:latest"
@@ -26,6 +30,7 @@ Your project includes these services:
 ```
 
 ### Manual Docker Commands
+
 ```powershell
 # Load image from TAR file
 docker load -i "C:\path\to\your-image.tar"
@@ -38,6 +43,7 @@ docker images | Select-String "h3x"
 ## Method 2: Pull from Docker Registry
 
 ### Docker Hub
+
 ```powershell
 # Pull official images
 docker pull node:18-alpine
@@ -53,6 +59,7 @@ docker pull your-username/h3x-backend:latest
 ```
 
 ### Private Registry
+
 ```powershell
 # Login to private registry
 docker login your-registry.com
@@ -68,6 +75,7 @@ docker tag your-registry.com/h3x-project/frontend:latest h3x-frontend:latest
 ## Method 3: Import from Another System
 
 ### Export from Source System
+
 ```powershell
 # Export H3X images from source system
 .\docker-manage.ps1 -Command export -ImageName "h3x-frontend:latest" -ImagePath "h3x-frontend.tar"
@@ -83,6 +91,7 @@ gzip h3x-backend.tar
 ```
 
 ### Import on Target System
+
 ```powershell
 # Decompress and import
 gunzip h3x-frontend.tar.gz
@@ -95,6 +104,7 @@ gunzip h3x-backend.tar.gz
 ## Method 4: Update docker-compose.yml for Custom Images
 
 ### Replace Built Images with Imported Ones
+
 ```yaml
 services:
   h3x-frontend:
@@ -123,6 +133,7 @@ services:
 ## Method 5: Batch Import Multiple Images
 
 ### Create Import Script
+
 ```powershell
 # Create batch import script
 $images = @(
@@ -140,6 +151,7 @@ foreach ($image in $images) {
 ## Method 6: Development Workflow Integration
 
 ### Pre-built Development Images
+
 ```powershell
 # Pull pre-built development environment
 docker pull your-team/h3x-dev-environment:latest
@@ -151,6 +163,7 @@ docker tag your-team/h3x-dev-environment:latest h3x-dev:latest
 ```
 
 ### Production Images
+
 ```powershell
 # Import production-ready images
 .\docker-manage.ps1 -Command import -ImagePath "prod-images\h3x-prod.tar" -ImageName "h3x-prod:latest"
@@ -162,6 +175,7 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ## Method 7: Container Registry Integration
 
 ### Setup Registry Configuration
+
 ```powershell
 # Configure Docker to use specific registry
 $registryConfig = @{
@@ -174,6 +188,7 @@ $registryConfig | ConvertTo-Json | Out-File -FilePath "$env:USERPROFILE\.docker\
 ```
 
 ### Automated Registry Pull
+
 ```powershell
 # Create registry pull script
 $registryImages = @(
@@ -192,6 +207,7 @@ foreach ($image in $registryImages) {
 ## Verification and Testing
 
 ### Verify Imported Images
+
 ```powershell
 # List all H3X related images
 docker images | Select-String "h3x"
@@ -205,6 +221,7 @@ docker run --rm h3x-frontend:latest npm --version
 ```
 
 ### Integration Testing
+
 ```powershell
 # Test with imported images
 .\docker-manage.ps1 -Command up
@@ -219,6 +236,7 @@ docker run --rm h3x-frontend:latest npm --version
 ## Troubleshooting
 
 ### Common Import Issues
+
 ```powershell
 # Image not found after import
 docker images --all
@@ -235,6 +253,7 @@ docker tag <image-id> h3x-frontend:latest
 ```
 
 ### Performance Optimization
+
 ```powershell
 # Use layer caching
 docker build --cache-from h3x-frontend:latest .
@@ -257,6 +276,7 @@ Start-Job -ScriptBlock {
 ## Integration with H3X Project
 
 Your H3X project is already configured with:
+
 - ✅ Multi-service Docker Compose
 - ✅ PowerShell management scripts
 - ✅ Production-ready Dockerfile

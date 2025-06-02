@@ -1,12 +1,14 @@
 # Automation Scripts & Agent Actions
 
-> This file is the single source for all automation scripts and agent actions—current and obsolete. Obsolete or deprecated scripts should be clearly marked and listed in the dedicated section below for historical reference.
+> This file is the single source for all automation scripts and agent actions—current and
+> obsolete. Obsolete or deprecated scripts should be clearly marked and listed in the
+> dedicated section below for historical reference.
 
 ---
 
 ## 📖 Documentation & Usage
 
-This file documents all automation scripts, agent actions, and automation requests for the 
+This file documents all automation scripts, agent actions, and automation requests for the
 H3X-fLups unified workspace. Use it to:
 
 - Track all current and obsolete automation scripts
@@ -80,14 +82,18 @@ For integration with the Merger Task Manager, see the "Agent Actions" section be
 
 ## 🤖 Agent Actions (All)
 
-Agents should log automation completions, errors, and status updates here for both current and obsolete automations. Use timestamps and reference the related task in `Merger Task Manager.md`.
+Agents should log automation completions, errors, and status updates here for both current
+and obsolete automations. Use timestamps and reference the related task in
+`Merger Task Manager.md`.
 
 **Agent Log Template:**
+
 - [ ] `<script or action>` (`<status>`) @ `<timestamp>`
   - `<log message>`
   - Related task: `<task name>`
 
 **Examples:**
+
 - [x] `merge-modular-to-allinone.js` (done) @ 2025-06-01T10:15:00Z
   - Modular code successfully merged into all-in-one file.
   - Related task: Merge Project Folders
@@ -130,7 +136,8 @@ Agents should log automation completions, errors, and status updates here for bo
 
 ## 🔄 TypeScript Conversion Plan
 
-The following Node.js automation scripts are candidates for conversion to TypeScript for improved maintainability and type safety:
+The following Node.js automation scripts are candidates for conversion to TypeScript for
+improved maintainability and type safety:
 
 - [ ] `merge-modular-to-allinone.js` → `merge-modular-to-allinone.ts`
 - [ ] `cicd-automation.js` → `cicd-automation.ts`
@@ -138,11 +145,13 @@ The following Node.js automation scripts are candidates for conversion to TypeSc
 - [ ] `merger-ui-server.js` → `merger-ui-server.ts`
 
 Scripts already in TypeScript:
+
 - [x] `h3x-modular-clean.ts`
 - [x] `h3x-modular-backup.ts`
 
-> Begin conversion by creating a TypeScript version of each script, ensuring feature parity and updating documentation/usage examples accordingly.
+> Begin conversion by creating a TypeScript version of each script, ensuring feature parity
+> and updating documentation/usage examples accordingly.
 
 ---
 
-_Last updated: 2025-06-01_
+**Last updated:** 2025-06-01

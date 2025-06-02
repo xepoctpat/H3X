@@ -121,7 +121,7 @@ function New-BabillonNetwork {
             $NetworkName
         )
         
-        $result = & $createCommand[0] $createCommand[1..($createCommand.Length-1)]
+        & $createCommand[0] $createCommand[1..($createCommand.Length-1)]
         
         if ($LASTEXITCODE -eq 0) {
             Write-ColorOutput "✅ Network '$NetworkName' created successfully" "Green"

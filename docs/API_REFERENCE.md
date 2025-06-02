@@ -20,6 +20,7 @@ const headers = {
 Generate code using H3X algorithms.
 
 **Request Body:**
+
 ```json
 {
   "type": "component",
@@ -31,6 +32,7 @@ Generate code using H3X algorithms.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -73,4 +75,4 @@ const result = await client.generate({
 
 ---
 
-*Generated: 2025-06-01T06:39:22.947Z*
+Generated: 2025-06-01T06:39:22.947Z
