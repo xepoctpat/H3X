@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-06-05T19:21:36.857Z",
+  "summary": {
+    "totalProcessed": 6,
+    "archived": 6,
+    "skipped": 0,
+    "errors": 0
+  },
+  "details": {
+    "archived": [
+      "h3x\\vitest.config.js",
+      "run-conversion.js",
+      "scripts\\h3x-dev-automation.js",
+      "scripts\\pre-commit-hook.js",
+      "scripts\\setup-automation.js",
+      "scripts\\workflow-orchestrator.js"
+    ],
+    "skipped": [],
+    "errors": []
+  }
+}

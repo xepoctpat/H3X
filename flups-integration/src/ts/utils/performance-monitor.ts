@@ -38,7 +38,7 @@ export class H3XPerformanceMonitor {
       maxRenderTime: 16.67, // 60fps target
       maxApiLatency: 1000, // 1 second
       maxWebSocketLatency: 100, // 100ms
-      ...thresholds
+      ...thresholds,
     };
     this.startTime = performance.now();
   }
@@ -75,18 +75,18 @@ export class H3XPerformanceMonitor {
       apiLatency: this.getAverageLatency('api'),
       websocketLatency: this.getAverageLatency('websocket'),
       systemLoad: this.getSystemLoad(),
-      timestamp: now
+      timestamp: now,
     };
 
     this.metrics.push(metrics);
-    
+
     // Keep only last 100 metrics (prevent memory leak)
     if (this.metrics.length > 100) {
       this.metrics = this.metrics.slice(-100);
     }
 
     // Notify callbacks
-    this.callbacks.forEach(callback => callback(metrics));
+    this.callbacks.forEach((callback) => callback(metrics));
 
     // Check thresholds and warn if needed
     this.checkThresholds(metrics);
@@ -106,12 +106,12 @@ export class H3XPerformanceMonitor {
     if ('memory' in performance) {
       return (performance as any).memory;
     }
-    
+
     // Fallback for browsers without memory API
     return {
       usedJSHeapSize: 0,
       totalJSHeapSize: 0,
-      jsHeapSizeLimit: 0
+      jsHeapSizeLimit: 0,
     } as MemoryInfo;
   }
 
@@ -125,9 +125,12 @@ export class H3XPerformanceMonitor {
     const currentMetrics = this.metrics[this.metrics.length - 1];
     if (!currentMetrics) return 0;
 
-    const fpsLoad = Math.max(0, (this.thresholds.minFps - currentMetrics.fps) / this.thresholds.minFps);
+    const fpsLoad = Math.max(
+      0,
+      (this.thresholds.minFps - currentMetrics.fps) / this.thresholds.minFps,
+    );
     const memoryLoad = currentMetrics.memory.usedJSHeapSize / this.thresholds.maxMemoryUsage;
-    
+
     return Math.min(1, Math.max(fpsLoad, memoryLoad));
   }
 
@@ -156,7 +159,9 @@ export class H3XPerformanceMonitor {
     }
 
     if (metrics.memory.usedJSHeapSize > this.thresholds.maxMemoryUsage) {
-      warnings.push(`High memory usage: ${Math.round(metrics.memory.usedJSHeapSize / 1024 / 1024)}MB`);
+      warnings.push(
+        `High memory usage: ${Math.round(metrics.memory.usedJSHeapSize / 1024 / 1024)}MB`,
+      );
     }
 
     if (metrics.renderTime > this.thresholds.maxRenderTime) {
@@ -191,13 +196,13 @@ export class H3XPerformanceMonitor {
     // Store latency for averaging
     const key = `${type}Latency`;
     if (!this.metrics.length) return;
-    
+
     const lastMetrics = this.metrics[this.metrics.length - 1];
     (lastMetrics as any)[key] = latency;
   }
   recordRenderTime(renderTime: number): void {
     if (!this.metrics.length) return;
-    
+
     const lastMetrics = this.metrics[this.metrics.length - 1];
     if (lastMetrics) {
       lastMetrics.renderTime = renderTime;
@@ -217,7 +222,7 @@ export class H3XPerformanceMonitor {
       renderTime: this.getAverageMetric('renderTime', samples),
       apiLatency: this.getAverageMetric('apiLatency', samples),
       websocketLatency: this.getAverageMetric('websocketLatency', samples),
-      systemLoad: this.getAverageMetric('systemLoad', samples)
+      systemLoad: this.getAverageMetric('systemLoad', samples),
     };
   }
 
@@ -233,7 +238,7 @@ export class H3XPerformanceMonitor {
       average: this.getAverageMetrics(),
       thresholds: this.thresholds,
       uptime: performance.now() - this.startTime,
-      totalFrames: this.frameCount
+      totalFrames: this.frameCount,
     };
   }
 

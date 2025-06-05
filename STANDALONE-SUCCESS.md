@@ -9,7 +9,7 @@ Your Microsoft 365 SIR Control Interface is now successfully running in **standa
 - **Server**: <http://localhost:3978>
 - **Environment**: Standalone (no Teams dependency)
 - **OpenAI Integration**: ✅ Configured and working
-- **Hot Reload**: ✅ Automatic restart on code changes  
+- **Hot Reload**: ✅ Automatic restart on code changes
 - **Debug Mode**: ✅ Available on port 9239
 
 ### 📍 **Available Endpoints:**
@@ -102,7 +102,7 @@ Ctrl+C in the terminal
 
 1. **Test Your SIR Interface** - Use the test client to interact with your SIR system
 2. **Add M365 Integration** - Connect to your Microsoft Graph API
-3. **Custom SIR Tools** - Add specialized environmental analysis capabilities  
+3. **Custom SIR Tools** - Add specialized environmental analysis capabilities
 4. **Teams Deployment** - When ready, deploy SIR to Teams in minutes
 5. **Azure Scaling** - Move to cloud when you need global access
 

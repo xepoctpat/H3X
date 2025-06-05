@@ -94,6 +94,66 @@
                 "focus": false,
                 "panel": "shared"
             }
+        },
+        {
+            "label": "Git: Commit Changes",
+            "type": "shell",
+            "command": "npm run git:commit",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Git: Create PR",
+            "type": "shell",
+            "command": "npm run git:pr",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Git: Quick PR",
+            "type": "shell",
+            "command": "npm run git:quick-pr",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Git: Interactive Mode",
+            "type": "shell",
+            "command": "npm run git:interactive",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Git: Generate Changelog",
+            "type": "shell",
+            "command": "npm run git:changelog",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
         }
     ]
 }

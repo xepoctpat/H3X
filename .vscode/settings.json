@@ -14,5 +14,6 @@
             "path": "[[workspace]]"
         }
     ],
-    "docwriter.style": "Auto-detect"
+    "docwriter.style": "Auto-detect",
+    "gitlens.ai.largePromptWarningThreshold": 80000
 }

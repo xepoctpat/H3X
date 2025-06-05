@@ -27,7 +27,8 @@ export class H3XWebSocketManager {
   private messageQueue: WebSocketMessage[] = [];
   private subscriptions: Set<string> = new Set();
   private eventHandlers: Map<string, Set<(data: any) => void>> = new Map();
-  private connectionState: 'disconnected' | 'connecting' | 'connected' | 'reconnecting' = 'disconnected';
+  private connectionState: 'disconnected' | 'connecting' | 'connected' | 'reconnecting' =
+    'disconnected';
   private lastPingTime: number = 0;
   private latencyHistory: number[] = [];
 
@@ -38,7 +39,7 @@ export class H3XWebSocketManager {
       maxReconnectAttempts: 10,
       heartbeatInterval: 30000,
       messageQueueLimit: 100,
-      ...options
+      ...options,
     };
   }
 
@@ -50,26 +51,26 @@ export class H3XWebSocketManager {
       }
 
       this.connectionState = 'connecting';
-      
+
       try {
         this.ws = new WebSocket(this.options.url);
-        
+
         this.ws.onopen = () => {
           console.log('[H3X-WS] Connected to WebSocket server');
           this.connectionState = 'connected';
           this.reconnectAttempts = 0;
-          
+
           // Process queued messages
           this.processMessageQueue();
-          
+
           // Start heartbeat
           this.startHeartbeat();
-          
+
           // Re-subscribe to channels
           if (this.subscriptions.size > 0) {
             this.send({
               type: 'subscribe',
-              data: { channels: Array.from(this.subscriptions) }
+              data: { channels: Array.from(this.subscriptions) },
             });
           }
 
@@ -86,8 +87,9 @@ export class H3XWebSocketManager {
           this.connectionState = 'disconnected';
           this.stopHeartbeat();
           this.emit('disconnected', { code: event.code, reason: event.reason });
-          
-          if (event.code !== 1000) { // Not a normal closure
+
+          if (event.code !== 1000) {
+            // Not a normal closure
             this.scheduleReconnect();
           }
         };
@@ -97,7 +99,6 @@ export class H3XWebSocketManager {
           this.emit('error', error);
           reject(error);
         };
-
       } catch (error) {
         console.error('[H3X-WS] Failed to create WebSocket:', error);
         this.connectionState = 'disconnected';
@@ -108,7 +109,7 @@ export class H3XWebSocketManager {
 
   disconnect(): void {
     this.stopHeartbeat();
-    
+
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = undefined;
@@ -132,11 +133,13 @@ export class H3XWebSocketManager {
 
     this.connectionState = 'reconnecting';
     this.reconnectAttempts++;
-    
-    console.log(`[H3X-WS] Scheduling reconnect attempt ${this.reconnectAttempts}/${this.options.maxReconnectAttempts}`);
-    
+
+    console.log(
+      `[H3X-WS] Scheduling reconnect attempt ${this.reconnectAttempts}/${this.options.maxReconnectAttempts}`,
+    );
+
     this.reconnectTimer = window.setTimeout(() => {
-      this.connect().catch(error => {
+      this.connect().catch((error) => {
         console.error('[H3X-WS] Reconnection failed:', error);
       });
     }, this.options.reconnectInterval);
@@ -160,27 +163,27 @@ export class H3XWebSocketManager {
   private handleMessage(data: string): void {
     try {
       const message: WebSocketMessage = JSON.parse(data);
-      
+
       // Handle pong response for latency calculation
       if (message.type === 'pong' && message.timestamp) {
         const latency = Date.now() - message.timestamp;
         this.latencyHistory.push(latency);
-        
+
         // Keep only last 10 latency measurements
         if (this.latencyHistory.length > 10) {
           this.latencyHistory = this.latencyHistory.slice(-10);
         }
-        
+
         // Record latency for performance monitoring
-        const avgLatency = this.latencyHistory.reduce((a, b) => a + b, 0) / this.latencyHistory.length;
+        const avgLatency =
+          this.latencyHistory.reduce((a, b) => a + b, 0) / this.latencyHistory.length;
         performanceMonitor.recordLatency('websocket', avgLatency);
-        
+
         return;
       }
 
       // Emit the message to registered handlers
       this.emit(message.type, message.data);
-      
     } catch (error) {
       console.error('[H3X-WS] Failed to parse message:', error, data);
     }
@@ -190,7 +193,7 @@ export class H3XWebSocketManager {
     if (!message.id) {
       message.id = Math.random().toString(36).substr(2, 9);
     }
-    
+
     message.timestamp = Date.now();
 
     if (this.connectionState === 'connected' && this.ws) {
@@ -207,7 +210,7 @@ export class H3XWebSocketManager {
 
   private queueMessage(message: WebSocketMessage): void {
     this.messageQueue.push(message);
-    
+
     // Limit queue size to prevent memory issues
     if (this.messageQueue.length > this.options.messageQueueLimit) {
       this.messageQueue = this.messageQueue.slice(-this.options.messageQueueLimit);
@@ -228,9 +231,9 @@ export class H3XWebSocketManager {
     if (!this.eventHandlers.has(event)) {
       this.eventHandlers.set(event, new Set());
     }
-    
+
     this.eventHandlers.get(event)!.add(handler);
-    
+
     // Return unsubscribe function
     return () => {
       const handlers = this.eventHandlers.get(event);
@@ -254,7 +257,7 @@ export class H3XWebSocketManager {
   private emit(event: string, data?: any): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
-      handlers.forEach(handler => {
+      handlers.forEach((handler) => {
         try {
           handler(data);
         } catch (error) {
@@ -267,21 +270,21 @@ export class H3XWebSocketManager {
   // Subscription management
   subscribe(channels: string | string[]): void {
     const channelArray = Array.isArray(channels) ? channels : [channels];
-    channelArray.forEach(channel => this.subscriptions.add(channel));
+    channelArray.forEach((channel) => this.subscriptions.add(channel));
 
     this.send({
       type: 'subscribe',
-      data: { channels: channelArray }
+      data: { channels: channelArray },
     });
   }
 
   unsubscribe(channels: string | string[]): void {
     const channelArray = Array.isArray(channels) ? channels : [channels];
-    channelArray.forEach(channel => this.subscriptions.delete(channel));
+    channelArray.forEach((channel) => this.subscriptions.delete(channel));
 
     this.send({
       type: 'unsubscribe',
-      data: { channels: channelArray }
+      data: { channels: channelArray },
     });
   }
 
@@ -290,7 +293,7 @@ export class H3XWebSocketManager {
     this.lastPingTime = Date.now();
     this.send({
       type: 'ping',
-      timestamp: this.lastPingTime
+      timestamp: this.lastPingTime,
     });
   }
 
@@ -301,21 +304,21 @@ export class H3XWebSocketManager {
   createAmendment(amendment: any): void {
     this.send({
       type: 'create_amendment',
-      data: amendment
+      data: amendment,
     });
   }
 
   createLoop(type: string, data: any = {}): void {
     this.send({
       type: 'create_loop',
-      data: { type, ...data }
+      data: { type, ...data },
     });
   }
 
   updateConfig(config: any): void {
     this.send({
       type: 'update_config',
-      data: config
+      data: config,
     });
   }
 
@@ -355,7 +358,7 @@ export class H3XWebSocketManager {
       queueSize: this.messageQueue.length,
       subscriptions: Array.from(this.subscriptions),
       averageLatency: this.getLatency(),
-      latencyHistory: [...this.latencyHistory]
+      latencyHistory: [...this.latencyHistory],
     };
   }
 }
@@ -365,7 +368,7 @@ export const wsManager = new H3XWebSocketManager();
 
 // Auto-connect in development
 if (process.env.NODE_ENV === 'development') {
-  wsManager.connect().catch(error => {
+  wsManager.connect().catch((error) => {
     console.warn('[H3X-WS] Auto-connect failed:', error);
   });
 }

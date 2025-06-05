@@ -1,9 +1,9 @@
 // Real H3X Backend Integration
-import type { H3XSystemStatus, H3XCommandResult } from '../types/h3x.js';
+import type { H3XSystemStatus, H3XCommandResult } from '../types/h3x.ts';
 
 export class H3XApiService {
   private baseUrl: string;
-  
+
   constructor(baseUrl = 'http://localhost:3007') {
     this.baseUrl = baseUrl;
   }
@@ -22,7 +22,7 @@ export class H3XApiService {
       const response = await fetch(`${this.baseUrl}/api/cflup/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(config || {})
+        body: JSON.stringify(config || {}),
       });
       return await response.json();
     } catch (error) {

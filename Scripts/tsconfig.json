@@ -1,0 +1,32 @@
+{  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noEmit": false,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",    "types": ["node"],
+    "typeRoots": ["../node_modules/@types"],
+    "lib": ["ES2020"],
+    "downlevelIteration": true
+  },"include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "*.d.ts",
+    "**/*.js"  ],"ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}

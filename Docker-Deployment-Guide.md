@@ -105,30 +105,33 @@ docker-compose up -d
 #### Common Issues
 
 1. **Port Conflicts**
+
    ```bash
    # Check port usage
    netstat -tulpn | grep :4978
    netstat -tulpn | grep :8081
-   
+
    # Modify ports in docker-compose.yml if needed
    ```
 
 2. **Container Startup Issues**
+
    ```bash
    # Check container logs
    docker-compose logs h3x-server
    docker-compose logs protocol-server
-   
+
    # Rebuild containers
    docker-compose down
    docker-compose up --build
    ```
 
 3. **Network Issues**
+
    ```bash
    # Inspect network
    docker network inspect h3x_h3x-network
-   
+
    # Recreate network
    docker-compose down
    docker network prune
@@ -147,10 +150,10 @@ services:
           cpus: '2.0'
           memory: 4G
         reservations:
-          cpus: '1.0'  
+          cpus: '1.0'
           memory: 2G
 ```
 
 ---
 
-*Generated on 2025-05-28T19:24:43.080Z - H3X Deployment Automation*
+_Generated on 2025-05-28T19:24:43.080Z - H3X Deployment Automation_

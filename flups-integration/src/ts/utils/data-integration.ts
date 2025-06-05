@@ -36,7 +36,7 @@ export class H3XDataIntegration {
       metrics: null,
       status: null,
       config: null,
-      lastUpdate: 0
+      lastUpdate: 0,
     };
 
     this.setupRealtimeUpdates();
@@ -63,7 +63,10 @@ export class H3XDataIntegration {
 
     wsManager.on('node_updated', (data) => {
       if (this.cache.nodes.has(data.id)) {
-        this.cache.nodes.set(data.id, { ...this.cache.nodes.get(data.id)!, ...data });
+        this.cache.nodes.set(data.id, {
+          ...this.cache.nodes.get(data.id)!,
+          ...data,
+        });
         this.emitUpdate('nodes', this.getNodes());
       }
     });
@@ -81,7 +84,10 @@ export class H3XDataIntegration {
 
     wsManager.on('triad_updated', (data) => {
       if (this.cache.triads.has(data.id)) {
-        this.cache.triads.set(data.id, { ...this.cache.triads.get(data.id)!, ...data });
+        this.cache.triads.set(data.id, {
+          ...this.cache.triads.get(data.id)!,
+          ...data,
+        });
         this.emitUpdate('triads', this.getTriads());
       }
     });
@@ -110,12 +116,12 @@ export class H3XDataIntegration {
     const event: DataUpdateEvent = {
       type,
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     const callbacks = this.updateCallbacks.get(type);
     if (callbacks) {
-      callbacks.forEach(callback => {
+      callbacks.forEach((callback) => {
         try {
           callback(event);
         } catch (error) {
@@ -127,7 +133,7 @@ export class H3XDataIntegration {
     // Also emit to 'all' listeners
     const allCallbacks = this.updateCallbacks.get('all');
     if (allCallbacks) {
-      allCallbacks.forEach(callback => {
+      allCallbacks.forEach((callback) => {
         try {
           callback(event);
         } catch (error) {
@@ -153,11 +159,13 @@ export class H3XDataIntegration {
       console.error('[H3X-Data] Failed to fetch system status:', error);
     }
 
-    return this.cache.status || {
-      merger: 'unknown',
-      ui: 'unknown',
-      logs: 'unknown'
-    };
+    return (
+      this.cache.status || {
+        merger: 'unknown',
+        ui: 'unknown',
+        logs: 'unknown',
+      }
+    );
   }
 
   async getMetrics(forceRefresh: boolean = false): Promise<H3XMetrics> {
@@ -175,12 +183,14 @@ export class H3XDataIntegration {
       console.error('[H3X-Data] Failed to fetch metrics:', error);
     }
 
-    return this.cache.metrics || {
-      cflupCount: 0,
-      amendmentCount: 0,
-      archiveCount: 0,
-      uptime: 0
-    };
+    return (
+      this.cache.metrics || {
+        cflupCount: 0,
+        amendmentCount: 0,
+        archiveCount: 0,
+        uptime: 0,
+      }
+    );
   }
 
   async getConfig(forceRefresh: boolean = false): Promise<any> {
@@ -214,7 +224,7 @@ export class H3XDataIntegration {
     try {
       const nodeWithId: H3XNode = {
         id: Math.random().toString(36).substr(2, 9),
-        ...node
+        ...node,
       };
 
       // Add to local cache immediately for responsiveness
@@ -225,7 +235,7 @@ export class H3XDataIntegration {
       if (wsManager.isConnected()) {
         wsManager.send({
           type: 'create_node',
-          data: nodeWithId
+          data: nodeWithId,
         });
       }
 
@@ -249,7 +259,7 @@ export class H3XDataIntegration {
       if (wsManager.isConnected()) {
         wsManager.send({
           type: 'update_node',
-          data: { id, updates }
+          data: { id, updates },
         });
       }
 
@@ -270,7 +280,7 @@ export class H3XDataIntegration {
       if (wsManager.isConnected()) {
         wsManager.send({
           type: 'delete_node',
-          data: { id }
+          data: { id },
         });
       }
 
@@ -294,7 +304,7 @@ export class H3XDataIntegration {
     try {
       const triadWithId: H3XTriad = {
         id: Math.random().toString(36).substr(2, 9),
-        ...triad
+        ...triad,
       };
 
       this.cache.triads.set(triadWithId.id, triadWithId);
@@ -303,7 +313,7 @@ export class H3XDataIntegration {
       if (wsManager.isConnected()) {
         wsManager.send({
           type: 'create_triad',
-          data: triadWithId
+          data: triadWithId,
         });
       }
 
@@ -322,7 +332,7 @@ export class H3XDataIntegration {
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2;
       const radius = 2 + Math.random() * 3;
-      
+
       nodes.push({
         id: `node_${i}`,
         x: Math.cos(angle) * radius,
@@ -334,8 +344,8 @@ export class H3XDataIntegration {
         data: {
           type: 'sample',
           index: i,
-          created: Date.now()
-        }
+          created: Date.now(),
+        },
       });
     }
 
@@ -343,12 +353,13 @@ export class H3XDataIntegration {
   }
 
   generateSampleTriads(nodes: H3XNode[]): H3XTriad[] {
-    const triads: H3XTriad[] = [];    for (let i = 0; i < nodes.length - 2; i += 3) {
+    const triads: H3XTriad[] = [];
+    for (let i = 0; i < nodes.length - 2; i += 3) {
       if (i + 2 < nodes.length) {
         const node1 = nodes[i];
         const node2 = nodes[i + 1];
         const node3 = nodes[i + 2];
-        
+
         if (node1 && node2 && node3) {
           triads.push({
             id: `triad_${Math.floor(i / 3)}`,
@@ -358,8 +369,8 @@ export class H3XDataIntegration {
             visible: true,
             data: {
               efficiency: Math.random(),
-              balance: Math.random() > 0.5
-            }
+              balance: Math.random() > 0.5,
+            },
           });
         }
       }
@@ -373,15 +384,15 @@ export class H3XDataIntegration {
     const nodes = this.generateSampleNodes(12);
     const triads = this.generateSampleTriads(nodes);
 
-    nodes.forEach(node => this.cache.nodes.set(node.id, node));
-    triads.forEach(triad => this.cache.triads.set(triad.id, triad));
+    nodes.forEach((node) => this.cache.nodes.set(node.id, node));
+    triads.forEach((triad) => this.cache.triads.set(triad.id, triad));
 
     this.emitUpdate('nodes', this.getNodes());
     this.emitUpdate('triads', this.getTriads());
 
     console.log('[H3X-Data] Sample data populated:', {
       nodes: nodes.length,
-      triads: triads.length
+      triads: triads.length,
     });
   }
 
@@ -416,11 +427,7 @@ export class H3XDataIntegration {
 
   async refreshAllData(): Promise<void> {
     try {
-      await Promise.all([
-        this.getSystemStatus(true),
-        this.getMetrics(true),
-        this.getConfig(true)
-      ]);
+      await Promise.all([this.getSystemStatus(true), this.getMetrics(true), this.getConfig(true)]);
     } catch (error) {
       console.error('[H3X-Data] Failed to refresh data:', error);
     }
@@ -429,7 +436,7 @@ export class H3XDataIntegration {
   // Event subscription
   onUpdate(
     type: DataUpdateEvent['type'] | 'all',
-    callback: (event: DataUpdateEvent) => void
+    callback: (event: DataUpdateEvent) => void,
   ): () => void {
     if (!this.updateCallbacks.has(type)) {
       this.updateCallbacks.set(type, new Set());
@@ -453,7 +460,7 @@ export class H3XDataIntegration {
 
   setPollingRate(rate: number): void {
     this.pollingRate = Math.max(1000, rate); // Minimum 1 second
-    
+
     if (this.isPolling) {
       this.stopPolling();
       this.startPolling();
@@ -462,7 +469,7 @@ export class H3XDataIntegration {
 
   enableRealTime(enabled: boolean): void {
     this.realTimeEnabled = enabled;
-    
+
     if (enabled && !wsManager.isConnected()) {
       wsManager.connect();
     } else if (!enabled && wsManager.isConnected()) {
@@ -481,7 +488,7 @@ export class H3XDataIntegration {
       nodes: this.cache.nodes.size,
       triads: this.cache.triads.size,
       lastUpdate: this.cache.lastUpdate,
-      age: Date.now() - this.cache.lastUpdate
+      age: Date.now() - this.cache.lastUpdate,
     };
   }
 
@@ -492,7 +499,7 @@ export class H3XDataIntegration {
     this.cache.status = null;
     this.cache.config = null;
     this.cache.lastUpdate = 0;
-    
+
     console.log('[H3X-Data] Cache cleared');
   }
 }
@@ -503,7 +510,7 @@ export const dataIntegration = new H3XDataIntegration();
 // Development helpers
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   (window as any).h3xData = dataIntegration;
-  
+
   // Populate sample data in development
   setTimeout(() => {
     if (dataIntegration.getNodes().length === 0) {

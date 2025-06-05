@@ -29,7 +29,7 @@ export class H3XAPIClient {
       timeout: 10000,
       retries: 3,
       retryDelay: 1000,
-      ...options
+      ...options,
     };
   }
 
@@ -38,7 +38,7 @@ export class H3XAPIClient {
     endpoint: string,
     options: RequestInit = {},
     useCache: boolean = false,
-    cacheTTL: number = 30000
+    cacheTTL: number = 30000,
   ): Promise<APIResponse<T>> {
     const startTime = performance.now();
     const url = `${this.options.baseUrl}${endpoint}`;
@@ -52,15 +52,16 @@ export class H3XAPIClient {
           success: true,
           data: cached.data,
           timestamp: Date.now(),
-          latency: 0
+          latency: 0,
         };
       }
-    }    const requestOptions: RequestInit = {
+    }
+    const requestOptions: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
+        ...options.headers,
       },
-      ...options
+      ...options,
     };
 
     // Create timeout controller for request cancellation
@@ -74,7 +75,7 @@ export class H3XAPIClient {
       try {
         const response = await fetch(url, requestOptions);
         const latency = performance.now() - startTime;
-        
+
         // Record latency for performance monitoring
         performanceMonitor.recordLatency('api', latency);
 
@@ -89,8 +90,9 @@ export class H3XAPIClient {
           this.cache.set(cacheKey, {
             data,
             timestamp: Date.now(),
-            ttl: cacheTTL
-          });        }
+            ttl: cacheTTL,
+          });
+        }
 
         // Clear timeout on success
         clearTimeout(timeoutId);
@@ -99,17 +101,16 @@ export class H3XAPIClient {
           success: true,
           data,
           timestamp: Date.now(),
-          latency
+          latency,
         };
-
       } catch (error) {
         lastError = error as Error;
-        
+
         // Clear timeout on error
         clearTimeout(timeoutId);
-        
+
         if (attempt < this.options.retries) {
-          await new Promise(resolve => setTimeout(resolve, this.options.retryDelay));
+          await new Promise((resolve) => setTimeout(resolve, this.options.retryDelay));
           continue;
         }
 
@@ -120,7 +121,7 @@ export class H3XAPIClient {
           success: false,
           error: lastError.message,
           timestamp: Date.now(),
-          latency
+          latency,
         };
       }
     }
@@ -130,7 +131,7 @@ export class H3XAPIClient {
       success: false,
       error: 'Unexpected error',
       timestamp: Date.now(),
-      latency: performance.now() - startTime
+      latency: performance.now() - startTime,
     };
   }
 
@@ -155,13 +156,13 @@ export class H3XAPIClient {
   async updateConfig(config: any): Promise<APIResponse<any>> {
     return this.request('/config', {
       method: 'POST',
-      body: JSON.stringify(config)
+      body: JSON.stringify(config),
     });
   }
 
   async resetConfig(): Promise<APIResponse<any>> {
     return this.request('/config/reset', {
-      method: 'PUT'
+      method: 'PUT',
     });
   }
 
@@ -173,7 +174,7 @@ export class H3XAPIClient {
   async createLoop(type: string, data?: any): Promise<APIResponse<any>> {
     return this.request(`/loops/${type}/create`, {
       method: 'POST',
-      body: JSON.stringify(data || {})
+      body: JSON.stringify(data || {}),
     });
   }
 
@@ -183,7 +184,7 @@ export class H3XAPIClient {
 
   async deleteLoopInstance(type: string, instanceId: string): Promise<APIResponse<any>> {
     return this.request(`/loops/${type}/${instanceId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
   }
 
@@ -195,7 +196,7 @@ export class H3XAPIClient {
   async createAmendment(amendment: any): Promise<APIResponse<any>> {
     return this.request('/amendments', {
       method: 'POST',
-      body: JSON.stringify(amendment)
+      body: JSON.stringify(amendment),
     });
   }
 
@@ -211,7 +212,7 @@ export class H3XAPIClient {
   async exportArchive(filename: string, type?: string): Promise<APIResponse<any>> {
     return this.request('/archives/export', {
       method: 'POST',
-      body: JSON.stringify({ filename, type })
+      body: JSON.stringify({ filename, type }),
     });
   }
 
@@ -222,26 +223,26 @@ export class H3XAPIClient {
     return this.request('/archives/import', {
       method: 'POST',
       body: formData,
-      headers: {} // Let browser set content-type for FormData
+      headers: {}, // Let browser set content-type for FormData
     });
   }
 
   async deleteArchive(filename: string): Promise<APIResponse<any>> {
     return this.request(`/archives/${filename}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
   }
 
   // System Operations API endpoints
   async createCheckpoint(): Promise<APIResponse<any>> {
     return this.request('/system/checkpoint', {
-      method: 'POST'
+      method: 'POST',
     });
   }
 
   async createBackup(): Promise<APIResponse<any>> {
     return this.request('/system/backup', {
-      method: 'POST'
+      method: 'POST',
     });
   }
 
@@ -251,7 +252,7 @@ export class H3XAPIClient {
 
   async restartSystem(): Promise<APIResponse<any>> {
     return this.request('/system/restart', {
-      method: 'POST'
+      method: 'POST',
     });
   }
 
@@ -273,7 +274,7 @@ export class H3XAPIClient {
   getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
+      keys: Array.from(this.cache.keys()),
     };
   }
 
@@ -283,14 +284,16 @@ export class H3XAPIClient {
   }
 
   // Batch requests for efficiency
-  async batchRequest<T>(requests: Array<{
-    endpoint: string;
-    options?: RequestInit;
-    useCache?: boolean;
-    cacheTTL?: number;
-  }>): Promise<APIResponse<T>[]> {
-    const promises = requests.map(req => 
-      this.request<T>(req.endpoint, req.options, req.useCache, req.cacheTTL)
+  async batchRequest<T>(
+    requests: Array<{
+      endpoint: string;
+      options?: RequestInit;
+      useCache?: boolean;
+      cacheTTL?: number;
+    }>,
+  ): Promise<APIResponse<T>[]> {
+    const promises = requests.map((req) =>
+      this.request<T>(req.endpoint, req.options, req.useCache, req.cacheTTL),
     );
 
     return Promise.all(promises);
@@ -301,9 +304,9 @@ export class H3XAPIClient {
     try {
       const originalTimeout = this.options.timeout;
       this.options.timeout = timeout;
-      
+
       const response = await this.getHealth();
-      
+
       this.options.timeout = originalTimeout;
       return response.success;
     } catch {

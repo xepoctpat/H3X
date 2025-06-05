@@ -1,0 +1,54 @@
+name: Code Quality & Testing
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: TypeScript type checking
+        run: npm run type-check
+      
+      - name: Run ESLint
+        run: npm run lint:check
+      
+      - name: Run Prettier check
+        run: npm run format:check
+      
+      - name: Run existing tests
+        run: npm run test:all
+      
+      - name: Run setup check
+        run: npm run setup-check
+      
+      - name: Run health check
+        run: npm run test:health || true
+      
+      - name: Check for unused dependencies
+        run: npx depcheck
+        continue-on-error: true
+      
+      - name: Performance test
+        run: npm run test:performance
+        continue-on-error: true
+        
+      - name: Generate test report
+        if: always()
+        run: echo "Test report generation would be added here"
+        continue-on-error: true

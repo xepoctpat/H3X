@@ -1,0 +1,12 @@
+node_modules/
+.mypy_cache/
+.vscode/
+coverage/
+build/
+dist/
+*.min.js
+*.min.css
+package-lock.json
+.git/
+.github/
+*.log

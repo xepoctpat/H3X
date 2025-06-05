@@ -17,11 +17,11 @@ export class H3XLogger implements IH3XLogger {
   add(message: string): void {
     const entry: H3XLogEntry = {
       timestamp: new Date().toISOString(),
-      message: message
+      message: message,
     };
-    
+
     this.logs.push(entry);
-    
+
     // Keep only last maxLogs entries
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(-this.maxLogs);

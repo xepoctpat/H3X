@@ -7,12 +7,14 @@ The H3X system is now fully containerized for easy deployment and scalability.
 ### Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone [repository-url]
    cd H3X
    ```
 
 2. **Start the system**
+
    ```bash
    docker-compose up -d
    ```
@@ -30,6 +32,7 @@ The H3X system is now fully containerized for easy deployment and scalability.
 ### Development
 
 For live development with file watching:
+
 ```bash
 # The containers mount local volumes for live development
 docker-compose up
@@ -39,7 +42,7 @@ docker-compose up
 ### System Status
 
 - ✅ **Docker Deployment**: Fully operational with service orchestration
-- ✅ **Case Sensitivity**: Resolved for Linux/container environments  
+- ✅ **Case Sensitivity**: Resolved for Linux/container environments
 - ✅ **Health Monitoring**: Automated health checks and restart policies
 - ✅ **Service Discovery**: Internal networking between containers
 - ✅ **Volume Mounting**: Live development support
@@ -47,6 +50,7 @@ docker-compose up
 ## 🏗️ Architecture
 
 The system uses a microservices architecture with:
+
 - **Container Orchestration**: Docker Compose
 - **Service Networking**: Bridge network for inter-service communication
 - **Health Monitoring**: Built-in health checks
@@ -106,4 +110,4 @@ curl http://localhost:8081/api/health
 
 ---
 
-*Previous deployment methods (standalone scripts) have been archived and replaced with this containerized approach.*
+_Previous deployment methods (standalone scripts) have been archived and replaced with this containerized approach._

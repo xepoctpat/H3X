@@ -1,5 +1,11 @@
 {
   "recommendations": [
-    "TeamsDevApp.ms-teams-vscode-extension"
+    "TeamsDevApp.ms-teams-vscode-extension",
+    "eamodio.gitlens",
+    "donjayamanne.githistory",
+    "mhutchie.git-graph",
+    "github.vscode-pull-request-github",
+    "codezombiech.gitignore",
+    "cschleiden.vscode-github-actions"
   ]
 }

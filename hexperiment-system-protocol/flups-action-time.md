@@ -1,13 +1,16 @@
 # Flups: Time as Action Rule
 
 ## Core Principle
+
 **Time = Action Sequence**
+
 - No action → No time progression
 - Time is the execution of rules, not a background clock
 
 ## 2D Action-State Representation
 
 ### 1. Action Graph (Primary View)
+
 ```
 State Space (2D projection with action transitions)
 
@@ -32,6 +35,7 @@ Legend: ━━━ = State persistence (no action, no time)
 ```
 
 ### 2. Action Sequence Timeline
+
 ```
 STOPPED TIME          ACTION              STOPPED TIME
 ─────────────   ┌─────────────────┐   ─────────────
@@ -43,6 +47,7 @@ STOPPED TIME          ACTION              STOPPED TIME
 ```
 
 ### 3. State-Action Matrix
+
 ```
 Current State │ Action Rule │ Next State │ Time Δt
 ─────────────┼─────────────┼────────────┼─────────
@@ -53,6 +58,7 @@ ANY          │ null        │ SAME       │ 0 (frozen)
 ```
 
 ### 4. Virtual Time Engine
+
 ```
 while (system.hasActions()) {
     action = queue.dequeue()
@@ -68,6 +74,7 @@ while (system.hasActions()) {
 ```
 
 ### 5. Action-Driven Feedback Loop
+
 ```
      ┌──────────[ACTION α]──────────┐
      │                              │
@@ -81,6 +88,7 @@ Time Flow: α→β→γ→α→β→γ... (or stops)
 ```
 
 ### 6. Quantum Action Representation
+
 ```
 |Ψ(t+1)⟩ = Â|Ψ(t)⟩
 
@@ -91,6 +99,7 @@ where:
 ```
 
 ### 7. Rule-Based Time Evolution
+
 ```
 Rules Database:
 ┌─────────────────────────────────────┐
@@ -108,6 +117,7 @@ Rules Database:
 ```
 
 ### 8. Energy-Action Coupling
+
 ```
 Energy Budget vs Time Progression
 
@@ -117,7 +127,7 @@ Energy ↑
        │  ╱    ╲╱    ╲╱    ╲
        │ ╱                  ╲
      E₀├─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ (threshold)
-       │         
+       │
        │ NO ACTION = NO TIME
        │ (system frozen below E₀)
        └────────────────────────→ Action Count
@@ -127,21 +137,22 @@ Energy ↑
 ## Implementation Strategy
 
 ### Action Queue System
+
 ```python
 class VirtualTimeSystem:
     def __init__(self):
         self.state = initial_state
         self.time = 0
         self.action_queue = []
-    
+
     def tick(self):
         if not self.action_queue:
             return  # Time stops
-        
+
         action = self.action_queue.pop(0)
         self.state = action.execute(self.state)
         self.time += 1
-        
+
         # Generate new actions based on rules
         new_actions = self.evaluate_rules(self.state)
         self.action_queue.extend(new_actions)

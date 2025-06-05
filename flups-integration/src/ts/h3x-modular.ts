@@ -1,10 +1,10 @@
 // H3X Modular System - Main TypeScript Module
 
 import type { H3XSystemStatus, H3XMetrics, H3XNode, H3XRotation } from './types/h3x.d.ts';
-import { H3XHexagonModule } from './modules/hexagon.js';
-import { H3XTriadModule } from './modules/triad.js';
-import { H3XFourDModule } from './modules/fourd.js';
-import { H3XLogger } from './modules/logger.js';
+import { H3XHexagonModule } from './modules/hexagon.ts';
+import { H3XTriadModule } from './modules/triad.ts';
+import { H3XFourDModule } from './modules/fourd.ts';
+import { H3XLogger } from './modules/logger.ts';
 
 export class H3XModular {
   private initialized: boolean = false;
@@ -13,7 +13,7 @@ export class H3XModular {
   private systemStatus: H3XSystemStatus = {
     merger: 'unknown',
     ui: 'unknown',
-    logs: 'unknown'
+    logs: 'unknown',
   };
 
   public hexagon!: H3XHexagonModule;
@@ -27,19 +27,19 @@ export class H3XModular {
 
   async init(): Promise<void> {
     console.log('[H3X-Modular] Initializing H3X modular system');
-    
+
     // Initialize submodules
     this.hexagon = new H3XHexagonModule();
     this.triad = new H3XTriadModule();
     this.fourd = new H3XFourDModule();
     this.logger = new H3XLogger();
-    
+
     // Check system status
     await this.checkSystemStatus();
-    
+
     // Start update loops
     this.startUpdateLoop();
-    
+
     this.initialized = true;
     this.log('[H3X-Modular] System ready');
   }
@@ -59,12 +59,12 @@ export class H3XModular {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-      
-      const response = await fetch('http://localhost:3007/health', { 
-        signal: controller.signal 
+
+      const response = await fetch('http://localhost:3007/health', {
+        signal: controller.signal,
       });
       clearTimeout(timeoutId);
-      
+
       this.systemStatus.ui = response.ok ? 'online' : 'offline';
       this.updateStatusIndicator('ui-status', this.systemStatus.ui, this.systemStatus.ui);
     } catch {
@@ -112,7 +112,7 @@ export class H3XModular {
         cflupCount: Math.floor(Math.random() * 10) + 1,
         amendmentCount: Math.floor(Math.random() * 100) + 50,
         archiveCount: Math.floor(Math.random() * 5) + 1,
-        uptime: Math.floor((Date.now() - this.startTime) / 1000)
+        uptime: Math.floor((Date.now() - this.startTime) / 1000),
       };
 
       this.updateMetric('cflup-count', metrics.cflupCount);
@@ -134,27 +134,27 @@ export class H3XModular {
   // Tab Management
   switchTab(tabName: string): void {
     // Hide all tabs
-    document.querySelectorAll('.h3x-tab-content').forEach(tab => {
+    document.querySelectorAll('.h3x-tab-content').forEach((tab) => {
       tab.classList.remove('h3x-tab-content--active');
     });
-    
+
     // Remove active from all buttons
-    document.querySelectorAll('.h3x-tab').forEach(btn => {
+    document.querySelectorAll('.h3x-tab').forEach((btn) => {
       btn.classList.remove('h3x-tab--active');
     });
-    
+
     // Show selected tab
     const tab = document.getElementById(`tab-${tabName}`);
     if (tab) {
       tab.classList.add('h3x-tab-content--active');
     }
-    
+
     // Activate button - need to get the clicked button
     const clickedButton = document.querySelector(`[onclick*="${tabName}"]`);
     if (clickedButton) {
       clickedButton.classList.add('h3x-tab--active');
     }
-    
+
     this.activeTab = tabName;
     this.log(`[H3X-Modular] Switched to ${tabName} tab`);
   }
@@ -257,7 +257,7 @@ For advanced operations, use the Control UI or CLI commands.
       logOutput.innerHTML += `<span style="color: #666;">[${timestamp}]</span> ${message}<br>`;
       logOutput.scrollTop = logOutput.scrollHeight;
     }
-    
+
     // Also add to logger
     this.logger?.add(message);
   }

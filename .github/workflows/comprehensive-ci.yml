@@ -1,0 +1,120 @@
+name: Comprehensive CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  code-quality:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: TypeScript check
+        run: npm run type-check
+        continue-on-error: true
+      
+      - name: Check code formatting
+        run: npm run format:check
+      
+      - name: Run linting
+        run: npm run lint:check
+      
+      - name: Run HTML validation
+        run: npm run test:html
+        continue-on-error: true
+      
+      - name: Run JavaScript validation
+        run: npm run test:js
+        continue-on-error: true
+      
+      - name: Check for unused dependencies
+        run: npm run unused:deps
+        continue-on-error: true
+      
+      - name: Check for unused code
+        run: npm run unused:code
+        continue-on-error: true
+
+  testing:
+    name: Testing & Health Checks
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm run test
+      
+      - name: Run existing H3X tests
+        run: npm run test:all
+        continue-on-error: true
+      
+      - name: Run setup check
+        run: npm run setup-check
+      
+      - name: Run health check
+        run: npm run test:health
+        continue-on-error: true
+      
+      - name: Quick integration test
+        run: npm run test:unified-quick
+        continue-on-error: true
+
+  security-check:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    needs: testing
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run npm audit
+        run: npm audit --audit-level high
+        continue-on-error: true
+        
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+        continue-on-error: true
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

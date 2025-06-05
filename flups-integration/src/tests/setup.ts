@@ -30,7 +30,7 @@ const mockWebSocket = () => {
   class MockWebSocket extends EventTarget {
     readyState: number = 0; // WebSocket.CONNECTING
     url: string;
-    
+
     constructor(url: string) {
       super();
       this.url = url;
@@ -39,17 +39,17 @@ const mockWebSocket = () => {
         this.dispatchEvent(new Event('open'));
       }, 0);
     }
-    
+
     send(data: string | ArrayBufferLike | Blob | ArrayBufferView) {
       // Mock send implementation
     }
-    
+
     close() {
       this.readyState = 3; // WebSocket.CLOSED
       this.dispatchEvent(new Event('close'));
     }
   }
-  
+
   global.WebSocket = MockWebSocket as any;
 };
 
@@ -60,7 +60,7 @@ const mockCanvas = () => {
     getImageData: vi.fn(() => ({
       data: new Uint8ClampedArray(4),
       width: 1,
-      height: 1
+      height: 1,
     })),
     putImageData: vi.fn(),
     createImageData: vi.fn(() => ({ data: new Uint8ClampedArray(4) })),
@@ -76,7 +76,7 @@ const mockCanvas = () => {
     fill: vi.fn(),
     arc: vi.fn(),
     fillText: vi.fn(),
-    measureText: vi.fn(() => ({ width: 0 }))
+    measureText: vi.fn(() => ({ width: 0 })),
   };
   HTMLCanvasElement.prototype.getContext = vi.fn((type: string) => {
     if (type === '2d') return mockContext as any; // Cast to any to avoid strict type checking
@@ -106,7 +106,7 @@ const mockWebGLContext = () => ({
   enable: vi.fn(),
   disable: vi.fn(),
   getParameter: vi.fn(),
-  getExtension: vi.fn()
+  getExtension: vi.fn(),
 });
 
 const mockWebGL = () => {
@@ -125,6 +125,6 @@ if (typeof window !== 'undefined') {
     mockWebGL,
     resetMocks: () => {
       vi.clearAllMocks();
-    }
+    },
   };
 }

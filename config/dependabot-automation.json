@@ -1,0 +1,110 @@
+{
+  "autoMerge": {
+    "enabled": true,
+    "allowedUpdateTypes": ["patch", "minor"],
+    "allowedEcosystems": ["npm", "github-actions", "docker"],
+    "requiresAllChecks": true,
+    "waitTimeMinutes": 10,
+    "maxWaitTimeMinutes": 120,
+    "retryAttempts": 3,
+    "retryDelayMinutes": 5
+  },
+  "security": {
+    "scanEnabled": true,
+    "blockVulnerableUpdates": true,
+    "allowedSeverity": ["low", "moderate"],
+    "requireSecurityReview": ["high", "critical"],
+    "securityScanners": {
+      "npm_audit": {
+        "enabled": true,
+        "severity_threshold": "moderate"
+      },
+      "snyk": {
+        "enabled": true,
+        "severity_threshold": "high",
+        "timeout": 60
+      },
+      "github_security_advisories": {
+        "enabled": true
+      }
+    }
+  },
+  "testing": {
+    "runTests": true,
+    "runBuildCheck": true,
+    "runSecurityScan": true,
+    "testTimeout": 300,
+    "buildTimeout": 600,
+    "requiredTestCoverage": 80,
+    "testCommands": {
+      "unit": "npm test",
+      "integration": "npm run test:integration",
+      "build": "npm run build",
+      "type_check": "npm run type-check"
+    }
+  },
+  "notifications": {
+    "enabled": true,
+    "channels": ["github", "log"],
+    "notifyOnFailure": true,
+    "notifyOnSuccess": false,
+    "mentionReviewers": true,
+    "slackWebhook": null,
+    "emailNotifications": false
+  },
+  "integration": {
+    "h3xAutomation": true,
+    "createCheckpoints": true,
+    "updateChangelog": true,
+    "triggerCICD": false,
+    "integrationPoints": {
+      "docker_health_checks": true,
+      "performance_monitoring": true,
+      "rollback_capability": true
+    }
+  },
+  "packageRules": {
+    "typescript": {
+      "autoMerge": true,
+      "updateTypes": ["patch", "minor"],
+      "additionalChecks": ["type-check"]
+    },
+    "testing": {
+      "autoMerge": true,
+      "updateTypes": ["patch", "minor"],
+      "additionalChecks": ["test"]
+    },
+    "build-tools": {
+      "autoMerge": false,
+      "updateTypes": ["patch"],
+      "requiresManualReview": true
+    },
+    "security": {
+      "autoMerge": true,
+      "updateTypes": ["patch", "minor", "major"],
+      "priorityMerge": true
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "healthCheckInterval": 3600,
+    "reportGenerationInterval": 86400,
+    "alertThresholds": {
+      "failedMerges": 3,
+      "pendingPRsAge": 168,
+      "securityIssues": 1
+    }
+  },
+  "rollback": {
+    "enabled": true,
+    "autoRollbackOnFailure": true,
+    "rollbackTimeoutMinutes": 30,
+    "healthCheckRetries": 3,
+    "rollbackConditions": [
+      "test_failure",
+      "build_failure",
+      "health_check_failure",
+      "security_vulnerability"
+    ]
+  }
+}

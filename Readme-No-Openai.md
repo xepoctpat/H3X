@@ -15,6 +15,7 @@ This document outlines how to use the Hexperiment Labs SIR (Super Intelligent Re
 ## Getting Started with No-OpenAI Version
 
 ### Prerequisites
+
 - Node.js (versions 18, 20, or 22)
 - GitHub and M365 accounts
 - No OpenAI API key required
@@ -22,22 +23,26 @@ This document outlines how to use the Hexperiment Labs SIR (Super Intelligent Re
 ### Installation and Setup
 
 1. Clone the repository:
+
    ```
    git clone <repository-url>
    cd H3X
    ```
 
 2. Install dependencies:
+
    ```
    npm install
    ```
 
 3. Start the No-OpenAI version:
+
    ```
    node deploy-no-openai.js
    ```
 
 4. Test with the No-OpenAI client:
+
    ```
    npm run no-openai:test
    ```
@@ -87,13 +92,13 @@ The system follows a modular architecture:
 
 The SIR system implements these real-life environment standards:
 
-| Parameter | Optimal Range | Unit | Description |
-|-----------|--------------|------|-------------|
-| Temperature | 18-24 | °C | Ambient temperature |
-| Humidity | 40-60 | % | Relative humidity |
-| Lighting | 200-500 | lux | Illumination level |
-| Air Quality | 0-50 | AQI | Air Quality Index |
-| Noise Level | 30-55 | dB | Ambient noise level |
+| Parameter   | Optimal Range | Unit | Description         |
+| ----------- | ------------- | ---- | ------------------- |
+| Temperature | 18-24         | °C   | Ambient temperature |
+| Humidity    | 40-60         | %    | Relative humidity   |
+| Lighting    | 200-500       | lux  | Illumination level  |
+| Air Quality | 0-50          | AQI  | Air Quality Index   |
+| Noise Level | 30-55         | dB   | Ambient noise level |
 
 ## Human-Supervised Confirmation
 

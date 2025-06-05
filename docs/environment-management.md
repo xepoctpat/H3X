@@ -9,6 +9,7 @@ The environment management system provides easy switching between development an
 ## Available Environments
 
 ### Development Environment (`dev`)
+
 - **Purpose**: Local development with hot reload, debugging capabilities, and relaxed security
 - **Features**:
   - Hot reload for code changes
@@ -20,6 +21,7 @@ The environment management system provides easy switching between development an
   - Manual restart policy for better control
 
 ### Production Environment (`prod`)
+
 - **Purpose**: Production deployment with optimized performance, security, and monitoring
 - **Features**:
   - Optimized Docker images
@@ -91,28 +93,28 @@ npm run env:quick clean        # Clean Docker resources
 
 ### Development Services
 
-| Service | Container Name | Ports | Purpose |
-|---------|---------------|-------|---------|
-| h3x-lmstudio | h3x-lmstudio-dev | 1234, 1235 | LM Studio with debug settings |
-| h3x-main | h3x-main-dev | 3978, 8081, 9239 | Main app with debug port |
-| h3x-protocol | h3x-protocol-dev | 8080, 8090 | Protocol server with debug |
-| hexperiment-mcp | hexperiment-mcp-dev | 8082, 8092 | MCP server with debug |
-| h3x-redis | h3x-redis-dev | 6379 | Redis with debug logging |
-| h3x-response-processor | h3x-response-processor-dev | - | Response processor |
-| h3x-devtools | h3x-devtools | - | Development utilities |
+| Service                | Container Name             | Ports            | Purpose                       |
+| ---------------------- | -------------------------- | ---------------- | ----------------------------- |
+| h3x-lmstudio           | h3x-lmstudio-dev           | 1234, 1235       | LM Studio with debug settings |
+| h3x-main               | h3x-main-dev               | 3978, 8081, 9239 | Main app with debug port      |
+| h3x-protocol           | h3x-protocol-dev           | 8080, 8090       | Protocol server with debug    |
+| hexperiment-mcp        | hexperiment-mcp-dev        | 8082, 8092       | MCP server with debug         |
+| h3x-redis              | h3x-redis-dev              | 6379             | Redis with debug logging      |
+| h3x-response-processor | h3x-response-processor-dev | -                | Response processor            |
+| h3x-devtools           | h3x-devtools               | -                | Development utilities         |
 
 ### Production Services
 
-| Service | Container Name | Ports | Purpose |
-|---------|---------------|-------|---------|
-| h3x-lmstudio | h3x-lmstudio-prod | 1234 | LM Studio optimized |
-| h3x-main | h3x-main-prod | 3978 | Main app production |
-| h3x-protocol | h3x-protocol-prod | 8080 | Protocol server |
-| hexperiment-mcp | hexperiment-mcp-prod | 8082 | MCP server |
-| h3x-redis | h3x-redis-prod | - | Redis with memory limits |
-| h3x-response-processor | h3x-response-processor-prod | - | Response processor |
-| h3x-proxy | h3x-proxy-prod | 80, 443 | Nginx reverse proxy |
-| h3x-monitor | h3x-monitor-prod | 9090 | Prometheus monitoring |
+| Service                | Container Name              | Ports   | Purpose                  |
+| ---------------------- | --------------------------- | ------- | ------------------------ |
+| h3x-lmstudio           | h3x-lmstudio-prod           | 1234    | LM Studio optimized      |
+| h3x-main               | h3x-main-prod               | 3978    | Main app production      |
+| h3x-protocol           | h3x-protocol-prod           | 8080    | Protocol server          |
+| hexperiment-mcp        | hexperiment-mcp-prod        | 8082    | MCP server               |
+| h3x-redis              | h3x-redis-prod              | -       | Redis with memory limits |
+| h3x-response-processor | h3x-response-processor-prod | -       | Response processor       |
+| h3x-proxy              | h3x-proxy-prod              | 80, 443 | Nginx reverse proxy      |
+| h3x-monitor            | h3x-monitor-prod            | 9090    | Prometheus monitoring    |
 
 ## Advanced Usage
 
@@ -143,16 +145,19 @@ npm run env:status
 ### Environment Switching Workflow
 
 1. **Check Current Status**:
+
    ```bash
    npm run env:status
    ```
 
 2. **Switch Environment**:
+
    ```bash
    npm run env:quick switch prod
    ```
 
 3. **Start New Environment**:
+
    ```bash
    npm run env:prod:build
    ```
@@ -165,6 +170,7 @@ npm run env:status
 ## Environment Variables
 
 ### Development Variables
+
 ```bash
 NODE_ENV=development
 GO_ENV=development
@@ -175,6 +181,7 @@ CORS_ALLOWED_ORIGINS=http://localhost:3978,http://localhost:8081,http://localhos
 ```
 
 ### Production Variables
+
 ```bash
 NODE_ENV=production
 GO_ENV=production
@@ -189,12 +196,14 @@ CORS_ALLOWED_ORIGINS=https://yourdomain.com
 ### Common Issues
 
 1. **Port Conflicts**:
+
    ```bash
    # Clean up any hanging containers
    npm run env:quick clean
    ```
 
 2. **Environment Not Switching**:
+
    ```bash
    # Force stop current environment
    ./hexperiment-system-protocol/scripts/env-switcher.ps1 dev -Down
@@ -225,12 +234,14 @@ docker volume ls
 ## Security Considerations
 
 ### Development Environment
+
 - Uses development API keys (safe for local use)
 - Relaxed CORS settings for easy testing
 - Debug ports exposed
 - Read-write volume mounts for hot reload
 
 ### Production Environment
+
 - Requires secure API keys (set via environment variables)
 - Strict CORS settings
 - No debug ports exposed
@@ -260,6 +271,7 @@ npm run qol:check
 ### Backup and Recovery
 
 Production environment includes automated backup configuration:
+
 - Daily backups at 2 AM
 - 30-day retention policy
 - Prometheus metrics for monitoring
@@ -276,6 +288,6 @@ The environment management system integrates seamlessly with existing H3X workfl
 ## Next Steps
 
 1. **SSL Configuration**: Set up SSL certificates for production
-2. **Monitoring Setup**: Configure Prometheus alerts and Grafana dashboards  
+2. **Monitoring Setup**: Configure Prometheus alerts and Grafana dashboards
 3. **CI/CD Integration**: Add environment switching to deployment pipelines
 4. **Backup Automation**: Implement automated backup and restore procedures

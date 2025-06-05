@@ -5,6 +5,7 @@
 The SIR (Super Intelligent Regulator) Control Interface has been refactored into a modular architecture for improved maintainability, scalability, and code organization. The system now consists of three core modules:
 
 ### 1. Core Module (`sir-dashboard-core.js`)
+
 - Handles main dashboard initialization
 - Manages connection to backend server
 - Controls system state
@@ -12,6 +13,7 @@ The SIR (Super Intelligent Regulator) Control Interface has been refactored into
 - Manages core metrics
 
 ### 2. Data Module (`sir-dashboard-data.js`)
+
 - Manages real-time data collection
 - Processes pattern analysis
 - Tracks temporal patterns
@@ -19,6 +21,7 @@ The SIR (Super Intelligent Regulator) Control Interface has been refactored into
 - Provides advanced data insights in PASSIVE mode
 
 ### 3. UI Module (`sir-dashboard-ui.js`)
+
 - Creates and updates dashboard metrics
 - Manages visualization controls
 - Handles UI event listeners
@@ -89,4 +92,4 @@ In PASSIVE mode, the system is in the learning phase, primarily gathering data a
 
 ---
 
-*Hexperiment Labs - Advanced Neural Frameworks for Collective Intelligence*
+_Hexperiment Labs - Advanced Neural Frameworks for Collective Intelligence_

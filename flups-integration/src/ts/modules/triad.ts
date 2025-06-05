@@ -16,19 +16,23 @@ export class H3XTriadModule implements IH3XTriadModule {
 
   balance(): void {
     this.balanced = !this.balanced;
-    
+
     // Log to global system if available
     if (typeof window !== 'undefined' && (window as any).h3xModular) {
-      (window as any).h3xModular.log(`[Triad] Balance state: ${this.balanced ? 'BALANCED' : 'UNBALANCED'}`);
+      (window as any).h3xModular.log(
+        `[Triad] Balance state: ${this.balanced ? 'BALANCED' : 'UNBALANCED'}`,
+      );
     }
   }
 
   enhance(): void {
     this.efficiency = Math.min(1.0, this.efficiency + 0.1);
-    
+
     // Log to global system if available
     if (typeof window !== 'undefined' && (window as any).h3xModular) {
-      (window as any).h3xModular.log(`[Triad] Efficiency enhanced to: ${this.efficiency.toFixed(3)}`);
+      (window as any).h3xModular.log(
+        `[Triad] Efficiency enhanced to: ${this.efficiency.toFixed(3)}`,
+      );
     }
   }
 

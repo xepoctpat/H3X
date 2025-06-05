@@ -1,0 +1,75 @@
+name: "TypeScript Conversion & Pre-commit"
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**/*.js'
+      - 'scripts/**'
+      - 'package.json'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  typescript-conversion:
+    name: "Convert JS to TS & Pre-commit Checks"
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npm install -g tsx typescript
+
+      - name: TypeScript Setup
+        run: |
+          echo "🔧 Setting up TypeScript environment..."
+          npm run setup:typescript
+
+      - name: Convert JavaScript to TypeScript
+        run: |
+          echo "🔄 Converting JavaScript files to TypeScript..."
+          npx tsx scripts/convert-js-to-ts.ts --preserve
+
+      - name: Run Pre-commit Hooks
+        run: |
+          echo "🔍 Running pre-commit checks..."
+          npx tsx scripts/pre-commit-hook.ts
+
+      - name: Type Check
+        run: |
+          echo "📝 Running TypeScript type checking..."
+          npx tsc --noEmit --skipLibCheck
+
+      - name: Lint & Format
+        run: |
+          npm run format
+          npm run lint
+
+      - name: Commit Changes
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if [[ -n $(git status --porcelain) ]]; then
+            git add .
+            git commit -m "🔄 Automated TypeScript conversion and formatting"
+            git push
+            echo "✅ Changes committed and pushed"
+          else
+            echo "✅ No changes to commit"
+          fi

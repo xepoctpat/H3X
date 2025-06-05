@@ -1,0 +1,205 @@
+name: Pull Request Review Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  pr-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Assign labels based on file changes
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const changedFiles = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            let labels = [];
+            
+            // Check file patterns
+            const hasDocChanges = changedFiles.data.some(file => file.filename.match(/\.(md|txt|html|pdf)$/i));
+            const hasCodeChanges = changedFiles.data.some(file => file.filename.match(/\.(js|ts|jsx|tsx)$/i));
+            const hasUIChanges = changedFiles.data.some(file => file.filename.match(/\.(css|scss|sass|html|jsx|tsx)$/i));
+            const hasDockerChanges = changedFiles.data.some(file => file.filename.match(/(dockerfile|docker-compose\.yml|\.dockerignore)$/i));
+            const hasWorkflowChanges = changedFiles.data.some(file => file.filename.match(/\.github\/workflows\/.*\.yml$/i));
+            
+            if (hasDocChanges) labels.push('documentation');
+            if (hasCodeChanges) labels.push('code');
+            if (hasUIChanges) labels.push('ui');
+            if (hasDockerChanges) labels.push('docker');
+            if (hasWorkflowChanges) labels.push('workflow');
+            
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: labels
+              });
+            }
+      
+      - name: Check PR title format
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { title } = context.payload.pull_request;
+            const validPrefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'test:', 'chore:', 'perf:'];
+            
+            const hasValidPrefix = validPrefixes.some(prefix => title.startsWith(prefix));
+            if (!hasValidPrefix) {
+              core.warning(`PR title should begin with one of: ${validPrefixes.join(', ')}`);
+              
+              const comment = `
+              ## PR Title Format
+              
+              Your PR title doesn't follow the conventional commit format. Please update it to start with one of:
+              
+              ${validPrefixes.map(p => `- \`${p}\``).join('\n')}
+              
+              Examples:
+              - \`feat: add new feature\`
+              - \`fix: resolve issue with login\`
+              - \`docs: update README\`
+              
+              This helps with automatic changelog generation and versioning.
+              `;
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+            
+      - name: Analyze PR size
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const changedFiles = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            const totalChanges = changedFiles.data.reduce((sum, file) => sum + file.changes, 0);
+            const filesChanged = changedFiles.data.length;
+            
+            let sizeLabel = '';
+            
+            if (totalChanges > 1000 || filesChanged > 20) {
+              sizeLabel = 'size: large';
+            } else if (totalChanges > 300 || filesChanged > 10) {
+              sizeLabel = 'size: medium';
+            } else {
+              sizeLabel = 'size: small';
+            }
+            
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: [sizeLabel]
+            });
+            
+            if (totalChanges > 1000) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,              body: `
+                ## Large PR Detected
+                
+                This PR contains ${totalChanges} changes across ${filesChanged} files.
+                
+                Consider breaking it down into smaller, more focused PRs to make review easier.
+                `
+              });
+            }
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: pr-automation
+    if: |
+      github.event_name == 'pull_request_review' &&
+      github.event.review.state == 'approved'
+    steps:
+      - name: Auto-merge PRs with required labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get the PR
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            // Get PR labels
+            const labels = pr.data.labels.map(label => label.name);
+            
+            // Auto-merge labels
+            const autoMergeLabels = [
+              'dependencies',
+              'documentation',
+              'automated-cleanup',
+              'auto-merge'
+            ];
+            
+            // Check if PR has any auto-merge labels
+            const hasAutoMergeLabel = labels.some(label => autoMergeLabels.includes(label));
+            
+            // Check if all required checks are passing
+            const checks = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pr.data.head.sha
+            });
+            
+            const allChecksPassing = !checks.data.check_runs.some(check => 
+              check.conclusion !== 'success' && check.conclusion !== 'skipped'
+            );
+            
+            if (hasAutoMergeLabel && allChecksPassing) {
+              try {
+                await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.issue.number,
+                  merge_method: 'squash'
+                });
+                
+                console.log(`Auto-merged PR #${context.issue.number}`);
+                
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: '✅ This PR was automatically merged after approval because all checks passed and it had an auto-merge label.'
+                });
+              } catch (error) {
+                console.error(`Error auto-merging PR: ${error}`);
+              }
+            }

@@ -7,10 +7,12 @@ The H3X system is now deployed using Docker containers for maximum portability a
 ### ✅ Docker Compose Deployment (Recommended)
 
 **Prerequisites:**
+
 - Docker Desktop or Docker Engine
 - Docker Compose
 
 **Deployment Steps:**
+
 ```bash
 # 1. Start all services
 docker-compose up -d
@@ -23,10 +25,12 @@ docker-compose logs -f
 ```
 
 **Services:**
+
 - **h3x-server** (Port 4978): Main application server
 - **protocol-server** (Port 8081): Hexperiment protocol coordination
 
 **Benefits:**
+
 - ✅ Consistent environment across all platforms
 - ✅ Automatic service discovery and networking
 - ✅ Built-in health checks and restart policies
@@ -37,12 +41,12 @@ docker-compose logs -f
 
 Previous deployment methods have been containerized:
 
-| Legacy Method | Containerized Equivalent |
-|---------------|-------------------------|
-| `Start-Standalone.js` | `docker-compose up h3x-server` |
-| `Start-Lmstudio.js` | Integrated in h3x-server container |
-| Manual Node.js setup | Automated via Dockerfile |
-| Port configuration | Configured in docker-compose.yml |
+| Legacy Method         | Containerized Equivalent           |
+| --------------------- | ---------------------------------- |
+| `Start-Standalone.js` | `docker-compose up h3x-server`     |
+| `Start-Lmstudio.js`   | Integrated in h3x-server container |
+| Manual Node.js setup  | Automated via Dockerfile           |
+| Port configuration    | Configured in docker-compose.yml   |
 
 ## 🛠️ Development Workflow
 
@@ -82,4 +86,4 @@ docker-compose logs -f [service-name]
 
 ---
 
-*Legacy deployment scripts have been archived. The containerized approach provides better reliability, consistency, and development experience.*
+_Legacy deployment scripts have been archived. The containerized approach provides better reliability, consistency, and development experience._

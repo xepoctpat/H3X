@@ -19,11 +19,11 @@ export class H3XHexagonModule implements IH3XHexagonModule {
     const newNode: H3XNode = {
       id: nodeId,
       x: Math.random() * 400,
-      y: Math.random() * 300
+      y: Math.random() * 300,
     };
-    
+
     this.nodes.push(newNode);
-    
+
     // Log to global system if available
     if (typeof window !== 'undefined' && (window as any).h3xModular) {
       (window as any).h3xModular.log(`[Hexagon] Added node: ${nodeId}`);
@@ -32,10 +32,12 @@ export class H3XHexagonModule implements IH3XHexagonModule {
 
   optimize(): void {
     this.latticeOptimized = !this.latticeOptimized;
-    
+
     // Log to global system if available
     if (typeof window !== 'undefined' && (window as any).h3xModular) {
-      (window as any).h3xModular.log(`[Hexagon] Lattice optimization: ${this.latticeOptimized ? 'ON' : 'OFF'}`);
+      (window as any).h3xModular.log(
+        `[Hexagon] Lattice optimization: ${this.latticeOptimized ? 'ON' : 'OFF'}`,
+      );
     }
   }
 

@@ -1,0 +1,222 @@
+name: Dependabot PR Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+  schedule:
+    # Run every 2 hours during business hours (UTC)
+    - cron: '0 8-18/2 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Specific PR number to analyze'
+        required: false
+        type: string
+      force_analysis:
+        description: 'Force analysis even if not a Dependabot PR'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  security-events: write
+  checks: read
+
+jobs:
+  analyze-dependabot-pr:
+    name: Analyze Dependabot PR
+    runs-on: ubuntu-latest
+    if: |
+      github.actor == 'dependabot[bot]' || 
+      github.event.inputs.force_analysis == 'true' ||
+      github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Dependabot automation environment
+        run: |
+          mkdir -p logs/automation
+          mkdir -p config
+          echo "Setting up Dependabot automation environment"
+
+      - name: Create automation config
+        run: |
+          cat > config/dependabot-automation.json << 'EOF'
+          {
+            "autoMerge": {
+              "enabled": true,
+              "allowedUpdateTypes": ["patch", "minor"],
+              "allowedEcosystems": ["npm", "github-actions", "docker"],
+              "requiresAllChecks": true,
+              "waitTimeMinutes": 10,
+              "maxWaitTimeMinutes": 120
+            },
+            "security": {
+              "scanEnabled": true,
+              "blockVulnerableUpdates": true,
+              "allowedSeverity": ["low", "moderate"],
+              "requireSecurityReview": ["high", "critical"]
+            },
+            "testing": {
+              "runTests": true,
+              "runBuildCheck": true,
+              "runSecurityScan": true,
+              "testTimeout": 300
+            },
+            "notifications": {
+              "enabled": true,
+              "channels": ["github", "log"],
+              "notifyOnFailure": true,
+              "notifyOnSuccess": false
+            },
+            "integration": {
+              "h3xAutomation": true,
+              "createCheckpoints": true,
+              "updateChangelog": true,
+              "triggerCICD": false
+            }
+          }
+          EOF
+
+      - name: Get PR information
+        id: pr-info
+        run: |
+          if [ "${{ github.event.inputs.pr_number }}" != "" ]; then
+            PR_NUMBER="${{ github.event.inputs.pr_number }}"
+          elif [ "${{ github.event.pull_request.number }}" != "" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          else
+            echo "No PR number found, skipping analysis"
+            exit 0
+          fi
+          
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "Analyzing PR #$PR_NUMBER"
+
+      - name: Run Dependabot PR analysis
+        if: steps.pr-info.outputs.pr_number != ''
+        run: |
+          node scripts/dependabot-automation.js analyze ${{ steps.pr-info.outputs.pr_number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Check for eligible auto-merge
+        if: steps.pr-info.outputs.pr_number != ''
+        id: auto-merge-check
+        run: |
+          # Check if the analysis marked the PR as eligible for auto-merge
+          if [ -f "logs/automation/dependabot-automation.log" ]; then
+            if grep -q "eligible for auto-merge" logs/automation/dependabot-automation.log; then
+              echo "eligible=true" >> $GITHUB_OUTPUT
+              echo "PR #${{ steps.pr-info.outputs.pr_number }} is eligible for auto-merge"
+            else
+              echo "eligible=false" >> $GITHUB_OUTPUT
+              echo "PR #${{ steps.pr-info.outputs.pr_number }} is not eligible for auto-merge"
+            fi
+          else
+            echo "eligible=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Auto-merge eligible PR
+        if: |
+          steps.auto-merge-check.outputs.eligible == 'true' && 
+          github.event_name != 'schedule'
+        run: |
+          # Wait for CI checks to complete
+          echo "Waiting for CI checks to complete..."
+          sleep 30
+          
+          # Enable auto-merge
+          gh pr merge ${{ steps.pr-info.outputs.pr_number }} --auto --squash --delete-branch
+          
+          echo "Auto-merge enabled for PR #${{ steps.pr-info.outputs.pr_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload analysis results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependabot-analysis-${{ steps.pr-info.outputs.pr_number || 'scheduled' }}
+          path: |
+            logs/automation/
+            config/dependabot-automation.json
+          retention-days: 30
+
+      - name: Generate automation report
+        if: github.event_name == 'schedule'
+        run: |
+          node scripts/dependabot-automation.js report
+          
+      - name: Upload scheduled report
+        if: github.event_name == 'schedule'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependabot-report-${{ github.run_id }}
+          path: logs/automation/dependabot-report.json
+          retention-days: 90
+
+  monitor-automation-health:
+    name: Monitor Automation Health
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check automation health
+        run: |
+          echo "# Dependabot Automation Health Report" > automation-health.md
+          echo "Generated: $(date)" >> automation-health.md
+          echo "" >> automation-health.md
+          
+          # Check for recent Dependabot PRs
+          RECENT_PRS=$(gh pr list --author "dependabot[bot]" --state all --limit 10 --json number,title,state,createdAt)
+          echo "## Recent Dependabot PRs" >> automation-health.md
+          echo '```json' >> automation-health.md
+          echo "$RECENT_PRS" >> automation-health.md
+          echo '```' >> automation-health.md
+          
+          # Check automation logs if they exist
+          if [ -d "logs/automation" ]; then
+            echo "## Recent Automation Activity" >> automation-health.md
+            find logs/automation -name "*.log" -mtime -7 -exec echo "### {}" \; -exec tail -20 {} \; >> automation-health.md
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload health report
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-health-${{ github.run_id }}
+          path: automation-health.md
+          retention-days: 30
