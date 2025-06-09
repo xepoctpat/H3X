@@ -25,7 +25,6 @@ This workflow runs on every push and pull request to the main branches, as well 
 
 - **Security Scanning**
   - npm audit
-  - Snyk vulnerability scanning
   - GitHub CodeQL analysis
 
 ### 2. Automated Maintenance
@@ -46,8 +45,11 @@ This workflow runs weekly and can be triggered manually. It:
 
 This workflow runs on pushes, pull requests, and weekly. It focuses on:
 
-- Snyk vulnerability scanning
 - CodeQL static code analysis
+- GitLeaks secret scanning
+- OSSF Scorecard analysis
+- Dependency Review
+- Docker image vulnerability scanning
 - Detailed security reporting
 
 ### 4. Dependabot Configuration

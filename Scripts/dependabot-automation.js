@@ -262,35 +262,12 @@ class DependabotAutomation {
         }
       }
 
-      // Additional security scanning with Snyk if available
-      await this.runSnykScan(updateInfo, securityResults);
-
     } catch (error) {
       await this.log(`Warning: Security analysis failed: ${error.message}`, 'warning');
       securityResults.error = error.message;
     }
 
     return securityResults;
-  }
-
-  /**
-   * Run Snyk security scan
-   */
-  async runSnykScan(updateInfo, securityResults) {
-    try {
-      const snykResult = await execAsync('snyk test --json', {
-        cwd: this.projectRoot,
-        timeout: 60000
-      });
-      
-      const snykData = JSON.parse(snykResult.stdout);
-      if (snykData.vulnerabilities) {
-        securityResults.snykVulnerabilities = snykData.vulnerabilities;
-      }
-    } catch (error) {
-      // Snyk not available or failed - continue without it
-      await this.log('Snyk scan not available or failed', 'info');
-    }
   }
 
   /**

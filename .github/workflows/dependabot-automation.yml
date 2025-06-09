@@ -117,7 +117,6 @@ jobs:
           node scripts/dependabot-automation.js analyze ${{ steps.pr-info.outputs.pr_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Check for eligible auto-merge
         if: steps.pr-info.outputs.pr_number != ''

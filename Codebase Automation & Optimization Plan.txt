@@ -30,16 +30,10 @@ Add `.github/dependabot.yml` to enable.
 
 ## 3. Security Scanning
 
-- **Snyk**: Scans for vulnerabilities in dependencies and code.
 - **GitHub CodeQL**: Performs static code analysis for security issues.
-
-**Snyk GitHub Actions Example:**
-```yaml
-- name: Run Snyk Security Scan
-  uses: snyk/actions/node@master
-  env:
-    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-```
+- **GitLeaks**: Scans for secrets accidentally committed to the repository.
+- **OSSF Scorecard**: Evaluates the project against security best practices.
+- **Dependency Review**: Analyzes dependencies in pull requests for vulnerabilities.
 
 **CodeQL GitHub Actions Example:**
 ```yaml
@@ -122,7 +116,6 @@ Add `.github/dependabot.yml` to enable.
 | Prettier              | Code formatting                         |
 | ESLint                | Linting and code quality                |
 | Dependabot            | Dependency updates                      |
-| Snyk                  | Security scanning (dependencies/code)   |
 | CodeQL                | Static code security analysis           |
 | Jest                  | Automated testing                       |
 | Depcheck/UnusedJS     | Unused code/dependency detection        |

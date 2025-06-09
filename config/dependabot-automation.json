@@ -19,11 +19,6 @@
         "enabled": true,
         "severity_threshold": "moderate"
       },
-      "snyk": {
-        "enabled": true,
-        "severity_threshold": "high",
-        "timeout": 60
-      },
       "github_security_advisories": {
         "enabled": true
       }

@@ -29,10 +29,11 @@ This workflow runs the following checks:
 ### Security Scanning
 
 This workflow runs multiple security scanning tools:
-- Snyk vulnerability scanning
 - npm audit
 - GitLeaks (for secret scanning)
 - CodeQL analysis
+- OSSF Scorecard analysis
+- Dependency Review
 - Docker image scanning with Trivy
 
 **Trigger:** Push to main/master/develop, Pull requests to main/master/develop, Weekly on Monday at 2 AM, Manual
@@ -59,12 +60,7 @@ It creates pull requests with the changes for team review.
 
 ### Setting Up Required Secrets
 
-For some workflows, you'll need to set up secrets in your GitHub repository:
-
-1. **SNYK_TOKEN** - For Snyk vulnerability scanning
-   - Sign up at [snyk.io](https://snyk.io/)
-   - Generate an API token
-   - Add it as a repository secret
+Currently, the workflows use only built-in GitHub tokens and public action secrets.
 
 ### Working with Pull Requests from Automated Workflows
 

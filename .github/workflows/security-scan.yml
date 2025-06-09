@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  snyk-security:
+  npm-audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,20 +32,6 @@ jobs:
         run: |
           npm audit --json > npm-audit.json || true
           echo "NPM audit report generated"
-        
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high --sarif-file-output=snyk.sarif
-          
-      - name: Upload Snyk report
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: snyk.sarif
-        continue-on-error: true
-          
   gitleaks:
     runs-on: ubuntu-latest
     steps:

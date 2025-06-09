@@ -214,7 +214,6 @@ updates:
       security-scanning:
         patterns:
           - "github/codeql-action/*"
-          - "snyk/actions/*"
           - "securecodewarrior/github-action-add-sarif"
         update-types:
           - "minor"

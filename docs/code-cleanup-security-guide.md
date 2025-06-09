@@ -25,16 +25,15 @@ The following workflows have been set up in the `.github/workflows` directory:
 
 - **File**: `.github/workflows/security-scan.yml`
 - **Triggers**: Push to main/master/develop, Pull requests to main/master/develop, Weekly schedule
-- **Purpose**: Runs Snyk, npm audit, GitLeaks, OSSF Scorecard, Dependency Review, CodeQL, and Docker image scanning
+- **Purpose**: Runs npm audit, GitLeaks, OSSF Scorecard, Dependency Review, CodeQL, and Docker image scanning
 
 The security scanning workflow includes:
 
-1. **Snyk Security Analysis**: Scans dependencies for vulnerabilities with Snyk
-2. **GitLeaks**: Detects secrets accidentally committed to the repository
-3. **Dependency Review**: Analyzes dependencies in pull requests for vulnerabilities
-4. **OSSF Scorecard**: Evaluates the project against security best practices
-5. **CodeQL Analysis**: Performs static code analysis to find security issues
-6. **Docker Image Scanning**: Uses Trivy to scan container images for vulnerabilities
+1. **GitLeaks**: Detects secrets accidentally committed to the repository
+2. **Dependency Review**: Analyzes dependencies in pull requests for vulnerabilities
+3. **OSSF Scorecard**: Evaluates the project against security best practices
+4. **CodeQL Analysis**: Performs static code analysis to find security issues
+5. **Docker Image Scanning**: Uses Trivy to scan container images for vulnerabilities
 
 Results from these scans are uploaded as SARIF files for easy viewing in the GitHub Security tab.
 
@@ -79,14 +78,6 @@ npm run format:check  # Check formatting
 ## Security Scanning
 
 Security scanning is performed using multiple tools:
-
-### Snyk
-
-Snyk checks for vulnerabilities in dependencies. To set up Snyk:
-
-1. Create an account at [snyk.io](https://snyk.io/)
-2. Generate an API token
-3. Add the token as a GitHub repository secret named `SNYK_TOKEN` in your repository settings under Security > Secrets and variables > Actions
 
 ### CodeQL
 
@@ -187,7 +178,6 @@ Types:
 
 - [ESLint Documentation](https://eslint.org/docs/user-guide/)
 - [Prettier Documentation](https://prettier.io/docs/en/index.html)
-- [Snyk Documentation](https://docs.snyk.io/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Pre-commit Documentation](https://pre-commit.com/)
 - [Conventional Commits](https://www.conventionalcommits.org/)

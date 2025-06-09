@@ -102,14 +102,6 @@ jobs:
       - name: Run npm audit
         run: npm audit --audit-level high
         continue-on-error: true
-        
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
-        continue-on-error: true
       
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
