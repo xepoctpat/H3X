@@ -1,6 +1,6 @@
 // H3X Hexagon Module
 
-import type { IH3XHexagonModule, H3XNode } from '../types/h3x.d.ts';
+import type { IH3XHexagonModule, H3XNode } from '../types/h3x.d';
 
 export class H3XHexagonModule implements IH3XHexagonModule {
   public nodes: H3XNode[] = [];
