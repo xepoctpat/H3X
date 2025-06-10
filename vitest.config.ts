@@ -1,5 +1,6 @@
-import { defineConfig } from 'vitest/config';
 import path from 'path';
+
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -9,15 +10,10 @@ export default defineConfig({
     include: [
       'tests/**/*.{test,spec}.{js,ts}',
       'src/**/*.{test,spec}.{js,ts}',
-      'scripts/**/*.{test,spec}.{js,ts}'
+      'scripts/**/*.{test,spec}.{js,ts}',
     ],
-    exclude: [
-      'node_modules',
-      'dist',
-      '**/*.d.ts',
-      '**/*.config.*'
-    ],
-    
+    exclude: ['node_modules', 'dist', '**/*.d.ts', '**/*.config.*'],
+
     // Coverage configuration
     coverage: {
       provider: 'v8',
@@ -31,18 +27,18 @@ export default defineConfig({
         '**/*.test.*',
         '**/*.spec.*',
         'scripts/build-system.ts',
-        'scripts/legacy-cleanup.ts'
+        'scripts/legacy-cleanup.ts',
       ],
       thresholds: {
         global: {
           branches: 70,
           functions: 70,
           lines: 70,
-          statements: 70
-        }
-      }
+          statements: 70,
+        },
+      },
     },
-    
+
     // Test timeout
     testTimeout: 10000,
     hookTimeout: 10000,
@@ -50,13 +46,13 @@ export default defineConfig({
     // Reporters
     reporters: ['verbose', 'html'],
     outputFile: {
-      html: './test-results/index.html'
+      html: './test-results/index.html',
     },
 
     // Mock configuration
     mockReset: true,
     clearMocks: true,
-    restoreMocks: true
+    restoreMocks: true,
   },
 
   // Path resolution
@@ -65,7 +61,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@/tests': path.resolve(__dirname, './tests'),
       '@/scripts': path.resolve(__dirname, './scripts'),
-    }
+    },
   },
 
   // Environment variables for tests
@@ -73,6 +69,6 @@ export default defineConfig({
     __DEV__: true,
     __TEST__: true,
     __API_URL__: JSON.stringify('http://localhost:3001'),
-    __WS_URL__: JSON.stringify('ws://localhost:3001')
-  }
+    __WS_URL__: JSON.stringify('ws://localhost:3001'),
+  },
 });

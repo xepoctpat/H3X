@@ -1,10 +1,10 @@
 // LMStudio Integration for H3X SIR Control Interface
 import { HexperimentFramework } from './framework/hexperimentFramework';
-import { sirAnalysisTool } from './tools/sirAnalysisTool';
-import { environmentSimulationTool } from './tools/environmentSimulationTool';
-import { monitoringTool } from './tools/monitoringTool';
-import { humanSupervisionTool } from './tools/humanSupervisionTool';
 import { dateTool } from './tools/dateTimeTool';
+import { environmentSimulationTool } from './tools/environmentSimulationTool';
+import { humanSupervisionTool } from './tools/humanSupervisionTool';
+import { monitoringTool } from './tools/monitoringTool';
+import { sirAnalysisTool } from './tools/sirAnalysisTool';
 
 /**
  * H3X Super Intelligent Regulator (SIR) Agent with LMStudio Integration
@@ -59,21 +59,22 @@ class SIRLMStudioAgent {
         toolResults: [],
         systemState: this.systemState,
         timestamp: new Date().toISOString(),
-      };
-
-      // Execute any required tools
-      if (analysis.requiresTools && analysis.toolsNeeded.length > 0) {
+      }; // Execute any required tools
+      if (analysis.requiresTools && analysis.toolsNeeded?.length > 0) {
         for (const toolCall of analysis.toolsNeeded) {
           try {
-            const toolResult = await this.executeTool(toolCall.name, toolCall.parameters);
+            const toolResult = await this.executeTool(
+              toolCall?.name || '',
+              toolCall?.parameters || {},
+            );
             response.toolResults.push({
-              tool: toolCall.name,
+              tool: toolCall?.name || '',
               result: toolResult,
               success: true,
             });
-          } catch (error) {
+          } catch (error: any) {
             response.toolResults.push({
-              tool: toolCall.name,
+              tool: toolCall?.name || '',
               error: error.message,
               success: false,
             });

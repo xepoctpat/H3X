@@ -5,9 +5,9 @@
  * Automated installation and configuration of testing tools
  */
 
+import { exec } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);

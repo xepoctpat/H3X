@@ -15,13 +15,14 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { AzureChatOpenAI, ChatOpenAI } from '@langchain/openai';
 import { ActivityTypes } from '@microsoft/agents-activity';
 import { AgentApplicationBuilder, MessageFactory } from '@microsoft/agents-hosting';
+
 import { dateTool } from './tools/dateTimeTool';
-import { sirAnalysisTool } from './tools/sirAnalysisTool';
 import { environmentSimulationTool } from './tools/environmentSimulationTool';
+import { sirAnalysisTool } from './tools/sirAnalysisTool';
 
 const sirAgent = new AgentApplicationBuilder().build();
 
-sirAgent.conversationUpdate('membersAdded', async (context) => {
+sirAgent.onConversationUpdate('membersAdded', async (context) => {
   await context.sendActivity(
     'Welcome to the Hexperiment Labs SIR Control Interface! I am your Super Intelligent Regulator assistant, ready to help you with environment analysis, simulation control, and AI assistant generation.',
   );
@@ -64,13 +65,13 @@ Respond in JSON format with the following JSON schema, and do not use markdown i
     "content": "{The content of the response, may be plain text, or JSON based adaptive card}"
 }`);
 
-sirAgent.activity(ActivityTypes.Message, async (context, state) => {
+sirAgent.onActivity(ActivityTypes.Message, async (context, _state) => {
   const llmResponse = await agent.invoke(
     {
-      messages: [sysMessage, new HumanMessage(context.activity.text)],
+      messages: [sysMessage, new HumanMessage(context.activity.text ?? '')],
     },
     {
-      configurable: { thread_id: context.activity.conversation.id },
+      configurable: { thread_id: context.activity.conversation?.id ?? 'default' },
     },
   );
 

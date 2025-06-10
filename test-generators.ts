@@ -1,5 +1,8 @@
 // Test script for H3X Generative Scripts
+import * as readline from 'readline';
+
 import axios from 'axios';
+
 const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -141,7 +144,6 @@ async function testGenerativeCapabilities(): Promise<any> {
 
 // Interactive test menu
 async function interactiveTest(): Promise<any> {
-  import readline = require('readline');
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,

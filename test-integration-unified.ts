@@ -2,11 +2,14 @@
 // H3X Unified System Integration Test Suite
 // Comprehensive testing and validation for all integrated components
 
-import axios from 'axios';
 import { exec } from 'child_process';
-import { promisify } from 'util';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { promisify } from 'util';
+
+import axios from 'axios';
+import { MongoClient } from 'mongodb';
+import * as redis from 'redis';
 
 const execAsync = promisify(exec);
 
@@ -56,10 +59,8 @@ class H3XUnifiedTestSuite {
 
     try {
       let response;
-
       if (serviceName === 'mongodb') {
         // Test MongoDB connection
-        import { MongoClient } from 'mongodb';
         const client = new MongoClient(config.url);
         await client.connect();
         await client.db('h3x_unified').admin().ping();
@@ -67,7 +68,6 @@ class H3XUnifiedTestSuite {
         response = { status: 200, data: 'Connected' };
       } else if (serviceName === 'redis') {
         // Test Redis connection
-        import redis = require('redis');
         const client = redis.createClient({ url: config.url });
         await client.connect();
         await client.ping();
@@ -304,11 +304,9 @@ class H3XUnifiedTestSuite {
         success_rate: 0,
       },
     };
-
-    report.summary.success_rate = (
-      (report.summary.passed / report.summary.total_tests) *
-      100
-    ).toFixed(2);
+    report.summary.success_rate = parseFloat(
+      ((report.summary.passed / report.summary.total_tests) * 100).toFixed(2),
+    );
 
     const reportPath = path.join(__dirname, 'test-reports', `integration-test-${Date.now()}.json`);
     await fs.mkdir(path.dirname(reportPath), { recursive: true });

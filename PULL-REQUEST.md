@@ -2,7 +2,9 @@
 
 ## 🚀 Overview
 
-This pull request introduces a complete Microsoft 365 Agents implementation for the **Hexperiment Labs SIR Control Interface**, providing a sophisticated AI agent system with standalone deployment capabilities and comprehensive documentation.
+This pull request introduces a complete Microsoft 365 Agents implementation for the **Hexperiment
+Labs SIR Control Interface**, providing a sophisticated AI agent system with standalone deployment
+capabilities and comprehensive documentation.
 
 ## 📋 What's New
 
@@ -158,10 +160,11 @@ npm run test-enhanced
 
 ## 🤝 Contributing
 
-This implementation provides a solid foundation for the Hexperiment Labs SIR Control Interface. The Microsoft 365 Agents framework integration enables rapid development of sophisticated AI agent capabilities with enterprise-grade deployment options.
+This implementation provides a solid foundation for the Hexperiment Labs SIR Control Interface. The
+Microsoft 365 Agents framework integration enables rapid development of sophisticated AI agent
+capabilities with enterprise-grade deployment options.
 
 ---
 
-**Commit**: cc8c2d6 - feat: Initialize Hexperiment Labs SIR Control Interface with Microsoft 365 Agents
-**Author**: Hexperiment Labs <dev@hexperimentlabs.com>
-**Date**: December 19, 2024
+**Commit**: cc8c2d6 - feat: Initialize Hexperiment Labs SIR Control Interface with Microsoft 365
+Agents **Author**: Hexperiment Labs <dev@hexperimentlabs.com> **Date**: December 19, 2024

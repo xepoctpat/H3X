@@ -85,12 +85,16 @@ class HexperimentFramework {
       },
     ];
   }
-
   /**
    * Evaluate environment compliance based on real-life standards
    */
-  evaluateEnvironmentCompliance(environmentData) {
-    const compliance = {
+  evaluateEnvironmentCompliance(environmentData: any): any {
+    const compliance: {
+      overall: string;
+      score: number;
+      details: any;
+      recommendations: string[];
+    } = {
       overall: 'COMPLIANT',
       score: 0,
       details: {},

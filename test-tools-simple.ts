@@ -1,8 +1,12 @@
 // Simple test script
+import { environmentSimulationTool } from './src/tools/environmentSimulationTool';
+import { humanSupervisionTool } from './src/tools/humanSupervisionTool';
+import { monitoringTool } from './src/tools/monitoringTool';
+import { sirAnalysisTool } from './src/tools/sirAnalysisTool';
+
 console.log('🔬 Testing SIR Tools...');
 
 try {
-  import { sirAnalysisTool } from './src/tools/sirAnalysisTool';
   console.log('✅ sirAnalysisTool loaded');
   console.log('Tool structure:', Object.keys(sirAnalysisTool));
 
@@ -23,21 +27,18 @@ try {
 }
 
 try {
-  import { monitoringTool } from './src/tools/monitoringTool';
   console.log('✅ monitoringTool loaded');
 } catch (err) {
   console.error('❌ Monitoring tool error:', err.message);
 }
 
 try {
-  import { humanSupervisionTool } from './src/tools/humanSupervisionTool';
   console.log('✅ humanSupervisionTool loaded');
 } catch (err) {
   console.error('❌ Human supervision tool error:', err.message);
 }
 
 try {
-  import { environmentSimulationTool } from './src/tools/environmentSimulationTool';
   console.log('✅ environmentSimulationTool loaded');
 } catch (err) {
   console.error('❌ Environment simulation tool error:', err.message);

@@ -9,13 +9,13 @@
   padding: h3x-spacing('lg');
   box-shadow: $h3x-shadow;
   transition: $h3x-transition;
-  
+
   @if $variant == 'primary' {
     border: 2px solid h3x-color('blue');
   } @else if $variant == 'accent' {
     border: 2px solid h3x-color('gold');
   }
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: $h3x-shadow-lg;
@@ -32,7 +32,7 @@
   text-decoration: none;
   display: inline-block;
   text-align: center;
-  
+
   // Size variations
   @if $size == 'small' {
     padding: h3x-spacing('sm') h3x-spacing('md');
@@ -41,12 +41,12 @@
     padding: h3x-spacing('md') h3x-spacing('lg');
     font-size: h3x-font-size('base');
   }
-  
+
   // Color variations
   @if $variant == 'primary' {
     background: h3x-color('blue');
     color: h3x-color('dark');
-    
+
     &:hover {
       background: h3x-color('gold');
       transform: translateY(-1px);
@@ -56,7 +56,7 @@
     background: h3x-color('gray');
     color: h3x-color('gold');
     border: 1px solid #444;
-    
+
     &:hover {
       background: h3x-color('gold');
       color: h3x-color('dark');
@@ -64,7 +64,7 @@
   } @else if $variant == 'danger' {
     background: h3x-color('accent');
     color: white;
-    
+
     &:hover {
       background: darken(h3x-color('accent'), 10%);
     }
@@ -79,13 +79,13 @@
   padding: h3x-spacing('sm');
   border-radius: 4px;
   font-size: h3x-font-size('sm');
-  
+
   &::before {
     content: '';
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    
+
     @if $status == 'online' {
       background: h3x-color('success');
     } @else if $status == 'offline' {

@@ -110,4 +110,5 @@ curl http://localhost:8081/api/health
 
 ---
 
-_Previous deployment methods (standalone scripts) have been archived and replaced with this containerized approach._
+_Previous deployment methods (standalone scripts) have been archived and replaced with this
+containerized approach._

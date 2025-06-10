@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document outlines the semiotic naming conventions implemented across the Hexperiment Labs Neural Cortex Interface system, establishing a unified symbolic language for all components.
+This document outlines the semiotic naming conventions implemented across the Hexperiment Labs
+Neural Cortex Interface system, establishing a unified symbolic language for all components.
 
 ## Core Semiotic Prefixes
 

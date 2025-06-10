@@ -6,13 +6,15 @@ This document explains how to use the VS Code tasks for Git operations.
 
 ### 1. Git: Commit Changes
 
-This task helps you create well-formatted commits following the conventional commit format. 
+This task helps you create well-formatted commits following the conventional commit format.
 
 To run:
+
 - Press `Ctrl+Shift+P` and select "Tasks: Run Task"
 - Select "Git: Commit Changes"
 
 The task will:
+
 - Show you the current git status
 - Guide you through the commit creation process
 - Format the commit message according to conventional commit standards
@@ -22,10 +24,12 @@ The task will:
 This task helps you create a detailed pull request.
 
 To run:
+
 - Press `Ctrl+Shift+P` and select "Tasks: Run Task"
 - Select "Git: Create PR"
 
 The task will:
+
 - Check your current branch
 - Ask if you want to push changes
 - Let you specify PR title and description
@@ -36,6 +40,7 @@ The task will:
 This is a simplified version of the PR creation task for faster workflow.
 
 To run:
+
 - Press `Ctrl+Shift+P` and select "Tasks: Run Task"
 - Select "Git: Quick PR"
 
@@ -44,6 +49,7 @@ To run:
 This task provides an interactive menu for all Git operations.
 
 To run:
+
 - Press `Ctrl+Shift+P` and select "Tasks: Run Task"
 - Select "Git: Interactive Mode"
 
@@ -52,6 +58,7 @@ To run:
 This task generates a changelog based on Git commit history.
 
 To run:
+
 - Press `Ctrl+Shift+P` and select "Tasks: Run Task"
 - Select "Git: Generate Changelog"
 
@@ -65,6 +72,7 @@ You can set up keyboard shortcuts for these tasks:
 4. In the "when" clause, use a condition like: `args.task == "Git: Commit Changes"`
 
 Example key bindings:
+
 - `Ctrl+Alt+C` for "Git: Commit Changes"
 - `Ctrl+Alt+P` for "Git: Create PR"
 - `Ctrl+Alt+I` for "Git: Interactive Mode"
@@ -82,6 +90,7 @@ The Git automation uses the conventional commit format:
 ```
 
 Types:
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
@@ -97,7 +106,8 @@ Types:
 ## Best Practices
 
 1. **Keep commits focused**: Each commit should represent a single logical change.
-2. **Write meaningful commit messages**: The commit message should clearly explain what the change does.
+2. **Write meaningful commit messages**: The commit message should clearly explain what the change
+   does.
 3. **Reference issues**: If the commit is related to an issue, reference it in the commit message.
 4. **Create feature branches**: Always create a feature branch for new work.
 5. **Review before commit**: Use the Git status output to review changes before committing.

@@ -1,43 +1,77 @@
 <!-- Only used when: npm run experimental -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>H3X Experimental - Interface Selector</title>
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #181c20; color: #f0f0f0; margin: 0; padding: 2rem; }
-    .experimental-badge { background: #ff6b6b; color: white; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.8rem; }
-    .interface-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 2rem 0; }
-    .interface-card { background: #23272b; padding: 1.5rem; border-radius: 8px; border: 1px solid #444; }
-    .interface-card.primary { border-color: #7ecfff; }
-    .interface-link { display: block; background: #7ecfff; color: #181c20; padding: 0.8rem; text-decoration: none; border-radius: 4px; text-align: center; font-weight: bold; margin-top: 1rem; }
-  </style>
-</head>
-<body>
-  <div class="experimental-banner">
-    <span class="experimental-badge">EXPERIMENTAL</span>
-    <h1>H3X Interface Selector</h1>
-  </div>
-  
-  <div class="interface-grid">
-    <div class="interface-card primary">
-      <h3>🎯 H3X Modular Interface</h3>
-      <p>Primary development interface with external JS components and enhanced modularity.</p>
-      <a href="index.modular.html" class="interface-link">Launch Modular</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H3X Experimental - Interface Selector</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #181c20;
+        color: #f0f0f0;
+        margin: 0;
+        padding: 2rem;
+      }
+      .experimental-badge {
+        background: #ff6b6b;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+      .interface-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+      .interface-card {
+        background: #23272b;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #444;
+      }
+      .interface-card.primary {
+        border-color: #7ecfff;
+      }
+      .interface-link {
+        display: block;
+        background: #7ecfff;
+        color: #181c20;
+        padding: 0.8rem;
+        text-decoration: none;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="experimental-banner">
+      <span class="experimental-badge">EXPERIMENTAL</span>
+      <h1>H3X Interface Selector</h1>
     </div>
-    
-    <div class="interface-card">
-      <h3>📦 All-in-One Interface</h3>
-      <p>Complete system in single HTML file. Legacy support during transition phase.</p>
-      <a href="index.allinone.html" class="interface-link">Launch All-in-One</a>
+
+    <div class="interface-grid">
+      <div class="interface-card primary">
+        <h3>🎯 H3X Modular Interface</h3>
+        <p>Primary development interface with external JS components and enhanced modularity.</p>
+        <a href="index.modular.html" class="interface-link">Launch Modular</a>
+      </div>
+
+      <div class="interface-card">
+        <h3>📦 All-in-One Interface</h3>
+        <p>Complete system in single HTML file. Legacy support during transition phase.</p>
+        <a href="index.allinone.html" class="interface-link">Launch All-in-One</a>
+      </div>
+
+      <div class="interface-card">
+        <h3>🔧 Development Interface</h3>
+        <p>Raw H3X components for testing and development purposes.</p>
+        <a href="index.html" class="interface-link">Launch Development</a>
+      </div>
     </div>
-    
-    <div class="interface-card">
-      <h3>🔧 Development Interface</h3>
-      <p>Raw H3X components for testing and development purposes.</p>
-      <a href="index.html" class="interface-link">Launch Development</a>
-    </div>
-  </div>
-</body>
+  </body>
 </html>

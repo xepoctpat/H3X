@@ -1,26 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>H3X Imagine-to-Create Interface</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../public/css/imagine-to-create.css">
-</head>
-<body>
-  <div class="container">
-    <h1>H3X Imagine-to-Create</h1>
-    <form id="imagine-form">
-      <label for="imagination">Imagination (tekst, JSON, ili scenario):</label>
-      <textarea id="imagination" rows="4" required placeholder='npr: { "type": "interactive", "prompt": "Kreiraj asistenta", ... }'></textarea>
-      <label for="generationType">Tip generacije (opciono):</label>
-      <input id="generation-type" placeholder="npr: ai_assistant, movement, proactive, ...">
-      <button type="submit">Pošalji imaginaciju</button>
-    </form>
-    <div id="dynamic-ui" class="ui-dynamic"></div>
-    <div id="suggestions" class="suggestions"></div>
-    <div id="movement" class="movement"></div>
-    <div id="result" class="result"></div>
-  </div>
-  <script src="../public/js/imagine-to-create.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>H3X Imagine-to-Create Interface</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/css/imagine-to-create.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>H3X Imagine-to-Create</h1>
+      <form id="imagine-form">
+        <label for="imagination">Imagination (tekst, JSON, ili scenario):</label>
+        <textarea
+          id="imagination"
+          rows="4"
+          required
+          placeholder='npr: { "type": "interactive", "prompt": "Kreiraj asistenta", ... }'
+        ></textarea>
+        <label for="generationType">Tip generacije (opciono):</label>
+        <input id="generation-type" placeholder="npr: ai_assistant, movement, proactive, ..." />
+        <button type="submit">Pošalji imaginaciju</button>
+      </form>
+      <div id="dynamic-ui" class="ui-dynamic"></div>
+      <div id="suggestions" class="suggestions"></div>
+      <div id="movement" class="movement"></div>
+      <div id="result" class="result"></div>
+    </div>
+    <script src="../public/js/imagine-to-create.js"></script>
+  </body>
 </html>

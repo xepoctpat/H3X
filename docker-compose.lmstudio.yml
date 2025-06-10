@@ -6,8 +6,8 @@ services:
     image: ghcr.io/lm-studio/lm-studio:latest
     container_name: h3x-lmstudio
     ports:
-      - "1234:1234"
-      - "1235:1235"
+      - '1234:1234'
+      - '1235:1235'
     environment:
       - LMSTUDIO_API_PORT=1234
       - LMSTUDIO_MODEL_PATH=/models
@@ -19,7 +19,7 @@ services:
       - h3x-neural-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:1234/v1/models"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:1234/v1/models']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -32,8 +32,8 @@ services:
       dockerfile: Dockerfile.h3x
     container_name: h3x-main
     ports:
-      - "3978:3978"
-      - "8081:8081"
+      - '3978:3978'
+      - '8081:8081'
     environment:
       - NODE_ENV=production
       - LMSTUDIO_URL=http://h3x-lmstudio:1234
@@ -58,7 +58,7 @@ services:
       dockerfile: Dockerfile.protocol
     container_name: h3x-protocol
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - LMSTUDIO_URL=http://h3x-lmstudio:1234
       - H3X_MAIN_URL=http://h3x-main:3978
@@ -92,7 +92,7 @@ services:
     image: redis:7-alpine
     container_name: h3x-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis-data:/data
     networks:
@@ -106,7 +106,7 @@ services:
       dockerfile: Dockerfile
     container_name: hexperiment-mcp
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - PORT=8080
     networks:

@@ -5,10 +5,12 @@
  * Tests performance of HTML interfaces and API endpoints
  */
 
-import * as puppeteer from 'puppeteer';
-import * as lighthouse from 'lighthouse';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import * as puppeteer from 'puppeteer';
+
+const lighthouse = require('lighthouse');
 
 class PerformanceTester {
   results: any[];
@@ -83,11 +85,12 @@ class PerformanceTester {
 
     for (const url of testUrls) {
       try {
-        const { lhr } = await lighthouse(url, {
+        const result = await lighthouse(url, {
           port: new URL(this.browser.wsEndpoint()).port,
           output: 'json',
           logLevel: 'error',
         });
+        const { lhr } = result;
 
         const scores = {
           performance: Math.round(lhr.categories.performance.score * 100),
@@ -123,7 +126,7 @@ class PerformanceTester {
       ? fs.readdirSync('Public').filter((f) => f.endsWith('.html'))
       : [];
 
-    const fileContents = [];
+    const fileContents: string[] = [];
     for (const file of publicFiles) {
       const content = fs.readFileSync(path.join('Public', file), 'utf8');
       fileContents.push(content);

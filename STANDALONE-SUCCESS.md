@@ -2,7 +2,9 @@
 
 ## ✅ Current Status
 
-Your Microsoft 365 SIR Control Interface is now successfully running in **standalone mode** - giving you all the benefits of a production-ready SIR framework without needing Teams or complex authentication!
+Your Microsoft 365 SIR Control Interface is now successfully running in **standalone mode** - giving
+you all the benefits of a production-ready SIR framework without needing Teams or complex
+authentication!
 
 ### 🚀 **What's Running:**
 

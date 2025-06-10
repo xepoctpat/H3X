@@ -149,4 +149,11 @@ export default [
       'import/no-unresolved': 'off', // May use dynamic imports
     },
   },
+  {
+    files: ['tests/**/*.js', 'tests/**/*.ts'],
+    rules: {
+      'security/detect-non-literal-fs-filename': 'off',
+      'security/detect-object-injection': 'off',
+    },
+  },
 ];

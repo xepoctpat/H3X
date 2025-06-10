@@ -1,6 +1,7 @@
 # GitHub Actions Workflows for Code Cleanup and Security
 
-This document outlines the GitHub Actions workflows set up for maintaining code quality, security, and automated maintenance in the H3X project.
+This document outlines the GitHub Actions workflows set up for maintaining code quality, security,
+and automated maintenance in the H3X project.
 
 ## Workflows Overview
 
@@ -8,9 +9,11 @@ This document outlines the GitHub Actions workflows set up for maintaining code 
 
 **File:** `.github/workflows/comprehensive-ci.yml`
 
-This workflow runs on every push and pull request to the main branches, as well as manually. It performs:
+This workflow runs on every push and pull request to the main branches, as well as manually. It
+performs:
 
 - **Code Quality & Linting**
+
   - TypeScript type checking
   - Code formatting verification (Prettier)
   - Linting (ESLint)
@@ -18,6 +21,7 @@ This workflow runs on every push and pull request to the main branches, as well 
   - Unused dependencies detection
 
 - **Testing & Health Checks**
+
   - Unit tests
   - Integration tests
   - Setup checks

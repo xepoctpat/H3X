@@ -5,9 +5,10 @@
  * Tests all components: H3X Server, Protocol Server, M365 Bot, and WebSocket connections
  */
 
-import * as http from 'http';
-import * as WebSocket from 'ws';
 import { exec } from 'child_process';
+import * as http from 'http';
+
+import WebSocket from 'ws';
 
 console.log('🧠 H3X AI Integration System Test Suite');
 console.log('=======================================\n');
@@ -171,8 +172,7 @@ try {
   runTests();
 } catch (err) {
   console.log('📦 Installing WebSocket dependency...\n');
-  import { exec } from 'child_process';
-  exec('npm install ws', (error, stdout, stderr) => {
+  exec('npm install ws', (error, _stdout, _stderr) => {
     if (error) {
       console.log('❌ Failed to install WebSocket dependency. Running basic tests only...\n');
       runTests();

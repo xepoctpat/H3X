@@ -6,7 +6,8 @@
 
 - **Native LMStudio API Integration** - Direct connection to local LLM via OpenAI-compatible API
 - **Intelligent Message Processing** - Automatic tool selection and context-aware responses
-- **Complete SIR Tool Suite** - All 5 tools fully integrated (Analysis, Simulation, Monitoring, Supervision, DateTime)
+- **Complete SIR Tool Suite** - All 5 tools fully integrated (Analysis, Simulation, Monitoring,
+  Supervision, DateTime)
 - **Hexperiment Labs Framework** - Full framework integration with real-life environmental standards
 - **Fallback Mode** - Works even when LMStudio is offline (tool-only mode)
 

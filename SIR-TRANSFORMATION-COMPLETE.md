@@ -4,7 +4,8 @@
 
 ### ✅ **Transformation Summary**
 
-Your Microsoft 365 Agents project has been **completely transformed** from a weather forecasting system to the **Hexperiment Labs Super Intelligent Regulator (SIR) Control Interface**!
+Your Microsoft 365 Agents project has been **completely transformed** from a weather forecasting
+system to the **Hexperiment Labs Super Intelligent Regulator (SIR) Control Interface**!
 
 ---
 
@@ -52,7 +53,8 @@ Your Microsoft 365 Agents project has been **completely transformed** from a wea
 
 1. **Environmental Analysis** - Analyze real-world environments for optimal AI assistant deployment
 2. **Simulation Control** - Manage and monitor environment simulations for AI training
-3. **AI Assistant Generation** - Help users configure tailored AI assistants for specific environments
+3. **AI Assistant Generation** - Help users configure tailored AI assistants for specific
+   environments
 4. **System Monitoring** - Provide insights into SIR system status and operational metrics
 
 ### **Operating Modes**
@@ -142,7 +144,8 @@ Your SIR Control Interface exposes these endpoints:
 
 ## 🔑 **Important Note: API Key Configuration**
 
-The system currently uses encrypted API keys from the Microsoft 365 Agents Toolkit. For full functionality:
+The system currently uses encrypted API keys from the Microsoft 365 Agents Toolkit. For full
+functionality:
 
 1. **For Playground Testing**: Use the built-in encrypted key system
 2. **For Production**: Configure a valid OpenAI API key in `env/.env.standalone`
@@ -160,15 +163,18 @@ The system currently uses encrypted API keys from the Microsoft 365 Agents Toolk
 
 ## 🔬 **About the SIR System**
 
-The **Super Intelligent Regulator (SIR)** is designed to be the central intelligence system for analyzing environments and generating optimal AI assistants. It operates in two modes:
+The **Super Intelligent Regulator (SIR)** is designed to be the central intelligence system for
+analyzing environments and generating optimal AI assistants. It operates in two modes:
 
 - **PASSIVE**: Continuously monitoring and analyzing environmental conditions
 - **ACTIVE**: Generating and deploying tailored AI assistants based on analysis
 
-This creates a sophisticated ecosystem where the SIR system can understand environmental contexts and create specialized AI agents for specific use cases.
+This creates a sophisticated ecosystem where the SIR system can understand environmental contexts
+and create specialized AI agents for specific use cases.
 
 ---
 
 **🎉 Your Hexperiment Labs SIR Control Interface is ready for operation!**
 
-_The transformation from weather agent to SIR system is complete. The framework is in place for sophisticated environmental analysis and AI assistant generation._
+_The transformation from weather agent to SIR system is complete. The framework is in place for
+sophisticated environmental analysis and AI assistant generation._

@@ -35,7 +35,7 @@ provision:
       botId: ${{BOT_ID}}
       name: H3X
       messagingEndpoint: ${{BOT_ENDPOINT}}/api/messages
-      description: ""
+      description: ''
       channels:
         - name: msteams
 

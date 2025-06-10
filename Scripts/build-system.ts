@@ -4,9 +4,9 @@
  * Comprehensive TypeScript build system with multiple targets
  */
 
+import { exec } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
@@ -69,7 +69,7 @@ class H3XBuildSystem {
 
   async buildTarget(config: BuildConfig): Promise<void> {
     const { target, clean = false, watch = false, typeCheck = true } = config;
-    
+
     this.log(`Starting ${target} build...`);
 
     if (clean) {
@@ -103,21 +103,21 @@ class H3XBuildSystem {
     try {
       const watchFlag = watch ? ' --watch' : '';
       const command = `npx tsc --project ${tsconfigFile}${watchFlag}`;
-      
+
       this.log(`Compiling with: ${command}`);
-      
+
       if (watch) {
         this.log('Starting watch mode...', 'info');
         const childProcess = exec(command);
-        
+
         childProcess.stdout?.on('data', (data) => {
           console.log(data.toString().trim());
         });
-        
+
         childProcess.stderr?.on('data', (data) => {
           console.error(data.toString().trim());
         });
-        
+
         return new Promise((resolve, reject) => {
           childProcess.on('exit', (code) => {
             if (code === 0) {
@@ -232,32 +232,32 @@ async function main(): Promise<void> {
     case 'clean':
       await buildSystem.cleanDist();
       break;
-    
+
     case 'typecheck':
       await buildSystem.typeCheck();
       break;
-    
+
     case 'lint':
       await buildSystem.runLinting();
       break;
-    
+
     case 'test':
       await buildSystem.runTests();
       break;
-    
+
     case 'scripts':
       await buildSystem.buildTarget({ target: 'scripts' });
       break;
-    
+
     case 'watch':
       await buildSystem.buildTarget({ target: 'development', watch: true });
       break;
-    
+
     case 'production':
       await buildSystem.fullBuildPipeline('production');
       await buildSystem.generateBuildInfo();
       break;
-    
+
     case 'development':
     default:
       await buildSystem.fullBuildPipeline('development');

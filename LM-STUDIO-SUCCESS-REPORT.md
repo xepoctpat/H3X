@@ -86,9 +86,7 @@ npm run lmstudio:generate-docker # Generate configs
 ### Basic Response.Output Usage
 
 ```javascript
-const {
-  LMStudioResponseHandler,
-} = require('./Scripts/lmstudio-response-handler.js');
+const { LMStudioResponseHandler } = require('./Scripts/lmstudio-response-handler.js');
 
 const handler = new LMStudioResponseHandler({
   lmStudioUrl: 'http://127.0.0.1:1234',
@@ -156,7 +154,9 @@ npm run lmstudio:npm-integration
 
 ## 🎉 Project Status: COMPLETE
 
-The H3X + LM Studio integration is **fully operational** and ready for production use. All response.output functionality is working perfectly with the microsoft/phi-4-mini-reasoning model running on LM Studio server.
+The H3X + LM Studio integration is **fully operational** and ready for production use. All
+response.output functionality is working perfectly with the microsoft/phi-4-mini-reasoning model
+running on LM Studio server.
 
 **Total Integration Scripts**: 5  
 **NPM Commands Added**: 8  

@@ -2,7 +2,9 @@
 
 ## Modular Dashboard Architecture
 
-The SIR (Super Intelligent Regulator) Control Interface has been refactored into a modular architecture for improved maintainability, scalability, and code organization. The system now consists of three core modules:
+The SIR (Super Intelligent Regulator) Control Interface has been refactored into a modular
+architecture for improved maintainability, scalability, and code organization. The system now
+consists of three core modules:
 
 ### 1. Core Module (`sir-dashboard-core.js`)
 
@@ -30,7 +32,8 @@ The SIR (Super Intelligent Regulator) Control Interface has been refactored into
 
 ## Integration
 
-The modules are integrated in the main dashboard file (`sir-dashboard.js`), which creates instances of each module and handles communication between them. This approach provides several benefits:
+The modules are integrated in the main dashboard file (`sir-dashboard.js`), which creates instances
+of each module and handles communication between them. This approach provides several benefits:
 
 - **Separation of Concerns**: Each module has a clear responsibility
 - **Improved Maintainability**: Changes to one module don't affect others
@@ -39,7 +42,8 @@ The modules are integrated in the main dashboard file (`sir-dashboard.js`), whic
 
 ## Connected Applications
 
-The modular architecture also allows for integration with other applications in the Hexperiment Labs ecosystem:
+The modular architecture also allows for integration with other applications in the Hexperiment Labs
+ecosystem:
 
 - **H3X Symbolic Currency**: Uses the Core module for backend connectivity
 - **Virtual Taskmaster**: Can leverage the Data module for pattern analysis
@@ -88,7 +92,9 @@ The dashboard connects to the LMStudio backend server running on port 3979. Star
 node Start-Lmstudio.js
 ```
 
-In PASSIVE mode, the system is in the learning phase, primarily gathering data and detecting patterns without interference. This is critical for establishing baselines and understanding the environment.
+In PASSIVE mode, the system is in the learning phase, primarily gathering data and detecting
+patterns without interference. This is critical for establishing baselines and understanding the
+environment.
 
 ---
 

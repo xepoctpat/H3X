@@ -1,108 +1,124 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>HEX-GENESIS Creative AI Hub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Advanced AI creative interface for content generation, ideation, and artistic creation">
-  <link rel="stylesheet" href="css/hex-genesis-creative-styles.css">
-</head>
-<body>
-  <div class="container">
-    <header class="interface-header">
-      <h1>🎨 HEX-GENESIS Creative AI Hub</h1>
-      <p class="subtitle">Advanced Neural Creative Interface • LMStudio Integration • Microsoft 365 Agents</p>
-    </header>
-    
-    <div class="creative-workspace">
-      <div class="input-section">
-        <h2>Creative Input</h2>
-        <div class="input-tabs">
-          <button class="tab-btn active" data-tab="text">Text Prompt</button>
-          <button class="tab-btn" data-tab="json">JSON Schema</button>
-          <button class="tab-btn" data-tab="voice">Voice Input</button>
-        </div>
-        
-        <form id="imagine-form">
-          <div class="tab-content active" id="text-tab">
-            <label for="imagination">Creative Prompt:</label>
-            <textarea id="imagination" rows="6" required placeholder="Describe your creative vision, story, or idea..."></textarea>
+  <head>
+    <meta charset="UTF-8" />
+    <title>HEX-GENESIS Creative AI Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Advanced AI creative interface for content generation, ideation, and artistic creation"
+    />
+    <link rel="stylesheet" href="css/hex-genesis-creative-styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="interface-header">
+        <h1>🎨 HEX-GENESIS Creative AI Hub</h1>
+        <p class="subtitle">
+          Advanced Neural Creative Interface • LMStudio Integration • Microsoft 365 Agents
+        </p>
+      </header>
+
+      <div class="creative-workspace">
+        <div class="input-section">
+          <h2>Creative Input</h2>
+          <div class="input-tabs">
+            <button class="tab-btn active" data-tab="text">Text Prompt</button>
+            <button class="tab-btn" data-tab="json">JSON Schema</button>
+            <button class="tab-btn" data-tab="voice">Voice Input</button>
           </div>
-          
-          <div class="tab-content" id="json-tab">
-            <label for="jsonInput">JSON Schema:</label>
-            <textarea id="json-input" rows="6" placeholder='{ "type": "story", "genre": "sci-fi", "length": "short", "style": "narrative" }'></textarea>
-          </div>
-          
-          <div class="tab-content" id="voice-tab">
-            <label>Voice Input:</label>
-            <button type="button" id="voice-btn">🎤 Start Recording</button>
-            <div id="voice-status">Click to start voice input</div>
-          </div>
-          
-          <div class="controls">
-            <label for="creative-mode">Creative Mode:</label>
-            <select id="creative-mode">
-              <option value="story">Story Generation</option>
-              <option value="brainstorm">Idea Brainstorming</option>
-              <option value="design">Design Concepts</option>
-              <option value="content">Content Creation</option>
-              <option value="interactive">Interactive Experience</option>
-              <option value="analysis">Creative Analysis</option>
-            </select>
-            <button type="submit">✨ Generate Creative Content</button>
-          </div>
-        </form>
-      </div>      
-      <div class="output-section">
-        <h2>Creative Output</h2>
-        <div class="output-tabs">
-          <button class="output-tab active" data-output="result">Generated Content</button>
-          <button class="output-tab" data-output="variations">Variations</button>
-          <button class="output-tab" data-output="analytics">Analytics</button>
-        </div>
-        
-        <div class="output-content active" id="result-output">
-          <div id="result" class="result-display">Your creative content will appear here...</div>
-        </div>
-        
-        <div class="output-content" id="variations-output">
-          <div id="variations" class="variations-display">Alternative versions and variations will be shown here...</div>
-        </div>
-        
-        <div class="output-content" id="analytics-output">
-          <div id="analytics" class="analytics-display">
-            <div class="metric">
-              <span class="label">Creativity Score:</span>
-              <span id="creativity-score">--</span>
+
+          <form id="imagine-form">
+            <div class="tab-content active" id="text-tab">
+              <label for="imagination">Creative Prompt:</label>
+              <textarea
+                id="imagination"
+                rows="6"
+                required
+                placeholder="Describe your creative vision, story, or idea..."
+              ></textarea>
             </div>
-            <div class="metric">
-              <span class="label">Complexity:</span>
-              <span id="complexity-level">--</span>
+
+            <div class="tab-content" id="json-tab">
+              <label for="jsonInput">JSON Schema:</label>
+              <textarea
+                id="json-input"
+                rows="6"
+                placeholder='{ "type": "story", "genre": "sci-fi", "length": "short", "style": "narrative" }'
+              ></textarea>
             </div>
-            <div class="metric">
-              <span class="label">Processing Time:</span>
-              <span id="processing-time">--</span>
+
+            <div class="tab-content" id="voice-tab">
+              <label>Voice Input:</label>
+              <button type="button" id="voice-btn">🎤 Start Recording</button>
+              <div id="voice-status">Click to start voice input</div>
+            </div>
+
+            <div class="controls">
+              <label for="creative-mode">Creative Mode:</label>
+              <select id="creative-mode">
+                <option value="story">Story Generation</option>
+                <option value="brainstorm">Idea Brainstorming</option>
+                <option value="design">Design Concepts</option>
+                <option value="content">Content Creation</option>
+                <option value="interactive">Interactive Experience</option>
+                <option value="analysis">Creative Analysis</option>
+              </select>
+              <button type="submit">✨ Generate Creative Content</button>
+            </div>
+          </form>
+        </div>
+        <div class="output-section">
+          <h2>Creative Output</h2>
+          <div class="output-tabs">
+            <button class="output-tab active" data-output="result">Generated Content</button>
+            <button class="output-tab" data-output="variations">Variations</button>
+            <button class="output-tab" data-output="analytics">Analytics</button>
+          </div>
+
+          <div class="output-content active" id="result-output">
+            <div id="result" class="result-display">Your creative content will appear here...</div>
+          </div>
+
+          <div class="output-content" id="variations-output">
+            <div id="variations" class="variations-display">
+              Alternative versions and variations will be shown here...
+            </div>
+          </div>
+
+          <div class="output-content" id="analytics-output">
+            <div id="analytics" class="analytics-display">
+              <div class="metric">
+                <span class="label">Creativity Score:</span>
+                <span id="creativity-score">--</span>
+              </div>
+              <div class="metric">
+                <span class="label">Complexity:</span>
+                <span id="complexity-level">--</span>
+              </div>
+              <div class="metric">
+                <span class="label">Processing Time:</span>
+                <span id="processing-time">--</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="action-bar">
+        <button id="save-btn" class="action-btn">💾 Save</button>
+        <button id="share-btn" class="action-btn">🔗 Share</button>
+        <button id="export-btn" class="action-btn">📤 Export</button>
+        <button id="reset-btn" class="action-btn">🔄 Reset</button>
+      </div>
+
+      <footer class="interface-footer">
+        <a href="node-neural-dashboard-interface.html" class="nav-link">🧠 Neural Dashboard</a>
+        <a href="synapse-taskflow-orchestration-interface.html" class="nav-link">⚡ TaskFlow</a>
+        <a href="matrix-observer-analytics-interface.html" class="nav-link">📊 Analytics</a>
+      </footer>
     </div>
-    
-    <div class="action-bar">
-      <button id="save-btn" class="action-btn">💾 Save</button>
-      <button id="share-btn" class="action-btn">🔗 Share</button>
-      <button id="export-btn" class="action-btn">📤 Export</button>
-      <button id="reset-btn" class="action-btn">🔄 Reset</button>
-    </div>
-    
-    <footer class="interface-footer">
-      <a href="node-neural-dashboard-interface.html" class="nav-link">🧠 Neural Dashboard</a>
-      <a href="synapse-taskflow-orchestration-interface.html" class="nav-link">⚡ TaskFlow</a>
-      <a href="matrix-observer-analytics-interface.html" class="nav-link">📊 Analytics</a>
-    </footer>
-  </div>
-  
-  <script src="js/hex-genesis-creative-core.js"></script>
-</body>
+
+    <script src="js/hex-genesis-creative-core.js"></script>
+  </body>
 </html>

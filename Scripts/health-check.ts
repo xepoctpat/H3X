@@ -1,9 +1,9 @@
 import * as http from 'http';
 
 const endpoints = [
-  { name: 'H3X Dashboard', url: 'http://localhost:3978/api/health' },
+  { name: 'H3X Dashboard', url: 'http://localhost:4978/health' },
   { name: 'H3X Protocol Server', url: 'http://localhost:8081/health' },
-  { name: 'LMStudio Integration', url: 'http://localhost:1234/v1/models' },
+  { name: 'LMStudio Integration', url: 'http://localhost:1234/health' },
 ];
 
 async function checkEndpoint(endpoint: any): Promise<any> {

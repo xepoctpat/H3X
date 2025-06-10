@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /**
  * H3X Dependabot Webhook Handler
- * 
+ *
  * Provides real-time processing of Dependabot events via GitHub webhooks
  * Integrates with the existing H3X automation ecosystem
  */
 
 const express = require('express');
-const crypto = require('crypto');
+
 const { spawn } = require('child_process');
+const crypto = require('crypto');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -19,7 +20,7 @@ class DependabotWebhookHandler {
     this.secret = process.env.GITHUB_WEBHOOK_SECRET;
     this.projectRoot = process.cwd();
     this.logFile = path.join(this.projectRoot, 'logs/automation/webhook.log');
-    
+
     this.setupMiddleware();
     this.setupRoutes();
   }
@@ -27,7 +28,7 @@ class DependabotWebhookHandler {
   setupMiddleware() {
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true }));
-    
+
     // Security middleware for webhook verification
     this.app.use('/webhook', (req, res, next) => {
       if (!this.secret) {
@@ -57,7 +58,7 @@ class DependabotWebhookHandler {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         service: 'dependabot-webhook-handler',
-        version: '1.0.0'
+        version: '1.0.0',
       });
     });
 
@@ -110,7 +111,7 @@ class DependabotWebhookHandler {
 
   async handlePullRequestEvent(payload) {
     const { action, pull_request } = payload;
-    
+
     // Only process Dependabot PRs
     if (pull_request.user.login !== 'dependabot[bot]') {
       return;
@@ -134,7 +135,7 @@ class DependabotWebhookHandler {
 
   async handlePullRequestReviewEvent(payload) {
     const { action, pull_request, review } = payload;
-    
+
     if (pull_request.user.login !== 'dependabot[bot]') {
       return;
     }
@@ -147,7 +148,7 @@ class DependabotWebhookHandler {
 
   async handleCheckSuiteEvent(payload) {
     const { action, check_suite, pull_requests } = payload;
-    
+
     if (action === 'completed' && pull_requests.length > 0) {
       for (const pr of pull_requests) {
         if (pr.user?.login === 'dependabot[bot]') {
@@ -160,7 +161,7 @@ class DependabotWebhookHandler {
 
   async handleStatusEvent(payload) {
     const { state, context, target_url } = payload;
-    
+
     // Check if this is related to a Dependabot PR
     if (context && (context.includes('dependabot') || context.includes('dependency'))) {
       await this.log(`Status update: ${context} - ${state}`, 'info');
@@ -170,13 +171,13 @@ class DependabotWebhookHandler {
   async analyzeDependabotPR(pullRequest) {
     try {
       await this.log(`Analyzing Dependabot PR #${pullRequest.number}`, 'info');
-      
+
       // Trigger the dependabot automation script
       const result = await this.runDependabotAnalysis(pullRequest.number);
-      
+
       if (result.success) {
         await this.log(`Analysis completed for PR #${pullRequest.number}`, 'success');
-        
+
         // Integrate with H3X automation if eligible
         if (result.eligible) {
           await this.triggerH3XIntegration(pullRequest, result.analysis);
@@ -191,10 +192,14 @@ class DependabotWebhookHandler {
 
   async runDependabotAnalysis(prNumber) {
     return new Promise((resolve) => {
-      const child = spawn('node', ['scripts/dependabot-automation.js', 'analyze', prNumber.toString()], {
-        cwd: this.projectRoot,
-        stdio: ['ignore', 'pipe', 'pipe']
-      });
+      const child = spawn(
+        'node',
+        ['scripts/dependabot-automation.js', 'analyze', prNumber.toString()],
+        {
+          cwd: this.projectRoot,
+          stdio: ['ignore', 'pipe', 'pipe'],
+        },
+      );
 
       let stdout = '';
       let stderr = '';
@@ -236,7 +241,7 @@ class DependabotWebhookHandler {
       const analysis = JSON.parse(jsonMatch[0]);
       return {
         eligible: analysis.eligible || false,
-        analysis: analysis
+        analysis: analysis,
       };
     }
     return { eligible: false, analysis: null };
@@ -245,7 +250,7 @@ class DependabotWebhookHandler {
   async checkAutoMergeEligibility(pullRequest) {
     try {
       const analysis = await this.runDependabotAnalysis(pullRequest.number);
-      
+
       if (analysis.eligible) {
         await this.log(`PR #${pullRequest.number} is eligible for auto-merge`, 'info');
         // Could trigger GitHub Actions workflow or direct auto-merge here
@@ -265,7 +270,7 @@ class DependabotWebhookHandler {
 
   async handleMergedPR(pullRequest) {
     await this.log(`Dependabot PR #${pullRequest.number} was merged`, 'info');
-    
+
     // Trigger post-merge actions
     try {
       await this.triggerPostMergeActions(pullRequest);
@@ -279,11 +284,11 @@ class DependabotWebhookHandler {
       // Integrate with existing H3X automation
       const { H3XAutomation } = require('./h3x-automation.js');
       const h3xAutomation = new H3XAutomation();
-      
+
       await h3xAutomation.createGitCheckpoint(
-        `chore(deps): Dependabot PR #${pullRequest.number} analysis completed`
+        `chore(deps): Dependabot PR #${pullRequest.number} analysis completed`,
       );
-      
+
       await this.log(`H3X integration triggered for PR #${pullRequest.number}`, 'info');
     } catch (error) {
       await this.log(`H3X integration failed: ${error.message}`, 'warning');
@@ -292,10 +297,14 @@ class DependabotWebhookHandler {
 
   async triggerPostMergeActions(pullRequest) {
     // Run post-merge automation
-    const child = spawn('node', ['scripts/dependabot-automation.js', 'post-merge', pullRequest.number.toString()], {
-      cwd: this.projectRoot,
-      stdio: 'inherit'
-    });
+    const child = spawn(
+      'node',
+      ['scripts/dependabot-automation.js', 'post-merge', pullRequest.number.toString()],
+      {
+        cwd: this.projectRoot,
+        stdio: 'inherit',
+      },
+    );
 
     return new Promise((resolve) => {
       child.on('close', (code) => {
@@ -311,8 +320,11 @@ class DependabotWebhookHandler {
 
   async getSystemStatus() {
     try {
-      const logExists = await fs.access(this.logFile).then(() => true).catch(() => false);
-      
+      const logExists = await fs
+        .access(this.logFile)
+        .then(() => true)
+        .catch(() => false);
+
       return {
         service: 'dependabot-webhook-handler',
         status: 'running',
@@ -320,13 +332,13 @@ class DependabotWebhookHandler {
         port: this.port,
         logFile: logExists ? this.logFile : 'not found',
         projectRoot: this.projectRoot,
-        webhookSecret: !!this.secret
+        webhookSecret: !!this.secret,
       };
     } catch (error) {
       return {
         service: 'dependabot-webhook-handler',
         status: 'error',
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -334,9 +346,9 @@ class DependabotWebhookHandler {
   async log(message, level = 'info') {
     const timestamp = new Date().toISOString();
     const logEntry = `[${timestamp}] [${level.toUpperCase()}] ${message}\n`;
-    
+
     console.log(logEntry.trim());
-    
+
     try {
       await fs.mkdir(path.dirname(this.logFile), { recursive: true });
       await fs.appendFile(this.logFile, logEntry);
@@ -347,7 +359,7 @@ class DependabotWebhookHandler {
 
   async start() {
     await this.log('Starting Dependabot Webhook Handler', 'info');
-    
+
     this.server = this.app.listen(this.port, () => {
       this.log(`Webhook handler listening on port ${this.port}`, 'info');
       this.log(`Health check: http://localhost:${this.port}/health`, 'info');
@@ -361,7 +373,7 @@ class DependabotWebhookHandler {
 
   async shutdown() {
     await this.log('Shutting down webhook handler', 'info');
-    
+
     if (this.server) {
       this.server.close(() => {
         this.log('Server closed', 'info');

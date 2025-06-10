@@ -6,18 +6,9 @@
     "outDir": "./dist",
     "noEmit": false,
     "incremental": false,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "strict": true
   },
-  "include": [
-    "src/**/*",
-    "scripts/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "tests/**/*",
-    "coverage",
-    "dist"
-  ]
+  "include": ["src/**/*", "scripts/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "tests/**/*", "coverage", "dist"]
 }

@@ -2,7 +2,8 @@
 
 ## 🐳 Current Deployment Method: Docker Compose
 
-The H3X system is now deployed using Docker containers for maximum portability and ease of management.
+The H3X system is now deployed using Docker containers for maximum portability and ease of
+management.
 
 ### ✅ Docker Compose Deployment (Recommended)
 
@@ -86,4 +87,5 @@ docker-compose logs -f [service-name]
 
 ---
 
-_Legacy deployment scripts have been archived. The containerized approach provides better reliability, consistency, and development experience._
+_Legacy deployment scripts have been archived. The containerized approach provides better
+reliability, consistency, and development experience._

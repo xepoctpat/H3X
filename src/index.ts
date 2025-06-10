@@ -3,22 +3,39 @@ interface ProcessEnv {
   [key: string]: string | undefined;
 }
 
-interface ConsoleLog {
-  log: (message?: any, ...optionalParams: any[]) => void;
-  error: (message?: any, ...optionalParams: any[]) => void;
-  warn: (message?: any, ...optionalParams: any[]) => void;
-}
-
 // Import required packages
-import express from 'express';
 import * as path from 'path';
+
+import express from 'express';
 
 // This bot's main dialog.
 import { sirAgent } from './agent-no-openai';
 
+// Import H3X Proof System
+import { H3XProofSystemModule } from './proof/proof-integration.js';
+
 // Create express application.
 const server = express();
 server.use(express.json());
+
+// Initialize H3X Proof System
+const proofSystemModule = new H3XProofSystemModule();
+let proofSystemInitialized = false;
+
+// Initialize proof system on startup
+async function initializeProofSystem() {
+  try {
+    console.log('[H3X-Main] Initializing proof system...');
+    await proofSystemModule.initialize();
+    proofSystemInitialized = true;
+    console.log('[H3X-Main] Proof system initialized successfully');
+  } catch (error) {
+    console.error('[H3X-Main] Proof system initialization failed:', error);
+  }
+}
+
+// Start proof system initialization
+initializeProofSystem();
 
 // Serve static files from Public directory for neural interfaces
 server.use(express.static(path.join(__dirname, '../Public')));
@@ -31,6 +48,18 @@ server.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     port: (process.env as ProcessEnv).port || (process.env as ProcessEnv).PORT || 4978,
     mode: 'LOCAL_CONTAINERIZED',
+  });
+});
+
+// API health check endpoint (Docker compatibility)
+server.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'Hexperiment Labs SIR Control Interface',
+    timestamp: new Date().toISOString(),
+    port: (process.env as ProcessEnv).port || (process.env as ProcessEnv).PORT || 4978,
+    mode: 'LOCAL_CONTAINERIZED',
+    endpoint: '/api/health',
   });
 });
 
@@ -102,6 +131,84 @@ server.post('/api/messages', async (req, res) => {
     console.error('Error processing message:', error);
     res.status(500).json({
       error: 'Internal server error',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+// H3X Proof System endpoints
+server.get('/api/proof/status', async (req, res) => {
+  try {
+    const proofModule = new H3XProofSystemModule();
+    const metrics = proofModule.getProofSystemMetrics();
+    res.json({
+      status: 'operational',
+      proof_system: metrics.proof_system,
+      lattice_data: proofModule.getLatticeVisualizationData(),
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Proof system unavailable',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+server.post('/api/proof/triangle', async (req, res) => {
+  try {
+    const proofModule = new H3XProofSystemModule();
+    await proofModule.initialize();
+    const result = proofModule.createTriangleProof(req.body);
+    res.json({
+      success: true,
+      result,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+server.post('/api/proof/flup', async (req, res) => {
+  try {
+    const { data, x, y } = req.body;
+    const proofModule = new H3XProofSystemModule();
+    await proofModule.initialize();
+    const result = proofModule.createFlupWithData(data, { x, y });
+    res.json({
+      success: true,
+      result,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+server.post('/api/proof/benchmark', async (req, res) => {
+  try {
+    const proofModule = new H3XProofSystemModule();
+    await proofModule.initialize();
+    const result = await proofModule.runFullBenchmark();
+    res.json({
+      success: true,
+      result,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }

@@ -1,5 +1,6 @@
 // No-OpenAI version - Native implementation without LangChain
 import { z } from 'zod';
+
 import { HexperimentFramework } from '../framework/hexperimentFramework';
 
 // Initialize framework
@@ -16,11 +17,17 @@ const environmentSimulationTool = {
   func: async ({ simulationType, parameters, standards }) => {
     console.log('************Environment Simulation Tool executing:', simulationType);
 
-    const timestamp = new Date().toISOString();
-
-    // Use framework standards if not provided
+    const timestamp = new Date().toISOString(); // Use framework standards if not provided
     const simulationStandards = standards || framework.environmentStandards.physical; // Generate a realistic simulation based on the framework
-    const simulationResult = {
+    const simulationResult: {
+      simulationType: any;
+      timestamp: string;
+      framework: string;
+      realLifeStandards: boolean;
+      sirMode: string;
+      status?: string;
+      data?: any;
+    } = {
       simulationType,
       timestamp,
       framework: 'Hexperiment Labs Framework',

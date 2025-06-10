@@ -1,10 +1,11 @@
 import { ActivityTypes } from '@microsoft/agents-activity';
 import { AgentApplicationBuilder, MessageFactory } from '@microsoft/agents-hosting';
+
 import { dateTool } from './tools/dateTimeTool';
-import { sirAnalysisTool } from './tools/sirAnalysisTool';
 import { environmentSimulationTool } from './tools/environmentSimulationTool';
-import { monitoringTool } from './tools/monitoringTool';
 import { humanSupervisionTool } from './tools/humanSupervisionTool';
+import { monitoringTool } from './tools/monitoringTool';
+import { sirAnalysisTool } from './tools/sirAnalysisTool';
 
 const sirAgent = new AgentApplicationBuilder().build();
 
@@ -68,7 +69,7 @@ class SIRSystemState {
 
 const sirSystemState = new SIRSystemState();
 
-sirAgent.conversationUpdate('membersAdded', async (context) => {
+sirAgent.onConversationUpdate('membersAdded', async (context) => {
   const welcomeCard = {
     type: 'AdaptiveCard',
     version: '1.4',
@@ -128,13 +129,14 @@ sirAgent.conversationUpdate('membersAdded', async (context) => {
 // Core SIR Processing Logic (without OpenAI dependency)
 async function processSIRRequest(question, context): Promise<any> {
   const lowerQuestion = question.toLowerCase();
-
   // Environment Analysis
   if (lowerQuestion.includes('environment') || lowerQuestion.includes('analysis')) {
     return await sirAnalysisTool.func({
       environment: 'current',
-      analysisType: 'comprehensive',
-      standards: sirSystemState.realLifeEnvironmentStandards,
+      analysisType: 'environmental_scan',
+      parameters: JSON.stringify({
+        realLifeStandards: sirSystemState.realLifeEnvironmentStandards,
+      }),
     });
   }
 
@@ -216,7 +218,7 @@ async function processSIRRequest(question, context): Promise<any> {
   };
 }
 
-sirAgent.message(async (context) => {
+sirAgent.onMessage('message', async (context) => {
   const question = context.activity.text;
 
   if (!question) {

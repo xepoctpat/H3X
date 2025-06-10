@@ -38,7 +38,7 @@ export function createMockH3XSystem(): MockH3XSystem {
  */
 export function createMockLocalStorage(): MockLocalStorage {
   const storage: Record<string, string> = {};
-  
+
   return {
     getItem: vi.fn((key: string) => storage[key] || null),
     setItem: vi.fn((key: string, value: string) => {
@@ -48,7 +48,7 @@ export function createMockLocalStorage(): MockLocalStorage {
       delete storage[key];
     }),
     clear: vi.fn(() => {
-      Object.keys(storage).forEach(key => delete storage[key]);
+      Object.keys(storage).forEach((key) => delete storage[key]);
     }),
   };
 }
@@ -124,7 +124,7 @@ export function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 5000): P
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Test timeout after ${timeoutMs}ms`)), timeoutMs)
+      setTimeout(() => reject(new Error(`Test timeout after ${timeoutMs}ms`)), timeoutMs),
     ),
   ]);
 }
@@ -134,7 +134,7 @@ export function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 5000): P
  */
 export async function waitFor(
   condition: () => boolean | Promise<boolean>,
-  options: { timeout?: number; interval?: number } = {}
+  options: { timeout?: number; interval?: number } = {},
 ): Promise<void> {
   const { timeout = 5000, interval = 100 } = options;
   const start = Date.now();
@@ -143,7 +143,7 @@ export async function waitFor(
     if (await condition()) {
       return;
     }
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
 
   throw new Error(`Condition not met within ${timeout}ms`);

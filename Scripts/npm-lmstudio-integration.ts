@@ -12,10 +12,11 @@ interface ConsoleLog {
 // NPM Script Integration for LM Studio Response.Output
 // Integrates with existing H3X Docker and automation systems
 
-import LMStudioResponseHandler from './lmstudio-response-handler';
 import { spawn, exec } from 'child_process';
-import * as path from 'path';
 import * as fs from 'fs/promises';
+import * as path from 'path';
+
+import LMStudioResponseHandler from './lmstudio-response-handler';
 
 interface NPMIntegrationOptions {
   maxTokens?: number;

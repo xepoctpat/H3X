@@ -4,6 +4,7 @@
 
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+
 import { setupBrowserMocks, setupNodeMocks } from './utils/test-utils';
 
 // Setup environment based on test type
@@ -31,11 +32,9 @@ vi.mock('fs', () => ({
 // Extend expect with custom matchers
 expect.extend({
   toBeValidH3XResponse(received) {
-    const pass = received && 
-                  typeof received === 'object' &&
-                  'status' in received &&
-                  'timestamp' in received;
-    
+    const pass =
+      received && typeof received === 'object' && 'status' in received && 'timestamp' in received;
+
     if (pass) {
       return {
         message: () => `expected ${received} not to be a valid H3X response`,

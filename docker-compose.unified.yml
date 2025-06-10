@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   # ================================
   # REVERSE PROXY & LOAD BALANCER
@@ -11,8 +13,7 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - h3x-main
-      - h3x-flups-frontend
+      - h3x-server
       - h3x-lmstudio
     networks:
       - hex-flup-network

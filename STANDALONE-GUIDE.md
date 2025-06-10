@@ -135,4 +135,5 @@ docker-compose up -d
 
 ---
 
-_This containerized approach replaces all previous deployment methods and provides a consistent, reliable deployment experience across all environments._
+_This containerized approach replaces all previous deployment methods and provides a consistent,
+reliable deployment experience across all environments._

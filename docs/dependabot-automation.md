@@ -2,25 +2,32 @@
 
 ## Overview
 
-The H3X Dependabot Automation system provides intelligent, automated dependency management with advanced features for security scanning, auto-merging, and integration with the existing H3X automation ecosystem.
+The H3X Dependabot Automation system provides intelligent, automated dependency management with
+advanced features for security scanning, auto-merging, and integration with the existing H3X
+automation ecosystem.
 
 ## 🚀 Features
 
 ### Core Automation Features
+
 - **Smart Auto-merge**: Automatically merges safe dependency updates based on configurable rules
 - **Security Scanning**: Integrated vulnerability detection and blocking of unsafe updates
 - **Breaking Change Detection**: Analyzes updates for potential breaking changes
-- **Performance Impact Analysis**: Monitors dependency update impact on build and runtime performance
+- **Performance Impact Analysis**: Monitors dependency update impact on build and runtime
+  performance
 - **Real-time Processing**: Webhook-based immediate response to Dependabot events
 - **Comprehensive Logging**: Detailed audit trail of all automation actions
 
 ### Advanced Grouping and Scheduling
-- **Intelligent Package Grouping**: Groups related packages (TypeScript tools, testing frameworks, etc.)
+
+- **Intelligent Package Grouping**: Groups related packages (TypeScript tools, testing frameworks,
+  etc.)
 - **Multi-ecosystem Support**: Handles npm, Docker, GitHub Actions, Terraform, and pip
 - **Timezone-aware Scheduling**: Optimized update schedules across different days and times
 - **Target Branch Management**: Configurable target branches for different update types
 
 ### Integration Features
+
 - **GitHub Actions Integration**: Seamless CI/CD pipeline integration
 - **Existing H3X Automation**: Full compatibility with current automation scripts
 - **Webhook Processing**: Real-time event handling for immediate response
@@ -54,18 +61,18 @@ The enhanced configuration includes:
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "02:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '02:00'
+      timezone: 'UTC'
     groups:
       typescript:
-        patterns: ["typescript", "@types/*", "ts-node"]
+        patterns: ['typescript', '@types/*', 'ts-node']
       testing:
-        patterns: ["jest", "@jest/*", "mocha", "chai"]
+        patterns: ['jest', '@jest/*', 'mocha', 'chai']
       # ... more groups
 ```
 
@@ -91,13 +98,15 @@ updates:
 ## 🔧 Setup and Installation
 
 ### Prerequisites
-- Node.js 16+ 
+
+- Node.js 16+
 - GitHub repository with admin access
 - Existing H3X automation setup
 
 ### Installation Steps
 
 1. **Verify Configuration Files**
+
    ```bash
    # Check that all files are in place
    ls -la .github/dependabot.yml
@@ -107,15 +116,18 @@ updates:
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install js-yaml octokit
    ```
 
 3. **Set up GitHub Secrets** (Required for GitHub Actions)
+
    - `GITHUB_TOKEN`: GitHub token with repo permissions
    - `AUTOMATION_TOKEN`: Token for automation bot account (optional)
 
 4. **Configure Webhook** (For real-time processing)
+
    ```bash
    # Set webhook URL in GitHub repository settings
    # URL: https://your-domain.com/webhooks/dependabot
@@ -169,17 +181,20 @@ PORT=3000 node scripts/dependabot-webhook-handler.js
 ## 🔒 Security Features
 
 ### Vulnerability Scanning
+
 - **NPM Audit Integration**: Checks for known vulnerabilities
 - **GitHub Security Advisories**: Monitors for security alerts
 - **Severity Filtering**: Configurable blocking based on severity levels
 
 ### Auto-merge Safety Checks
+
 - **CI Status Validation**: Requires all checks to pass
 - **Update Type Restrictions**: Limits auto-merge to patch/minor updates
 - **Security Advisory Blocking**: Prevents merge of vulnerable updates
 - **Breaking Change Detection**: Flags potential breaking changes
 
 ### Audit Trail
+
 - **Comprehensive Logging**: All actions logged with timestamps
 - **Decision Tracking**: Records why auto-merge was approved/denied
 - **Security Events**: Special logging for security-related decisions
@@ -187,16 +202,19 @@ PORT=3000 node scripts/dependabot-webhook-handler.js
 ## 📊 Monitoring and Alerts
 
 ### Health Monitoring
+
 - **Endpoint**: `GET /health` - System health check
 - **Metrics**: Processing time, success rate, error count
 - **Status Dashboard**: Real-time automation status
 
 ### Alerting
+
 - **Failed Auto-merges**: Notifications when auto-merge fails
 - **Security Issues**: Immediate alerts for vulnerability detection
 - **System Errors**: Notification of automation failures
 
 ### Metrics Collection
+
 ```bash
 # Get automation metrics
 curl http://localhost:3000/metrics
@@ -274,6 +292,7 @@ DEBUG=true node tests/dependabot-automation.test.js
 ```
 
 ### Test Categories
+
 - **Configuration Validation**: Validates all config files
 - **PR Analysis**: Tests package parsing and update detection
 - **Auto-merge Logic**: Validates merge eligibility rules
@@ -285,6 +304,7 @@ DEBUG=true node tests/dependabot-automation.test.js
 ### Mock Data
 
 The test suite includes comprehensive mock data for:
+
 - Dependabot PR payloads
 - Package update information
 - CI status responses
@@ -295,18 +315,21 @@ The test suite includes comprehensive mock data for:
 ### Common Issues
 
 #### Auto-merge Not Working
+
 1. Check CI status requirements
 2. Verify GitHub token permissions
 3. Review package eligibility rules
 4. Check automation logs
 
 #### Webhook Events Not Processing
+
 1. Verify webhook URL configuration
 2. Check webhook secret configuration
 3. Review webhook handler logs
 4. Validate GitHub webhook delivery
 
 #### Security Scanning Failures
+
 1. Check NPM audit availability
 2. Verify GitHub Security API access
 3. Review security configuration
@@ -323,6 +346,7 @@ DEBUG=dependabot:* node scripts/dependabot-automation.js
 ### Log Files
 
 Check automation logs:
+
 - Main log: `logs/automation/dependabot-automation.log`
 - Webhook log: `logs/webhooks/dependabot-webhook.log`
 - Error log: `logs/errors/dependabot-errors.log`
@@ -330,17 +354,20 @@ Check automation logs:
 ## 🔄 Integration with Existing H3X Automation
 
 ### Compatibility
+
 - **h3x-automation.js**: Full compatibility maintained
 - **dev-automation.js**: Integrates with development workflows
 - **git-pr-automation.js**: Extends existing PR automation
 - **cicd-automation.js**: Coordinates with CI/CD processes
 
 ### Shared Resources
+
 - **Logging**: Uses existing H3X logging infrastructure
 - **Configuration**: Extends existing config management
 - **Notifications**: Integrates with current notification systems
 
 ### Coordination
+
 - **Non-conflicting**: Avoids conflicts with existing automation
 - **Complementary**: Enhances rather than replaces existing features
 - **Shared State**: Coordinates state with other automation scripts
@@ -348,16 +375,19 @@ Check automation logs:
 ## 📈 Performance Optimization
 
 ### Caching
+
 - **Package Information**: Caches NPM package metadata
 - **Security Advisories**: Caches vulnerability data
 - **CI Status**: Caches status check results
 
 ### Rate Limiting
+
 - **GitHub API**: Respects GitHub API rate limits
 - **NPM Registry**: Implements NPM API rate limiting
 - **Batch Processing**: Groups operations for efficiency
 
 ### Resource Management
+
 - **Memory**: Efficient memory usage with streaming
 - **CPU**: Optimized processing algorithms
 - **Network**: Minimizes external API calls
@@ -414,12 +444,14 @@ GET /activity
 5. Submit pull request
 
 ### Code Style
+
 - Follow existing H3X coding standards
 - Add comprehensive tests for new features
 - Update documentation for changes
 - Include performance considerations
 
 ### Testing Requirements
+
 - All new features must include tests
 - Maintain >90% test coverage
 - Include integration tests
@@ -432,6 +464,7 @@ This automation system is part of the H3X project and follows the same licensing
 ## 📞 Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review troubleshooting section
 3. Check existing GitHub issues
@@ -439,4 +472,4 @@ For issues or questions:
 
 ---
 
-*This documentation was last updated: ${new Date().toISOString()}*
+_This documentation was last updated: ${new Date().toISOString()}_

@@ -1,5 +1,6 @@
 // No-OpenAI version - Native implementation without LangChain
 import { z } from 'zod';
+
 import { HexperimentFramework } from '../framework/hexperimentFramework';
 
 /**
@@ -32,10 +33,25 @@ const sirAnalysisTool = {
     const environmentalData = generateEnvironmentalData();
 
     // Use framework to evaluate compliance
-    const compliance = framework.evaluateEnvironmentCompliance(environmentalData);
-
-    // Base analysis results
-    const analysisResults = {
+    const compliance = framework.evaluateEnvironmentCompliance(environmentalData); // Base analysis results
+    const analysisResults: {
+      environment: any;
+      analysisType: any;
+      timestamp: string;
+      sirMode: string;
+      status: string;
+      framework: string;
+      realLifeStandards: boolean;
+      environmentalData: {
+        temperature: number;
+        humidity: number;
+        airQuality: number;
+        lighting: number;
+        noiseLevel: number;
+      };
+      compliance: any;
+      data?: any;
+    } = {
       environment,
       analysisType,
       timestamp: timestamp,

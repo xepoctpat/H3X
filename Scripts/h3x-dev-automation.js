@@ -8,8 +8,8 @@
 const { exec, spawn } = require('child_process');
 const { promisify } = require('util');
 const fs = require('fs').promises;
-const path = require('path');
 const os = require('os');
+const path = require('path');
 
 const execAsync = promisify(exec);
 

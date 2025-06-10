@@ -12,7 +12,8 @@
 
 ## 🎯 Overview
 
-This PR completes the full containerization and modernization of the H3X system, making it production-ready with Docker-based deployment.
+This PR completes the full containerization and modernization of the H3X system, making it
+production-ready with Docker-based deployment.
 
 ## ✅ Completed Tasks
 
@@ -63,7 +64,8 @@ Ready for production deployment and team collaboration.
 
 ## Git Information
 
-- **Latest Commit**: f493319 - Accessibility and style fixes: add labels, placeholders, and move inline styles to CSS (Hexperiment Labs, 2 hours ago)
+- **Latest Commit**: f493319 - Accessibility and style fixes: add labels, placeholders, and move
+  inline styles to CSS (Hexperiment Labs, 2 hours ago)
 - **Commits in PR**:
 - **Files Changed**: Microsoft.PowerShell.Commands.GenericMeasureInfo.Count
 
@@ -77,13 +79,11 @@ docker-compose up -d
 
 # Verify services
 
-curl http://localhost:8081/api/health
-curl http://localhost:4978/api/health
+curl http://localhost:8081/api/health curl http://localhost:4978/api/health
 
 # View logs
 
-docker-compose logs -f
-`
+docker-compose logs -f `
 
 ## Review Checklist
 

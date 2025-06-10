@@ -1,6 +1,8 @@
 # Hexperiment Labs SIR Control Interface - No OpenAI Version
 
-This document outlines how to use the Hexperiment Labs SIR (Super Intelligent Regulator) Control Interface **without OpenAI dependency**, using only GitHub and M365 accounts with Microsoft SDK Agents.
+This document outlines how to use the Hexperiment Labs SIR (Super Intelligent Regulator) Control
+Interface **without OpenAI dependency**, using only GitHub and M365 accounts with Microsoft SDK
+Agents.
 
 ## Features Available in No-OpenAI Version
 
