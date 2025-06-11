@@ -5,8 +5,8 @@
  * Standalone test execution for the mathematical proof system
  */
 
-import { H3XProofTestSuite } from './proof/tests/proof-tests.js';
-import { H3XProofModule } from './proof-module.js';
+import { H3XProofTestSuite } from './proof/tests/proof-tests.ts';
+import { H3XProofModule } from './proof-module.ts';
 
 async function runProofSystemTests(): Promise<void> {
   console.info('\n🧮 H3X Mathematical Proof System - Test Execution\n');

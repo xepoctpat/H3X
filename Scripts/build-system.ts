@@ -268,4 +268,7 @@ if (isMainModule) {
   });
 }
 
+// Ensure TypeScript references use the correct config file
+// If you use tsc programmatically, set the config path to '../../tsconfig.json' or './tsconfig.json' as appropriate
+
 export default H3XBuildSystem;

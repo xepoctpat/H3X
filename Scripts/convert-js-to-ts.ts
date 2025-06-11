@@ -418,7 +418,10 @@ async function main(): Promise<void> {
 
 // Run if called directly
 if (import.meta.url.endsWith('convert-js-to-ts.ts')) {
-  main();
+  main().catch((error) => {
+    console.error(`❌ Unhandled error: ${error}`);
+    process.exit(1);
+  });
 }
 
 export { JSToTSConverter };

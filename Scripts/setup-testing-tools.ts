@@ -27,10 +27,9 @@ class TestingToolsSetup {
       { name: '.htmlhintrc', exists: false },
       { name: '.jshintrc', exists: false },
       { name: '.markdownlint.json', exists: false },
-    ];
-  }
+    ];  }
 
-  log(message, type = 'info') {
+  log(message: string, type = 'info') {
     const timestamp = new Date().toISOString();
     const prefix =
       {

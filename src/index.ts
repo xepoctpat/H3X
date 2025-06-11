@@ -12,7 +12,7 @@ import express from 'express';
 import { sirAgent } from './agent-no-openai';
 
 // Import H3X Proof System
-import { H3XProofSystemModule } from './proof/proof-integration.js';
+import { H3XProofSystemModule } from './proof/proof-integration';
 
 // Create express application.
 const server = express();

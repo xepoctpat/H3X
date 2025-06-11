@@ -29,7 +29,12 @@ requiredDirs.forEach((dir) => {
 });
 
 // Check if main files exist
-const requiredFiles = ['package.json', 'dockerfile.h3x', 'docker-compose.yml'];
+const requiredFiles = [
+  'package.json', 
+  'docker/Dockerfile', 
+  'docker/docker-compose.yml',
+  'docker-compose.unified.yml',
+];
 let allFilesExist = true;
 
 requiredFiles.forEach((file) => {

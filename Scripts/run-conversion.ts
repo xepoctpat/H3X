@@ -4,7 +4,7 @@
  * Simple runner for TypeScript conversion
  */
 
-import('./scripts/convert-js-to-ts.ts')
+import('./convert-js-to-ts.js')
   .then(() => {
     console.log('✅ TypeScript conversion tool loaded successfully');
   })

@@ -3,8 +3,8 @@
  * Compares H3X fLup/cFlup 2D lattice system against traditional approaches
  */
 
-import { H3XProofSystem } from './proof-engine.js';
-import { BenchmarkResult, PlatonicSolid } from './types/proof-types.js';
+import { H3XProofSystem } from './proof-engine';
+import { BenchmarkResult, PlatonicSolid } from './types/proof-types';
 
 export interface TraditionalSystem {
   name: string;

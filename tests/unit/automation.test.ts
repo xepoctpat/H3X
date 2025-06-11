@@ -1,5 +1,6 @@
 /* global describe, test, expect */
 // Integration test for H3X TypeScript automation
+import { describe, test, expect } from 'vitest';
 import { promises as fs } from 'fs';
 import path from 'path';
 

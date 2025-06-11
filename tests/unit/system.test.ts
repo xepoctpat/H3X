@@ -2,7 +2,8 @@
  * Sample unit test for H3X system
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
+
 import { createMockH3XSystem } from '../utils/test-utils';
 
 describe('H3X System Unit Tests', () => {
@@ -19,7 +20,11 @@ describe('H3X System Unit Tests', () => {
     const mockSystem = createMockH3XSystem();
     const status = await mockSystem.getStatus();
 
-    expect(status).toBeValidH3XResponse();
+    // Replace custom matcher with plain assertion for Vitest compatibility
+    expect(status).toBeDefined();
+    expect(typeof status).toBe('object');
+    expect('status' in status).toBe(true);
+    expect('timestamp' in status).toBe(true);
     expect(status.status).toBe('ok');
   });
 
