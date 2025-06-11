@@ -16,7 +16,7 @@ import { spawn, exec } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-import LMStudioResponseHandler from './lmstudio-response-handler';
+import { LMStudioResponseHandler } from './lmstudio-response-handler.js';
 
 interface NPMIntegrationOptions {
   maxTokens?: number;
@@ -427,7 +427,7 @@ Examples:
         break;
     }
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('❌ Error:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 }

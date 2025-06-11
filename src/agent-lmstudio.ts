@@ -47,7 +47,7 @@ class SIRLMStudioAgent {
   /**
    * Main message processing method
    */
-  async processMessage(userMessage, context = {}) {
+  async processMessage(userMessage: string, context: any = {}): Promise<any> {
     try {
       console.log('🎯 Processing SIR message:', userMessage);
 

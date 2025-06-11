@@ -7,16 +7,17 @@
 
 import { execSync } from 'child_process';
 import * as fs from 'fs';
+import * as path from 'path';
 
 console.log('🚀 H3X Automation Setup - Initializing...\n');
 
 /**
  * Execute command safely
  */
-function runCommand(command: string, description: string): boolean {
+function runCommand(command: string, description: string): void {
   console.log(`Running: ${description}`);
   try {
-    execSync(command, {
+    const output = execSync(command, {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -24,7 +25,7 @@ function runCommand(command: string, description: string): boolean {
     return true;
   } catch (error) {
     console.log(`❌ ${description} - FAILED`);
-    console.log('Error:', error instanceof Error ? error.message : String(error));
+    console.log('Error:', error.message);
     return false;
   }
 }
@@ -32,7 +33,7 @@ function runCommand(command: string, description: string): boolean {
 /**
  * Create directory if it doesn't exist
  */
-function ensureDirectory(dirPath: string): void {
+function ensureDirectory(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
     console.log(`📁 Created directory: ${dirPath}`);
@@ -44,7 +45,7 @@ function ensureDirectory(dirPath: string): void {
 /**
  * Main setup function
  */
-async function setupAutomation(): Promise<void> {
+async function setupAutomation(): Promise<any> {
   console.log('📋 Setting up H3X automation infrastructure...\n');
 
   // 1. Ensure required directories exist
@@ -81,7 +82,7 @@ node scripts/pre-commit-hook.js
         execSync(`chmod +x ${preCommitHookPath}`);
       }
       console.log('✅ Pre-commit hook created');
-    } catch {
+    } catch (error) {
       console.log('⚠️  Could not set executable permission on hook');
     }
   } else {
@@ -115,7 +116,7 @@ node scripts/pre-commit-hook.js
     } else {
       console.log('⚠️  Automation scripts missing from package.json');
     }
-  } catch {
+  } catch (error) {
     console.log('❌ Could not verify package.json');
   }
 
@@ -197,6 +198,6 @@ Generated on: ${new Date().toISOString()}
 
 // Run setup
 setupAutomation().catch((error) => {
-  console.error('❌ Setup failed:', error instanceof Error ? error.message : String(error));
+  console.error('❌ Setup failed:', error.message);
   process.exit(1);
 });

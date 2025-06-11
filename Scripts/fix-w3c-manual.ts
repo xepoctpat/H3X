@@ -16,14 +16,14 @@ function kebabCase(str: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-function renameIfExists(oldPath, newPath) {
+function renameIfExists(oldPath: string, newPath: string) {
   if (fs.existsSync(oldPath) && !fs.existsSync(newPath)) {
     try {
       fs.renameSync(oldPath, newPath);
       console.log(`✅ Renamed: ${path.basename(oldPath)} → ${path.basename(newPath)}`);
       return true;
     } catch (error) {
-      console.error(`❌ Error renaming ${oldPath}:`, error.message);
+      console.error(`❌ Error renaming ${oldPath}:`, error instanceof Error ? error.message : String(error));
       return false;
     }
   } else if (fs.existsSync(newPath)) {
@@ -130,7 +130,7 @@ console.log('\n🎉 Manual W3C naming fixes completed!');
 
 // Create a summary of the current state
 console.log('\n📊 Checking current state...');
-function checkDirectory(dir, level = 0) {
+function checkDirectory(dir: string, level = 0): void {
   const items = fs.readdirSync(dir);
   const indent = '  '.repeat(level);
 
@@ -176,7 +176,7 @@ function checkDirectory(dir, level = 0) {
 try {
   checkDirectory(rootDir);
 } catch (error) {
-  console.error('Error checking directory:', error.message);
+  console.error('Error checking directory:', error instanceof Error ? error.message : String(error));
 }
 
 console.log('\n✨ W3C naming convention analysis complete!');

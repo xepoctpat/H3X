@@ -18,9 +18,9 @@ The H3X system is now fully containerized for easy deployment and scalability.
    ```
 
 3. **Access the interfaces**
-   - **Main H3X Server**: http://localhost:4978
-   - **Protocol Server**: http://localhost:8081
-   - **Health Check**: http://localhost:8081/api/health
+   - **Main H3X Server**: <http://localhost:4978>
+   - **Protocol Server**: <http://localhost:8081>
+   - **Health Check**: <http://localhost:8081/api/health>
 
 ### Services
 

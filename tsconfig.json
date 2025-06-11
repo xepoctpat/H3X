@@ -19,7 +19,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noEmit": false,
-    "isolatedModules": true,    "types": ["node", "jest", "vitest/globals"]
+    "isolatedModules": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*", "scripts/**/*", "tests/**/*", "*.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
