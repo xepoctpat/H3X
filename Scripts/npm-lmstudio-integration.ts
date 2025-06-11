@@ -16,11 +16,7 @@ import { spawn, exec } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-<<<<<<< HEAD
 import { LMStudioResponseHandler } from './lmstudio-response-handler.js';
-=======
-import { LMStudioResponseHandler } from './lmstudio-response-handler.ts';
->>>>>>> alert-fix-148
 
 interface NPMIntegrationOptions {
   maxTokens?: number;

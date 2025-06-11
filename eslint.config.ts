@@ -146,13 +146,50 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off', // Allow any in automation scripts
       'sonarjs/cognitive-complexity': ['warn', 30], // Higher threshold for scripts
       'import/no-unresolved': 'off', // May use dynamic imports
-    },
-  },
+    },  },
   {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        Buffer: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        require: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': 'off',
+      'security/detect-non-literal-require': 'off',
+    },
+  },  {
     files: ['tests/**/*.js', 'tests/**/*.ts'],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        test: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        vi: 'readonly',
+        vitest: 'readonly',
+        jest: 'readonly',
+      },
+    },
     rules: {
       'security/detect-non-literal-fs-filename': 'off',
       'security/detect-object-injection': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      'no-undef': 'off', // Test globals are handled above
     },
   },
 ];

@@ -11,9 +11,9 @@
  * - Automated changelog generation
  */
 
+import { exec } from 'child_process';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
@@ -72,8 +72,7 @@ class DependabotAutomation {
       const configData = await fs.readFile(configPath, 'utf8');
       const userConfig = JSON.parse(configData);
       this.config = { ...this.config, ...userConfig };
-      await this.log('📋 Configuration loaded from file', 'info');
-    } catch (error) {
+      await this.log('📋 Configuration loaded from file', 'info');    } catch {
       await this.log('📋 Using default configuration', 'info');
     }
   }
@@ -223,10 +222,8 @@ class DependabotAutomation {
 
       if (parseInt(to[0]) > parseInt(from[0])) return 'major';
       if (parseInt(to[1]) > parseInt(from[1])) return 'minor';
-      if (parseInt(to[2]) > parseInt(from[2])) return 'patch';
-
-      return 'patch'; // Default to patch if unclear
-    } catch (error) {
+      if (parseInt(to[2]) > parseInt(from[2])) return 'patch';      return 'patch'; // Default to patch if unclear
+    } catch {
       return 'unknown';
     }
   }
@@ -283,8 +280,7 @@ class DependabotAutomation {
       const snykData = JSON.parse(snykResult.stdout);
       if (snykData.vulnerabilities) {
         securityResults.snykVulnerabilities = snykData.vulnerabilities;
-      }
-    } catch (error) {
+      }    } catch {
       // Snyk not available or failed - continue without it
       await this.log('Snyk scan not available or failed', 'info');
     }
@@ -369,8 +365,7 @@ class DependabotAutomation {
     try {
       await execAsync('npm test', { cwd: this.projectRoot, timeout: 300000 });
       status.success.push('Local tests passed');
-      await this.log('✅ Local tests passed', 'success');
-    } catch (error) {
+      await this.log('✅ Local tests passed', 'success');    } catch {
       status.failed.push('Local tests failed');
       await this.log('❌ Local tests failed', 'error');
     }
@@ -383,8 +378,7 @@ class DependabotAutomation {
     try {
       await execAsync('npm run build', { cwd: this.projectRoot, timeout: 300000 });
       status.success.push('Build check passed');
-      await this.log('✅ Build check passed', 'success');
-    } catch (error) {
+      await this.log('✅ Build check passed', 'success');    } catch {
       status.failed.push('Build check failed');
       await this.log('❌ Build check failed', 'error');
     }
@@ -453,8 +447,7 @@ class DependabotAutomation {
     try {
       let changelog = '';
       try {
-        changelog = await fs.readFile(changelogPath, 'utf8');
-      } catch (error) {
+        changelog = await fs.readFile(changelogPath, 'utf8');      } catch {
         // Changelog doesn't exist, create it
         changelog = '# Changelog\n\n## [Unreleased]\n\n';
       }
@@ -584,8 +577,7 @@ async function main(): Promise<void> {
   try {
     await automation.initialize();
 
-    switch (command.toLowerCase()) {
-      case 'analyze':
+    switch (command.toLowerCase()) {      case 'analyze': {
         if (!prNumber) {
           throw new Error('PR number required for analyze command');
         }
@@ -601,25 +593,27 @@ async function main(): Promise<void> {
         console.log('\nAnalysis Results:');
         console.log(JSON.stringify(analysis, null, 2));
         break;
+      }
 
-      case 'auto-merge':
+      case 'auto-merge': {
         if (!prNumber) {
           throw new Error('PR number required for auto-merge command');
-        }
-        // This would include the full analysis and merge workflow
+        }        // This would include the full analysis and merge workflow
         console.log(`Auto-merge workflow for PR #${prNumber} would be executed`);
         break;
+      }
 
-      case 'report':
+      case 'report': {
         const report = await automation.generateReport();
         console.log('\nDependabot Automation Report:');
         console.log(JSON.stringify(report, null, 2));
         break;
+      }
 
-      case 'config':
-        console.log('\nCurrent Configuration:');
+      case 'config': {        console.log('\nCurrent Configuration:');
         console.log(JSON.stringify(automation.config, null, 2));
         break;
+      }
 
       case 'help':
       default:
@@ -649,7 +643,7 @@ Examples:
 }
 
 if (require.main === module) {
-  main();
+  void main();
 }
 
 export = { DependabotAutomation };

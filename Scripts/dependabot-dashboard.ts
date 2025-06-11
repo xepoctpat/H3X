@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 // Auto-generated interfaces
 interface ProcessEnv {
   [key: string]: string | undefined;
@@ -23,11 +21,11 @@ interface ConsoleLog {
  * - Configuration management
  */
 
+import { promises as fs } from 'fs';
 import path = require('path');
 
 import express = require('express');
 
-import { promises as fs } from 'fs';
 
 import * as DependabotMonitoring from './dependabot-monitoring';
 

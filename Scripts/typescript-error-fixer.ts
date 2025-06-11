@@ -19,7 +19,7 @@ class TypeScriptErrorFixer {
     {
       pattern: /error\.message/g,
       fix: (match, filePath) => 'error instanceof Error ? error.message : String(error)',
-      description: 'Fix unknown error type'
+      description: 'Fix unknown error type',
     },
     // Parameter type annotations
     {
@@ -32,7 +32,7 @@ class TypeScriptErrorFixer {
         const typedParams = this.addParameterTypes(params);
         return `function ${funcName}(${typedParams})`;
       },
-      description: 'Add parameter type annotations'
+      description: 'Add parameter type annotations',
     },
     // Nullish coalescing operator fix
     {
@@ -44,8 +44,8 @@ class TypeScriptErrorFixer {
         const [, variable, defaultValue] = nullishMatch;
         return `${variable} ?? ${defaultValue}`;
       },
-      description: 'Replace || with ?? operator'
-    }
+      description: 'Replace || with ?? operator',
+    },
   ];
 
   private addParameterTypes(params: string): string {
@@ -71,7 +71,7 @@ class TypeScriptErrorFixer {
         'config': 'any',
         'context': 'any',
         'error': 'unknown',
-        'result': 'any'
+        'result': 'any',
       };
       
       // Extract parameter name (handle default values)
@@ -157,7 +157,7 @@ class TypeScriptErrorFixer {
       'dist',
       'coverage',
       '.git',
-      'archive'
+      'archive',
     ].includes(dirName);
   }
 }

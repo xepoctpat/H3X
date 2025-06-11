@@ -11,13 +11,13 @@
  * - Integration with existing H3X monitoring
  */
 
+import { exec } from 'child_process';
+import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import path = require('path');
-import { EventEmitter } from 'events';
-import { exec } from 'child_process';
 import { promisify } from 'util';
 
-const execAsync = promisify(exec);
+// const execAsync = promisify(exec); // Currently unused - remove if not needed
 
 class DependabotMonitoring extends EventEmitter {
   constructor() {
@@ -78,7 +78,7 @@ class DependabotMonitoring extends EventEmitter {
       await this.ensureDirectories();
       await this.loadExistingMetrics();
       await this.loadExistingAlerts();
-      this.startMonitoring();
+      void this.startMonitoring();
 
       // Emit ready event
       this.emit('ready');
@@ -96,8 +96,7 @@ class DependabotMonitoring extends EventEmitter {
   async loadExistingMetrics() {
     try {
       const data = await fs.readFile(this.metricsFile, 'utf8');
-      this.metrics = { ...this.metrics, ...JSON.parse(data) };
-    } catch (error) {
+      this.metrics = { ...this.metrics, ...JSON.parse(data) };    } catch {
       // File doesn't exist, use defaults
       await this.saveMetrics();
     }
@@ -106,25 +105,23 @@ class DependabotMonitoring extends EventEmitter {
   async loadExistingAlerts() {
     try {
       const data = await fs.readFile(this.alertsFile, 'utf8');
-      this.alerts = { ...this.alerts, ...JSON.parse(data) };
-    } catch (error) {
+      this.alerts = { ...this.alerts, ...JSON.parse(data) };    } catch {
       // File doesn't exist, use defaults
       await this.saveAlerts();
     }
   }
-
   startMonitoring() {
     // Monitor every 30 seconds
     setInterval(() => {
-      this.performHealthCheck();
-      this.collectPerformanceMetrics();
-      this.checkAlertConditions();
+      void this.performHealthCheck();
+      void this.collectPerformanceMetrics();
+      void this.checkAlertConditions();
     }, 30000);
 
     // Save metrics every 5 minutes
     setInterval(() => {
-      this.saveMetrics();
-      this.saveAlerts();
+      void this.saveMetrics();
+      void this.saveAlerts();
     }, 300000);
   }
 

@@ -2,6 +2,7 @@
 // Demonstrates getting response.output from LM Studio API with npm and Docker integration
 
 import { spawn } from 'child_process';
+
 import axios from 'axios';
 
 interface LMStudioOptions {

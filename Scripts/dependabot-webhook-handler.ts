@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 // Auto-generated interfaces
 interface ProcessEnv {
   [key: string]: string | undefined;
@@ -19,12 +17,13 @@ interface ConsoleLog {
  * Integrates with the existing H3X automation ecosystem
  */
 
-import * as express from 'express';
 
 import { spawn } from 'child_process';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+
+import * as express from 'express';
 
 class DependabotWebhookHandler {
   constructor() {
