@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # LM Studio Server Container
+  h3x-lmstudio:
+    image: ghcr.io/lm-studio/lm-studio:latest
+    container_name: h3x-lmstudio
+    ports:
+      - '1234:1234'
+      - '1235:1235'
+    environment:
+      - LMSTUDIO_API_PORT=1234
+      - LMSTUDIO_MODEL_PATH=/models
+      - LMSTUDIO_CORS_ALLOW_ORIGIN=*
+    volumes:
+      - ./models:/models:ro
+      - lmstudio-cache:/root/.cache/lm-studio
+    networks:
+      - h3x-neural-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:1234/v1/models']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # H3X Main Application
+  h3x-main:
+    build:
+      context: .
+      dockerfile: Dockerfile.h3x
+    container_name: h3x-main
+    ports:
+      - '3978:3978'
+      - '8081:8081'
+    environment:
+      - NODE_ENV=production
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - DOCKER_MODE=true
+      - H3X_NETWORK_MODE=docker
+    volumes:
+      - ./Src:/app/Src:ro
+      - ./Public:/app/Public:ro
+      - ./Scripts:/app/Scripts:ro
+      - h3x-logs:/app/logs
+    depends_on:
+      h3x-lmstudio:
+        condition: service_healthy
+    networks:
+      - h3x-neural-network
+    restart: unless-stopped
+
+  # H3X Protocol Server
+  h3x-protocol:
+    build:
+      context: .
+      dockerfile: Dockerfile.protocol
+    container_name: h3x-protocol
+    ports:
+      - '8080:8080'
+    environment:
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - H3X_MAIN_URL=http://h3x-main:3978
+    networks:
+      - h3x-neural-network
+    depends_on:
+      - h3x-main
+    restart: unless-stopped
+
+  # Response Output Processor
+  h3x-response-processor:
+    build:
+      context: ./Scripts
+      dockerfile: Dockerfile.response-processor
+    container_name: h3x-response-processor
+    environment:
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - REDIS_URL=redis://h3x-redis:6379
+    volumes:
+      - ./Scripts:/app/Scripts:ro
+      - response-outputs:/app/outputs
+    networks:
+      - h3x-neural-network
+    depends_on:
+      - h3x-lmstudio
+      - h3x-redis
+    restart: unless-stopped
+
+  # Redis for response caching
+  h3x-redis:
+    image: redis:7-alpine
+    container_name: h3x-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - h3x-neural-network
+    restart: unless-stopped
+
+  # Hexperiment MCP Protocol Server
+  hexperiment-mcp:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+    container_name: hexperiment-mcp
+    ports:
+      - '8080:8080'
+    environment:
+      - PORT=8080
+    networks:
+      - h3x-neural-network
+    restart: unless-stopped
+
+networks:
+  h3x-neural-network:
+    driver: bridge
+    name: h3x-neural-network
+
+volumes:
+  lmstudio-cache:
+    name: h3x-lmstudio-cache
+  h3x-logs:
+    name: h3x-logs
+  response-outputs:
+    name: h3x-response-outputs
+  redis-data:
+    name: h3x-redis-data

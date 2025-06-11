@@ -5,9 +5,10 @@
  * Manages containerized LM Studio deployment with H3X
  */
 
+import { spawn } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { spawn } from 'child_process';
+
 import axios from 'axios';
 
 interface LogLevel {

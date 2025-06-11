@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * H3X Dependabot Automation Dashboard Server
- * 
+ *
  * Provides a web interface for monitoring and managing the Dependabot automation system:
  * - Real-time metrics dashboard
  * - Health status monitoring
@@ -10,9 +10,12 @@
  * - Configuration management
  */
 
-const express = require('express');
 const path = require('path');
+
+const express = require('express');
+
 const fs = require('fs').promises;
+
 const DependabotMonitoring = require('./dependabot-monitoring');
 
 class DependabotDashboard {
@@ -21,7 +24,7 @@ class DependabotDashboard {
     this.app = express();
     this.monitoring = new DependabotMonitoring();
     this.projectRoot = process.cwd();
-    
+
     this.setupMiddleware();
     this.setupRoutes();
     this.setupStaticFiles();
@@ -30,7 +33,7 @@ class DependabotDashboard {
   setupMiddleware() {
     this.app.use(express.json());
     this.app.use(express.static(path.join(__dirname, '../public')));
-    
+
     // CORS for development
     this.app.use((req, res, next) => {
       res.header('Access-Control-Allow-Origin', '*');
@@ -38,7 +41,7 @@ class DependabotDashboard {
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       next();
     });
-    
+
     // Request logging
     this.app.use((req, res, next) => {
       console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
@@ -53,7 +56,7 @@ class DependabotDashboard {
       res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
-        dependabot: healthStatus
+        dependabot: healthStatus,
       });
     });
 
@@ -125,7 +128,7 @@ class DependabotDashboard {
         const recentActivity = {
           recentPRs: metrics.performance.processingTimes.slice(-10),
           recentErrors: metrics.errors.slice(-5),
-          dailyStats: metrics.dailyStats
+          dailyStats: metrics.dailyStats,
         };
         res.json(recentActivity);
       } catch (error) {
@@ -140,7 +143,7 @@ class DependabotDashboard {
         const performance = {
           processingTimes: metrics.performance.processingTimes,
           cpuUsage: metrics.performance.cpuUsage,
-          memoryUsage: metrics.performance.memoryUsage
+          memoryUsage: metrics.performance.memoryUsage,
         };
         res.json(performance);
       } catch (error) {
@@ -154,7 +157,7 @@ class DependabotDashboard {
         const { prNumber } = req.params;
         const { DependabotAutomation } = require('./dependabot-automation');
         const automation = new DependabotAutomation();
-        
+
         const result = await automation.analyzePR(parseInt(prNumber));
         res.json({ success: true, result });
       } catch (error) {
@@ -180,8 +183,8 @@ class DependabotDashboard {
           'PUT /api/config': 'Update automation configuration',
           'GET /api/activity': 'Get recent activity',
           'GET /api/performance': 'Get performance metrics',
-          'POST /api/process-pr/:number': 'Manually process a PR'
-        }
+          'POST /api/process-pr/:number': 'Manually process a PR',
+        },
       });
     });
   }
@@ -617,19 +620,19 @@ class DependabotDashboard {
 if (require.main === module) {
   const port = process.env.PORT || 3001;
   const dashboard = new DependabotDashboard(port);
-  
-  dashboard.start().catch(error => {
+
+  dashboard.start().catch((error) => {
     console.error('❌ Failed to start dashboard:', error.message);
     process.exit(1);
   });
-  
+
   // Graceful shutdown
   process.on('SIGINT', async () => {
     console.log('\n⏹️  Shutting down dashboard...');
     await dashboard.stop();
     process.exit(0);
   });
-  
+
   process.on('SIGTERM', async () => {
     console.log('\n⏹️  Shutting down dashboard...');
     await dashboard.stop();

@@ -27,7 +27,7 @@ body {
   max-width: $container-max-width;
   margin: 0 auto;
   padding: 0 $spacing-md;
-  
+
   @include respond-to(lg) {
     padding: 0 $spacing-lg;
   }
@@ -42,13 +42,14 @@ body {
   position: sticky;
   top: 0;
   z-index: $z-sticky;
-  
+
   h1 {
     @include text-style($font-size-2xl, 700, $h3x-primary);
     text-align: center;
     margin: 0;
-    
-    &::before, &::after {
+
+    &::before,
+    &::after {
       content: '⬢';
       margin: 0 $spacing-sm;
       color: $h3x-secondary;
@@ -67,7 +68,7 @@ body {
   padding: $spacing-lg 0;
   text-align: center;
   margin-top: auto;
-  
+
   p {
     @include text-style($font-size-sm, normal, $h3x-text-muted);
   }
@@ -77,19 +78,19 @@ body {
 .h3x-grid {
   display: grid;
   gap: $spacing-lg;
-  
+
   &--2-col {
     @include respond-to(md) {
       grid-template-columns: 1fr 1fr;
     }
   }
-  
+
   &--3-col {
     @include respond-to(lg) {
       grid-template-columns: repeat(3, 1fr);
     }
   }
-  
+
   &--auto-fit {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
@@ -98,22 +99,23 @@ body {
 // Cards
 .h3x-card {
   @include card;
-  
+
   &__header {
     margin-bottom: $spacing-md;
     padding-bottom: $spacing-sm;
     border-bottom: $border-width solid rgba($h3x-primary, 0.2);
-    
-    h2, h3 {
+
+    h2,
+    h3 {
       @include text-style($font-size-lg, 600, $h3x-primary);
       margin: 0;
     }
   }
-  
+
   &__content {
     @include text-style($font-size-base, normal, $h3x-text-secondary);
   }
-  
+
   &__footer {
     margin-top: $spacing-md;
     padding-top: $spacing-sm;
@@ -125,16 +127,16 @@ body {
 // Buttons
 .h3x-btn {
   @include button-primary;
-  
+
   &--secondary {
     @include button-secondary;
   }
-  
+
   &--small {
     padding: $spacing-xs $spacing-sm;
     font-size: $font-size-sm;
   }
-  
+
   &--large {
     padding: $spacing-md $spacing-lg;
     font-size: $font-size-lg;
@@ -146,27 +148,27 @@ body {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  
+
   &__group {
     display: flex;
     flex-direction: column;
     gap: $spacing-xs;
   }
-  
+
   &__label {
     @include text-style($font-size-sm, 600, $h3x-text-primary);
   }
-  
+
   &__input {
     @include input-base;
   }
-  
+
   &__textarea {
     @include input-base;
     resize: vertical;
     min-height: 100px;
   }
-  
+
   &__select {
     @include input-base;
     cursor: pointer;
@@ -182,45 +184,45 @@ body {
   border-radius: $border-radius-md;
   font-size: $font-size-sm;
   font-weight: 500;
-  
+
   &::before {
     content: '';
     width: 8px;
     height: 8px;
     border-radius: 50%;
   }
-  
+
   &--success {
     background: rgba($h3x-success, 0.2);
     color: $h3x-success;
-    
+
     &::before {
       background: $h3x-success;
     }
   }
-  
+
   &--warning {
     background: rgba($h3x-warning, 0.2);
     color: $h3x-warning;
-    
+
     &::before {
       background: $h3x-warning;
     }
   }
-  
+
   &--error {
     background: rgba($h3x-error, 0.2);
     color: $h3x-error;
-    
+
     &::before {
       background: $h3x-error;
     }
   }
-  
+
   &--info {
     background: rgba($h3x-primary, 0.2);
     color: $h3x-primary;
-    
+
     &::before {
       background: $h3x-primary;
     }
@@ -231,7 +233,7 @@ body {
 .h3x-loading {
   @include flex-center;
   gap: $spacing-sm;
-  
+
   &__spinner {
     width: 20px;
     height: 20px;
@@ -240,7 +242,7 @@ body {
     border-radius: 50%;
     animation: rotate 1s linear infinite;
   }
-  
+
   &__text {
     @include text-style($font-size-sm, normal, $h3x-text-muted);
   }
@@ -249,7 +251,7 @@ body {
 // Tooltips
 .h3x-tooltip {
   position: relative;
-  
+
   &::after {
     content: attr(data-tooltip);
     position: absolute;
@@ -268,7 +270,7 @@ body {
     z-index: $z-tooltip;
     margin-bottom: $spacing-xs;
   }
-  
+
   &:hover::after {
     opacity: 1;
   }
@@ -277,18 +279,18 @@ body {
 // Canvas container
 .h3x-canvas-container {
   @include canvas-container;
-  
+
   &__overlay {
     @include full-overlay;
     @include flex-center;
     background: rgba($h3x-bg-primary, 0.8);
     z-index: 10;
-    
+
     &--hidden {
       display: none;
     }
   }
-  
+
   &__controls {
     position: absolute;
     top: $spacing-sm;
@@ -302,11 +304,11 @@ body {
 // Hexagonal elements
 .h3x-hex {
   @include hex-border;
-  
+
   &--glow {
     @include hex-glow;
   }
-  
+
   &--pulse {
     animation: hexPulse 2s infinite;
   }
@@ -314,7 +316,7 @@ body {
 
 // Responsive utilities
 .h3x-hide-mobile {
-  @media (max-width: map-get($grid-breakpoints, md) - 1px) {
+  @media (max-width: calc(map-get($grid-breakpoints, md) - 1px)) {
     display: none !important;
   }
 }
@@ -343,9 +345,20 @@ body {
   .h3x-no-print {
     display: none !important;
   }
-  
+
   body {
     background: white !important;
     color: black !important;
   }
+}
+
+/* Log output box styles for modular interface */
+#log-output {
+  background: #000;
+  color: #0f0;
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: monospace;
+  height: 400px;
+  overflow-y: auto;
 }

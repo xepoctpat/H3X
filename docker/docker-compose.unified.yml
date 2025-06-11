@@ -1,0 +1,364 @@
+version: '3.8'
+
+services:
+  # ================================
+  # REVERSE PROXY & LOAD BALANCER
+  # ================================
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: h3x-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - h3x-server
+      - h3x-lmstudio
+    networks:
+      - hex-flup-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ================================
+  # DATABASE INITIALIZATION
+  # ================================
+  mongodb-init:
+    image: mongo:7
+    container_name: h3x-mongodb-init
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin_password
+      - MONGO_INITDB_DATABASE=h3x_unified
+    volumes:
+      - ./database-init/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js:ro
+    networks:
+      - hex-flup-network
+    depends_on:
+      - mongodb
+    command: ["mongosh", "--host", "mongodb:27017", "--file", "/docker-entrypoint-initdb.d/init-mongodb.js"]
+  redis-init:
+    image: redis:alpine
+    container_name: h3x-redis-init
+    volumes:
+      - ./database-init/init-redis.sh:/init-redis.sh:ro
+    networks:
+      - hex-flup-network
+    depends_on:
+      - h3x-redis
+    entrypoint: ["sh", "/init-redis.sh"]
+
+  # ================================
+  # CORE H3X SERVICES
+  # ================================
+  protocol-server:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+    container_name: h3x-protocol-server
+    ports:
+      - "8081:8080"
+    environment:
+      - LOG_LEVEL=debug
+    networks:
+      - hex-flup-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  h3x-server:
+    build:
+      context: .
+      dockerfile: dockerfile.h3x
+    container_name: h3x-server
+    ports:
+      - "4978:4978"
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+      - ./scripts:/app/scripts:ro
+      - ./flups-integration:/app/flups-integration:ro
+    environment:
+      - NODE_ENV=production
+      - PROTOCOL_SERVER_URL=http://h3x-protocol-server:8080
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - MONGODB_URL=mongodb://h3x-mongodb:27017/h3x
+      - REDIS_URL=redis://h3x-redis:6379
+    networks:
+      - hex-flup-network
+    depends_on:
+      protocol-server:
+        condition: service_healthy
+      h3x-mongodb:
+        condition: service_healthy
+      h3x-redis:
+        condition: service_started
+
+  # fLups Frontend Application
+  h3x-frontend:
+    build:
+      context: ./flups-integration
+      dockerfile: Dockerfile
+    container_name: h3x-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://h3x-backend:3007
+      - WS_URL=ws://h3x-websocket:3008
+      - H3X_SERVER_URL=http://h3x-server:4978
+    networks:
+      - hex-flup-network
+    depends_on:
+      - h3x-backend
+      - h3x-websocket
+      - h3x-server
+
+  # fLups Backend API Server
+  h3x-backend:
+    image: node:18-alpine
+    working_dir: /app
+    command: node flups-integration/src/backend/h3x-api-server.js
+    container_name: h3x-backend
+    ports:
+      - "3007:3007"
+    environment:
+      - NODE_ENV=production
+      - DB_URL=mongodb://h3x-mongodb:27017/h3x
+      - REDIS_URL=redis://h3x-redis:6379
+      - H3X_SERVER_URL=http://h3x-server:4978
+      - PROTOCOL_SERVER_URL=http://h3x-protocol-server:8080
+    volumes:
+      - ./flups-integration/src/backend:/app/flups-integration/src/backend
+      - ./package.json:/app/package.json
+    networks:
+      - hex-flup-network
+    depends_on:
+      h3x-mongodb:
+        condition: service_healthy
+      h3x-redis:
+        condition: service_started
+
+  # fLups WebSocket Server
+  h3x-websocket:
+    image: node:18-alpine
+    working_dir: /app
+    command: node flups-integration/src/backend/h3x-websocket-server.js
+    container_name: h3x-websocket
+    ports:
+      - "3008:3008"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://h3x-redis:6379
+      - H3X_SERVER_URL=http://h3x-server:4978
+    volumes:
+      - ./flups-integration/src/backend:/app/flups-integration/src/backend
+      - ./package.json:/app/package.json
+    networks:
+      - hex-flup-network
+    depends_on:
+      h3x-redis:
+        condition: service_started
+
+  # LM Studio Server Container
+  h3x-lmstudio:
+    image: ghcr.io/lm-studio/lm-studio:latest
+    container_name: h3x-lmstudio
+    ports:
+      - "1234:1234"
+      - "1235:1235"
+    environment:
+      - LMSTUDIO_API_PORT=1234
+      - LMSTUDIO_MODEL_PATH=/models
+      - LMSTUDIO_CORS_ALLOW_ORIGIN=*
+    volumes:
+      - ./models:/models:ro
+      - lmstudio-cache:/root/.cache/lm-studio
+    networks:
+      - hex-flup-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1234/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Response Output Processor
+  h3x-response-processor:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile.response-processor
+    container_name: h3x-response-processor
+    environment:
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - REDIS_URL=redis://h3x-redis:6379
+      - H3X_SERVER_URL=http://h3x-server:4978
+    volumes:
+      - ./scripts:/app/scripts:ro
+      - response-outputs:/app/outputs
+    networks:
+      - hex-flup-network
+    depends_on:
+      h3x-lmstudio:
+        condition: service_healthy
+      h3x-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # MongoDB Database
+  h3x-mongodb:
+    image: mongo:6.0
+    container_name: h3x-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=h3x
+      - MONGO_INITDB_ROOT_PASSWORD=h3x-secure-password
+      - MONGO_INITDB_DATABASE=h3x
+    volumes:
+      - mongodb_data:/data/db
+      - ./flups-integration/docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - hex-flup-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/h3x --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # Redis Cache & Message Broker
+  h3x-redis:
+    image: redis:7-alpine
+    container_name: h3x-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - hex-flup-network
+    restart: unless-stopped
+
+  # Prometheus Monitoring
+  h3x-prometheus:
+    image: prom/prometheus:latest
+    container_name: h3x-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./flups-integration/docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - hex-flup-network
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  h3x-grafana:
+    image: grafana/grafana:latest
+    container_name: h3x-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=h3x-admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./flups-integration/docker/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./flups-integration/docker/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - hex-flup-network
+    depends_on:
+      - h3x-prometheus
+    restart: unless-stopped
+
+  # Real-Time Data Ingestion Services
+  data-ingestion-weather:
+    build:
+      context: ./real-time-data
+      dockerfile: Dockerfile.weather
+    container_name: h3x-data-weather
+    environment:
+      - REDIS_URL=redis://h3x-redis:6379
+      - API_KEY=${WEATHER_API_KEY}
+      - UPDATE_INTERVAL=300
+    networks:
+      - hex-flup-network
+    depends_on:
+      h3x-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  data-ingestion-financial:
+    build:
+      context: ./real-time-data
+      dockerfile: Dockerfile.financial
+    container_name: h3x-data-financial
+    environment:
+      - REDIS_URL=redis://h3x-redis:6379
+      - API_KEY=${FINANCIAL_API_KEY}
+      - UPDATE_INTERVAL=60
+    networks:
+      - hex-flup-network
+    depends_on:
+      h3x-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # Feedback Loop Processor
+  feedback-processor:
+    build:
+      context: ./feedback-loops
+      dockerfile: Dockerfile
+    container_name: h3x-feedback-processor
+    environment:
+      - REDIS_URL=redis://h3x-redis:6379
+      - MONGODB_URL=mongodb://h3x-mongodb:27017/h3x
+      - H3X_SERVER_URL=http://h3x-server:4978
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+    volumes:
+      - ./feedback-loops:/app
+      - feedback-outputs:/app/outputs
+    networks:
+      - hex-flup-network
+    depends_on:
+      h3x-mongodb:
+        condition: service_healthy
+      h3x-redis:
+        condition: service_started
+      h3x-lmstudio:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    name: h3x-mongodb-data
+  redis_data:
+    name: h3x-redis-data
+  prometheus_data:
+    name: h3x-prometheus-data
+  grafana_data:
+    name: h3x-grafana-data
+  lmstudio-cache:
+    name: h3x-lmstudio-cache
+  response-outputs:
+    name: h3x-response-outputs
+  feedback-outputs:
+    name: h3x-feedback-outputs
+
+networks:
+  hex-flup-network:
+    external: true

@@ -1,0 +1,170 @@
+version: '3.8'
+
+services:
+  # LM Studio Server Container - Development Configuration
+  h3x-lmstudio:
+    image: ghcr.io/lm-studio/lm-studio:latest
+    container_name: h3x-lmstudio-dev
+    ports:
+      - '1234:1234'
+      - '1235:1235'
+    environment:
+      - LMSTUDIO_API_PORT=1234
+      - LMSTUDIO_MODEL_PATH=/models
+      - LMSTUDIO_CORS_ALLOW_ORIGIN=*
+      - DEBUG=true
+      - LOG_LEVEL=debug
+    volumes:
+      - ./models:/models:rw # Read-write for development
+      - lmstudio-cache-dev:/root/.cache/lm-studio
+    networks:
+      - h3x-neural-network-dev
+    restart: 'no' # Manual restart for development
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:1234/v1/models']
+      interval: 15s # Faster checks for development
+      timeout: 5s
+      retries: 2
+      start_period: 30s
+
+  # H3X Main Application - Development Configuration
+  h3x-main:
+    build:
+      context: .
+      dockerfile: Dockerfile.h3x
+      target: development # If multi-stage build exists
+    container_name: h3x-main-dev
+    ports:
+      - '3978:3978'
+      - '8081:8081'
+      - '9239:9239' # Debug port
+    environment:
+      - NODE_ENV=development
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - DOCKER_MODE=true
+      - H3X_NETWORK_MODE=docker
+      - DEBUG=h3x:*
+      - LOG_LEVEL=debug
+    volumes:
+      - ./Src:/app/Src:rw # Read-write for hot reload
+      - ./Public:/app/Public:rw
+      - ./Scripts:/app/Scripts:rw
+      - h3x-logs-dev:/app/logs
+      - /app/node_modules # Exclude node_modules from bind mount
+    depends_on:
+      h3x-lmstudio:
+        condition: service_healthy
+    networks:
+      - h3x-neural-network-dev
+    restart: 'no'
+    command: ['npm', 'run', 'dev'] # Development command
+
+  # H3X Protocol Server - Development Configuration
+  h3x-protocol:
+    build:
+      context: .
+      dockerfile: Dockerfile.protocol
+      target: development
+    container_name: h3x-protocol-dev
+    ports:
+      - '8080:8080'
+      - '8090:8090' # Additional debug port
+    environment:
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - H3X_MAIN_URL=http://h3x-main:3978
+      - DEBUG=true
+      - LOG_LEVEL=debug
+      - GO_ENV=development
+    volumes:
+      - ./hexperiment-system-protocol:/app:rw # For hot reload
+    networks:
+      - h3x-neural-network-dev
+    depends_on:
+      - h3x-main
+    restart: 'no'
+
+  # Response Output Processor - Development Configuration
+  h3x-response-processor:
+    build:
+      context: ./Scripts
+      dockerfile: Dockerfile.response-processor
+      target: development
+    container_name: h3x-response-processor-dev
+    environment:
+      - LMSTUDIO_URL=http://h3x-lmstudio:1234
+      - REDIS_URL=redis://h3x-redis:6379
+      - DEBUG=true
+      - LOG_LEVEL=debug
+    volumes:
+      - ./Scripts:/app/Scripts:rw
+      - response-outputs-dev:/app/outputs
+    networks:
+      - h3x-neural-network-dev
+    depends_on:
+      - h3x-lmstudio
+      - h3x-redis
+    restart: 'no'
+
+  # Redis for response caching - Development Configuration
+  h3x-redis:
+    image: redis:7-alpine
+    container_name: h3x-redis-dev
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data-dev:/data
+    networks:
+      - h3x-neural-network-dev
+    restart: 'no'
+    command: ['redis-server', '--appendonly', 'yes', '--loglevel', 'debug']
+
+  # Hexperiment MCP Protocol Server - Development Configuration
+  hexperiment-mcp:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+      target: development
+    container_name: hexperiment-mcp-dev
+    ports:
+      - '8082:8080' # Different port to avoid conflicts
+      - '8092:8092' # Debug port
+    environment:
+      - PORT=8080
+      - GO_ENV=development
+      - DEBUG=true
+      - LOG_LEVEL=debug
+      - API_KEY=dev-api-key-12345
+      - CORS_ALLOWED_ORIGINS=http://localhost:3978,http://localhost:8081
+    volumes:
+      - ./hexperiment-system-protocol:/app:rw # For hot reload
+    networks:
+      - h3x-neural-network-dev
+    restart: 'no'
+
+  # Development Tools Container
+  h3x-devtools:
+    image: alpine:latest
+    container_name: h3x-devtools
+    volumes:
+      - ./:/workspace:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - h3x-neural-network-dev
+    command: ['tail', '-f', '/dev/null'] # Keep container running
+    profiles:
+      - tools # Only start with --profile tools
+
+networks:
+  h3x-neural-network-dev:
+    driver: bridge
+    name: h3x-neural-network-dev
+
+volumes:
+  lmstudio-cache-dev:
+    name: h3x-lmstudio-cache-dev
+  h3x-logs-dev:
+    name: h3x-logs-dev
+  response-outputs-dev:
+    name: h3x-response-outputs-dev
+  redis-data-dev:
+    name: h3x-redis-data-dev

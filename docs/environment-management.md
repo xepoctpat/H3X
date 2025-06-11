@@ -1,10 +1,12 @@
 # H3X Environment Management System
 
-This document describes the comprehensive environment management system for the H3X Hexperiment System Protocol.
+This document describes the comprehensive environment management system for the H3X Hexperiment
+System Protocol.
 
 ## Overview
 
-The environment management system provides easy switching between development and production environments with optimized configurations for each use case.
+The environment management system provides easy switching between development and production
+environments with optimized configurations for each use case.
 
 ## Available Environments
 

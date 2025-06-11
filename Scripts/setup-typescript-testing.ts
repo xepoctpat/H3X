@@ -4,9 +4,9 @@
  * Comprehensive test configuration and utilities for TypeScript testing
  */
 
+import { exec } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
@@ -383,7 +383,11 @@ describe('H3X System Integration Tests', () => {
 });
 `.trim();
 
-    const integrationTestPath = path.join(this.testDir, 'integration', 'system-integration.test.ts');
+    const integrationTestPath = path.join(
+      this.testDir,
+      'integration',
+      'system-integration.test.ts',
+    );
     fs.writeFileSync(integrationTestPath, integrationTestContent);
 
     this.log('Created sample test files', 'success');
@@ -391,10 +395,10 @@ describe('H3X System Integration Tests', () => {
 
   async updateVitestConfig(): Promise<void> {
     const vitestConfigPath = path.join(this.projectRoot, 'vitest.config.ts');
-    
+
     if (!fs.existsSync(vitestConfigPath)) {
       this.log('vitest.config.ts not found, creating...', 'warning');
-      
+
       const vitestConfig = `
 import { defineConfig } from 'vitest/config';
 import path from 'path';
@@ -485,7 +489,7 @@ export default defineConfig({
 
   async installTestDependencies(): Promise<void> {
     this.log('Installing test dependencies...', 'info');
-    
+
     const dependencies = [
       '@testing-library/dom@latest',
       '@testing-library/jest-dom@latest',
@@ -515,7 +519,7 @@ export default defineConfig({
       await this.createTestSetupFile();
       await this.createSampleTests();
       await this.updateVitestConfig();
-      
+
       this.log('TypeScript testing infrastructure setup completed', 'success');
       this.displayUsageInstructions();
     } catch (error: any) {
@@ -526,7 +530,7 @@ export default defineConfig({
 
   private displayUsageInstructions(): void {
     console.log('\\n🎉 TypeScript Testing Setup Complete!\\n');
-    
+
     console.log('📋 Available test commands:');
     const commands = [
       { cmd: 'npm run test', desc: 'Run all tests' },

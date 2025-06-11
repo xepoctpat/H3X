@@ -15,11 +15,5 @@
     "semi": ["error", "always"],
     "quotes": ["error", "single"]
   },
-  "ignorePatterns": [
-    "node_modules/",
-    "dist/",
-    "build/",
-    "coverage/",
-    "*.min.js"
-  ]
+  "ignorePatterns": ["node_modules/", "dist/", "build/", "coverage/", "*.min.js"]
 }

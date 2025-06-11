@@ -5,16 +5,16 @@
  * Orchestrates linting, testing, building, and monitoring workflows
  */
 
-import { exec, spawn, ChildProcess } from 'child_process';
-import { promisify } from 'util';
+import { exec } from 'child_process';
 import { promises as fs } from 'fs';
-import * as path from 'path';
 import * as os from 'os';
+import * as path from 'path';
+import { promisify } from 'util';
+
 import {
   AutomationConfig,
   AutomationResult,
   ProcessInfo,
-  LogEntry,
   WorkflowStep,
   HealthCheckResult,
 } from './types';
@@ -66,8 +66,8 @@ class H3XDevAutomation {
       },
       docker: {
         enabled: true,
-        compose: 'docker-compose.unified.yml',
-        services: ['h3x-core', 'mongodb', 'redis'],
+        compose: 'docker-compose.simple.yml',
+        services: ['h3x-server', 'h3x-lmstudio'],
         healthCheck: true,
       },
     };
@@ -86,7 +86,7 @@ class H3XDevAutomation {
       const fullPath = path.join(this.projectRoot, dir);
       try {
         await fs.mkdir(fullPath, { recursive: true });
-      } catch (error) {
+      } catch {
         // Directory might already exist
       }
     }
@@ -97,20 +97,13 @@ class H3XDevAutomation {
       const configPath = path.join(this.projectRoot, 'scripts', 'automation-config.json');
       const configData = await fs.readFile(configPath, 'utf-8');
       this.config = { ...this.config, ...JSON.parse(configData) };
-    } catch (error) {
+    } catch {
       this.log('Using default configuration', 'info');
     }
   }
 
   private log(message: string, level: 'info' | 'warn' | 'error' | 'debug' = 'info'): void {
     const timestamp = new Date().toISOString();
-    const logEntry: LogEntry = {
-      timestamp: new Date(),
-      level,
-      message,
-      module: 'H3XDevAutomation',
-    };
-
     const logLine = `[${timestamp}] ${level.toUpperCase()}: ${message}\n`;
 
     // Console output with colors
@@ -243,10 +236,6 @@ class H3XDevAutomation {
 
     try {
       const healthResults: HealthCheckResult[] = [];
-
-      // Check Node.js and npm
-      const nodeVersion = await this.executeCommand('node --version', 'Node.js version check');
-      const npmVersion = await this.executeCommand('npm --version', 'npm version check');
 
       // Check TypeScript compiler
       await this.executeCommand('npx tsc --version', 'TypeScript compiler check');
@@ -562,14 +551,16 @@ async function main(): Promise<void> {
       case 'security':
         result = await automation.runSecurityScan();
         break;
-      case 'workflow':
+      case 'workflow': {
         const workflowName = args[1] || 'quick';
         result = await automation.executeWorkflow(workflowName);
         break;
-      case 'report':
+      }
+      case 'report': {
         const reportPath = await automation.generateReport();
         result = { success: true, message: `Report generated: ${reportPath}`, duration: 0 };
         break;
+      }
       case 'help':
       default:
         console.log(`
@@ -614,6 +605,10 @@ Examples:
 }
 
 // Run if called directly
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  void main();
+}
 
 export { H3XDevAutomation };
+
+// All Azure, Microsoft, and Teams-related logic has been removed from this automation system.

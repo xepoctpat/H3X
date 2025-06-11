@@ -77,23 +77,16 @@ class LegacyCleanup {
       /^tailwind\.config\.js$/,
       /^postcss\.config\.js$/,
     ];
-    
-    return configPatterns.some(pattern => pattern.test(fileName));
+
+    return configPatterns.some((pattern) => pattern.test(fileName));
   }
 
   private shouldSkipFile(filePath: string): boolean {
     const fileName = path.basename(filePath);
-    const skipPatterns = [
-      /node_modules/,
-      /dist/,
-      /build/,
-      /coverage/,
-      /\.git/,
-      /archive/,
-    ];
+    const skipPatterns = [/node_modules/, /dist/, /build/, /coverage/, /\.git/, /archive/];
 
     // Skip if file is in a directory we should ignore
-    if (skipPatterns.some(pattern => pattern.test(filePath))) {
+    if (skipPatterns.some((pattern) => pattern.test(filePath))) {
       return true;
     }
 
@@ -112,18 +105,18 @@ class LegacyCleanup {
 
   async findJavaScriptFiles(dir: string = this.projectRoot): Promise<string[]> {
     const jsFiles: string[] = [];
-    
+
     try {
       const entries = await readdir(dir);
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dir, entry);
         const stats = await stat(fullPath);
-        
+
         if (stats.isDirectory()) {
           // Skip certain directories
           if (!['node_modules', 'dist', 'build', 'coverage', '.git'].includes(entry)) {
-            jsFiles.push(...await this.findJavaScriptFiles(fullPath));
+            jsFiles.push(...(await this.findJavaScriptFiles(fullPath)));
           }
         } else if (entry.endsWith('.js') && !this.shouldSkipFile(fullPath)) {
           jsFiles.push(fullPath);
@@ -132,7 +125,7 @@ class LegacyCleanup {
     } catch (error: any) {
       this.log(`Error reading directory ${dir}: ${error.message}`, 'error');
     }
-    
+
     return jsFiles;
   }
 
@@ -156,7 +149,7 @@ class LegacyCleanup {
         reason: 'Replaced by TypeScript equivalent',
         typeScriptEquivalent: jsFilePath.replace(/\.js$/, '.ts'),
       };
-      
+
       fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
 
       // Remove the original file
@@ -172,7 +165,7 @@ class LegacyCleanup {
 
   async performCleanup(dryRun: boolean = false): Promise<CleanupResult> {
     this.log('Starting legacy JavaScript cleanup...', 'info');
-    
+
     if (!dryRun) {
       await this.ensureArchiveDirectory();
     }
@@ -182,7 +175,7 @@ class LegacyCleanup {
 
     for (const jsFile of jsFiles) {
       const relativePath = path.relative(this.projectRoot, jsFile);
-      
+
       if (this.shouldSkipFile(jsFile)) {
         this.result.skipped.push(relativePath);
         this.log(`Skipped: ${relativePath} (no TS equivalent or config file)`, 'warning');
@@ -205,16 +198,19 @@ class LegacyCleanup {
     this.log('\\n=== Cleanup Report ===', 'info');
     this.log(`Files archived: ${this.result.archived.length}`, 'success');
     this.log(`Files skipped: ${this.result.skipped.length}`, 'warning');
-    this.log(`Errors: ${this.result.errors.length}`, this.result.errors.length > 0 ? 'error' : 'info');
+    this.log(
+      `Errors: ${this.result.errors.length}`,
+      this.result.errors.length > 0 ? 'error' : 'info',
+    );
 
     if (this.result.archived.length > 0) {
       this.log('\\nArchived files:', 'info');
-      this.result.archived.forEach(file => console.log(`  - ${file}`));
+      this.result.archived.forEach((file) => console.log(`  - ${file}`));
     }
 
     if (this.result.errors.length > 0) {
       this.log('\\nErrors:', 'error');
-      this.result.errors.forEach(error => console.log(`  - ${error}`));
+      this.result.errors.forEach((error) => console.log(`  - ${error}`));
     }
 
     // Save detailed report
@@ -242,7 +238,9 @@ async function main(): Promise<void> {
   const force = args.includes('--force') || args.includes('-f');
 
   if (!force && !dryRun) {
-    console.log('\\n⚠️  This script will archive JavaScript files that have TypeScript equivalents.');
+    console.log(
+      '\\n⚠️  This script will archive JavaScript files that have TypeScript equivalents.',
+    );
     console.log('   Run with --dry-run to see what would be archived.');
     console.log('   Run with --force to perform the actual cleanup.');
     console.log('   Example: npx tsx scripts/legacy-cleanup.ts --dry-run\\n');

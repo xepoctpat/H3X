@@ -5,9 +5,9 @@
  * Provides comprehensive automation for deployment, cleanup, and project status management
  */
 
+import { exec } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { spawn, exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
@@ -15,7 +15,14 @@ const execAsync = promisify(exec);
 class H3XAutomation {
   projectRoot: string;
   timestamp: string;
-  config: any;
+  config: {
+    archiveDir: string;
+    scriptsDir: string;
+    services: {
+      h3x: { port: number; healthPath: string };
+      protocol: { port: number; healthPath: string };
+    };
+  };
 
   constructor() {
     this.projectRoot = process.cwd();
@@ -30,7 +37,7 @@ class H3XAutomation {
     };
   }
 
-  log(message, type = 'info') {
+  log(message: string, type: 'info' | 'success' | 'warning' | 'error' | 'header' = 'info'): void {
     const colors = {
       info: '\x1b[36m', // Cyan
       success: '\x1b[32m', // Green
@@ -50,30 +57,42 @@ class H3XAutomation {
     console.log(`${colors[type]}${icons[type]} ${message}${reset}`);
   }
 
-  async executeCommand(command, options = {}) {
+  async executeCommand(
+    command: string,
+    options: any = {},
+  ): Promise<{
+    success: boolean;
+    stdout?: string;
+    stderr?: string;
+    error?: string;
+  }> {
     try {
       const { stdout, stderr } = await execAsync(command, options);
-      return { success: true, stdout, stderr };
-    } catch (error) {
+      return {
+        success: true,
+        stdout: stdout.toString(),
+        stderr: stderr.toString(),
+      };
+    } catch (error: any) {
       return {
         success: false,
         error: error.message,
-        stdout: error.stdout,
-        stderr: error.stderr,
+        stdout: error.stdout?.toString(),
+        stderr: error.stderr?.toString(),
       };
     }
   }
 
-  async checkDockerServices() {
+  async checkDockerServices(): Promise<any[]> {
     this.log('Checking Docker services status...', 'info');
 
     try {
       const result = await this.executeCommand('docker-compose ps --format json');
-      if (result.success && result.stdout.trim()) {
+      if (result.success && result.stdout?.trim()) {
         const services = result.stdout
           .trim()
           .split('\n')
-          .map((line) => JSON.parse(line));
+          .map((line: string) => JSON.parse(line));
 
         for (const service of services) {
           const status = service.State === 'running' ? 'success' : 'error';
@@ -84,13 +103,16 @@ class H3XAutomation {
         this.log('No Docker services found or docker-compose not available', 'warning');
         return [];
       }
-    } catch (error) {
+    } catch (error: any) {
       this.log(`Error checking Docker services: ${error.message}`, 'error');
       return [];
     }
   }
-
-  async checkServiceHealth(serviceName, port, healthPath) {
+  async checkServiceHealth(
+    serviceName: string,
+    port: number,
+    healthPath: string,
+  ): Promise<{ healthy: boolean; data?: any; status?: number; error?: string }> {
     try {
       const response = await fetch(`http://localhost:${port}${healthPath}`);
       if (response.ok) {
@@ -101,19 +123,18 @@ class H3XAutomation {
         this.log(`${serviceName} health check: Failed (${response.status})`, 'warning');
         return { healthy: false, status: response.status };
       }
-    } catch (error) {
+    } catch (error: any) {
       this.log(`${serviceName} health check: Error (${error.message})`, 'error');
       return { healthy: false, error: error.message };
     }
   }
-
-  async getProjectStatus() {
+  async getProjectStatus(): Promise<any> {
     this.log('H3X Project Status Report', 'header');
 
     // Git status
     const gitStatus = await this.executeCommand('git status --porcelain');
     if (gitStatus.success) {
-      if (gitStatus.stdout.trim()) {
+      if (gitStatus.stdout?.trim()) {
         this.log('Uncommitted changes detected:', 'warning');
         console.log(gitStatus.stdout);
       } else {
@@ -124,39 +145,38 @@ class H3XAutomation {
     // Current branch
     const branch = await this.executeCommand('git branch --show-current');
     if (branch.success) {
-      this.log(`Current branch: ${branch.stdout.trim()}`, 'info');
+      this.log(`Current branch: ${branch.stdout?.trim()}`, 'info');
     }
 
     // Docker services
-    await this.checkDockerServices();
-
-    // Service health checks
+    await this.checkDockerServices(); // Service health checks
     for (const [name, config] of Object.entries(this.config.services)) {
-      await this.checkServiceHealth(name, config.port, config.healthPath);
+      const serviceConfig = config as { port: number; healthPath: string };
+      await this.checkServiceHealth(name, serviceConfig.port, serviceConfig.healthPath);
     }
 
     // Recent tags
     const tags = await this.executeCommand('git tag --sort=-version:refname');
-    if (tags.success && tags.stdout.trim()) {
+    if (tags.success && tags.stdout?.trim()) {
       this.log('Recent git tags:', 'info');
       tags.stdout
         .trim()
         .split('\n')
         .slice(0, 3)
-        .forEach((tag) => {
+        .forEach((tag: string) => {
           console.log(`   📋 ${tag}`);
         });
     }
 
     return {
-      gitClean: !gitStatus.stdout.trim(),
+      gitClean: !gitStatus.stdout?.trim(),
       currentBranch: branch.stdout?.trim(),
       dockerServices: await this.checkDockerServices(),
       timestamp: new Date().toISOString(),
     };
   }
 
-  async deployServices(environment = 'development') {
+  async deployServices(environment = 'development'): Promise<boolean> {
     this.log(`Deploying H3X services (${environment})`, 'header');
 
     // Build and start containers
@@ -175,7 +195,12 @@ class H3XAutomation {
     // Health checks
     let allHealthy = true;
     for (const [name, config] of Object.entries(this.config.services)) {
-      const health = await this.checkServiceHealth(name, config.port, config.healthPath);
+      const serviceConfig = config as { port: number; healthPath: string };
+      const health = await this.checkServiceHealth(
+        name,
+        serviceConfig.port,
+        serviceConfig.healthPath,
+      );
       if (!health.healthy) {
         allHealthy = false;
       }
@@ -193,8 +218,7 @@ class H3XAutomation {
 
     return allHealthy;
   }
-
-  async createGitCheckpoint(message) {
+  async createGitCheckpoint(message?: string): Promise<void> {
     this.log('Creating git checkpoint...', 'header');
 
     // Add all files
@@ -202,13 +226,13 @@ class H3XAutomation {
 
     // Check if there are changes to commit
     const status = await this.executeCommand('git status --porcelain');
-    if (!status.stdout.trim()) {
+    if (!status.stdout?.trim()) {
       this.log('No changes to commit', 'info');
       return;
     }
 
     // Commit changes
-    const commitMessage = message || `H3X checkpoint - ${this.timestamp}`;
+    const commitMessage = message ?? `H3X checkpoint - ${this.timestamp}`;
     const commit = await this.executeCommand(`git commit -m "${commitMessage}"`);
 
     if (commit.success) {
@@ -228,7 +252,7 @@ class H3XAutomation {
     }
   }
 
-  async generatePRContent() {
+  async generatePRContent(): Promise<string> {
     this.log('Generating pull request content...', 'header');
 
     const status = await this.getProjectStatus();
@@ -298,7 +322,7 @@ Ready for production deployment and team collaboration.
     return prFile;
   }
 
-  async runFullAutomation() {
+  async runFullAutomation(): Promise<void> {
     this.log('Running full H3X automation sequence...', 'header');
 
     try {
@@ -323,7 +347,7 @@ Ready for production deployment and team collaboration.
         console.log('   • Protocol Server: http://localhost:8081');
         console.log('   • Health Monitor: http://localhost:8081/api/health\n');
       }
-    } catch (error) {
+    } catch (error: any) {
       this.log(`Automation failed: ${error.message}`, 'error');
       throw error;
     }
@@ -344,7 +368,7 @@ async function main(): Promise<any> {
         await automation.deployServices();
         break;
       case 'checkpoint':
-        await automation.createGitCheckpoint();
+        await automation.createGitCheckpoint('H3X automated checkpoint');
         break;
       case 'pr':
         await automation.generatePRContent();
@@ -375,14 +399,14 @@ Examples:
 `);
         break;
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(`\x1b[31m❌ Error: ${error.message}\x1b[0m`);
     process.exit(1);
   }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  void main();
 }
 
 export default H3XAutomation;

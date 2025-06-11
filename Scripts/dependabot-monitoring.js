@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * H3X Dependabot Automation Monitoring System
- * 
+ *
  * Provides comprehensive monitoring, alerting, and health checking for
  * the Dependabot automation system including:
  * - Real-time health monitoring
@@ -26,7 +26,7 @@ class DependabotMonitoring extends EventEmitter {
     this.logDir = path.join(this.projectRoot, 'logs/monitoring');
     this.metricsFile = path.join(this.logDir, 'dependabot-metrics.json');
     this.alertsFile = path.join(this.logDir, 'dependabot-alerts.json');
-    
+
     this.metrics = {
       totalPRsProcessed: 0,
       autoMergedPRs: 0,
@@ -40,10 +40,10 @@ class DependabotMonitoring extends EventEmitter {
       performance: {
         cpuUsage: [],
         memoryUsage: [],
-        processingTimes: []
-      }
+        processingTimes: [],
+      },
     };
-    
+
     this.alerts = {
       active: [],
       resolved: [],
@@ -53,11 +53,11 @@ class DependabotMonitoring extends EventEmitter {
         thresholds: {
           processingTime: 30000, // 30 seconds
           errorRate: 0.1, // 10%
-          consecutiveFailures: 3
-        }
-      }
+          consecutiveFailures: 3,
+        },
+      },
     };
-    
+
     this.healthStatus = {
       status: 'healthy',
       lastCheck: new Date().toISOString(),
@@ -66,10 +66,10 @@ class DependabotMonitoring extends EventEmitter {
         automationScript: 'unknown',
         webhookHandler: 'unknown',
         githubActions: 'unknown',
-        dependencies: 'unknown'
-      }
+        dependencies: 'unknown',
+      },
     };
-    
+
     this.init();
   }
 
@@ -79,7 +79,7 @@ class DependabotMonitoring extends EventEmitter {
       await this.loadExistingMetrics();
       await this.loadExistingAlerts();
       this.startMonitoring();
-      
+
       // Emit ready event
       this.emit('ready');
       console.log('✅ Dependabot monitoring system initialized');
@@ -135,7 +135,7 @@ class DependabotMonitoring extends EventEmitter {
     try {
       this.metrics.totalPRsProcessed++;
       this.metrics.lastUpdated = new Date().toISOString();
-      
+
       // Update daily stats
       const today = new Date().toISOString().split('T')[0];
       if (!this.metrics.dailyStats[today]) {
@@ -143,11 +143,11 @@ class DependabotMonitoring extends EventEmitter {
           processed: 0,
           autoMerged: 0,
           blocked: 0,
-          errors: 0
+          errors: 0,
         };
       }
       this.metrics.dailyStats[today].processed++;
-      
+
       // Record result
       if (result === 'auto-merged') {
         this.metrics.autoMergedPRs++;
@@ -159,42 +159,41 @@ class DependabotMonitoring extends EventEmitter {
         this.metrics.dailyStats[today].errors++;
         this.recordError(`PR ${prNumber} processing failed`, details.error);
       }
-      
+
       // Record processing time
       this.metrics.performance.processingTimes.push({
         timestamp: new Date().toISOString(),
         prNumber,
-        time: processingTime
+        time: processingTime,
       });
-      
+
       // Keep only last 100 processing times
       if (this.metrics.performance.processingTimes.length > 100) {
-        this.metrics.performance.processingTimes = 
+        this.metrics.performance.processingTimes =
           this.metrics.performance.processingTimes.slice(-100);
       }
-      
+
       // Calculate average processing time
       const recentTimes = this.metrics.performance.processingTimes.slice(-20);
-      this.metrics.averageProcessingTime = 
+      this.metrics.averageProcessingTime =
         recentTimes.reduce((sum, record) => sum + record.time, 0) / recentTimes.length;
-      
+
       // Calculate success rate
       const totalProcessed = this.metrics.totalPRsProcessed;
       const successfulProcessed = totalProcessed - this.metrics.errors.length;
       this.metrics.successRate = totalProcessed > 0 ? successfulProcessed / totalProcessed : 1;
-      
+
       // Check for alert conditions
       if (processingTime > this.alerts.configuration.thresholds.processingTime) {
         await this.createAlert('high-processing-time', {
           prNumber,
           processingTime,
-          threshold: this.alerts.configuration.thresholds.processingTime
+          threshold: this.alerts.configuration.thresholds.processingTime,
         });
       }
-      
+
       console.log(`📊 Recorded PR ${prNumber} processing: ${result} (${processingTime}ms)`);
       this.emit('pr-processed', { prNumber, result, processingTime, details });
-      
     } catch (error) {
       console.error('❌ Failed to record PR processing:', error.message);
       this.recordError('Metrics recording failed', error);
@@ -207,18 +206,17 @@ class DependabotMonitoring extends EventEmitter {
   async recordSecurityAlert(prNumber, packageName, severity, advisory) {
     try {
       this.metrics.securityAlertsFound++;
-      
+
       await this.createAlert('security-vulnerability', {
         prNumber,
         packageName,
         severity,
         advisory,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
+
       console.log(`🔒 Security alert recorded for PR ${prNumber}: ${packageName} (${severity})`);
       this.emit('security-alert', { prNumber, packageName, severity, advisory });
-      
     } catch (error) {
       console.error('❌ Failed to record security alert:', error.message);
       this.recordError('Security alert recording failed', error);
@@ -232,20 +230,22 @@ class DependabotMonitoring extends EventEmitter {
     const errorRecord = {
       timestamp: new Date().toISOString(),
       message,
-      error: error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      } : null
+      error: error
+        ? {
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          }
+        : null,
     };
-    
+
     this.metrics.errors.push(errorRecord);
-    
+
     // Keep only last 50 errors
     if (this.metrics.errors.length > 50) {
       this.metrics.errors = this.metrics.errors.slice(-50);
     }
-    
+
     console.error(`💥 Error recorded: ${message}`);
     this.emit('error-recorded', errorRecord);
   }
@@ -258,24 +258,24 @@ class DependabotMonitoring extends EventEmitter {
       const healthCheck = {
         timestamp: new Date().toISOString(),
         status: 'healthy',
-        components: {}
+        components: {},
       };
-      
+
       // Check Dependabot configuration
       healthCheck.components.dependabotConfig = await this.checkDependabotConfig();
-      
+
       // Check automation script
       healthCheck.components.automationScript = await this.checkAutomationScript();
-      
+
       // Check webhook handler
       healthCheck.components.webhookHandler = await this.checkWebhookHandler();
-      
+
       // Check GitHub Actions workflow
       healthCheck.components.githubActions = await this.checkGitHubActions();
-      
+
       // Check dependencies
       healthCheck.components.dependencies = await this.checkDependencies();
-      
+
       // Determine overall health
       const componentStatuses = Object.values(healthCheck.components);
       if (componentStatuses.includes('critical')) {
@@ -285,19 +285,18 @@ class DependabotMonitoring extends EventEmitter {
       } else {
         healthCheck.status = 'healthy';
       }
-      
+
       this.healthStatus = healthCheck;
-      
+
       // Create alert if status changed to critical
       if (healthCheck.status === 'critical' && this.healthStatus.status !== 'critical') {
         await this.createAlert('system-critical', {
           components: healthCheck.components,
-          timestamp: healthCheck.timestamp
+          timestamp: healthCheck.timestamp,
         });
       }
-      
+
       this.emit('health-check', healthCheck);
-      
     } catch (error) {
       console.error('❌ Health check failed:', error.message);
       this.recordError('Health check failed', error);
@@ -308,19 +307,19 @@ class DependabotMonitoring extends EventEmitter {
     try {
       const configPath = path.join(this.projectRoot, '.github/dependabot.yml');
       await fs.access(configPath);
-      
+
       const content = await fs.readFile(configPath, 'utf8');
       const yaml = require('js-yaml');
       const config = yaml.load(content);
-      
+
       if (config.version !== 2) {
         return 'warning';
       }
-      
+
       if (!config.updates || config.updates.length === 0) {
         return 'critical';
       }
-      
+
       return 'healthy';
     } catch (error) {
       return 'critical';
@@ -331,11 +330,11 @@ class DependabotMonitoring extends EventEmitter {
     try {
       const scriptPath = path.join(this.projectRoot, 'scripts/dependabot-automation.js');
       await fs.access(scriptPath);
-      
+
       // Try to require the script to check for syntax errors
       delete require.cache[require.resolve(scriptPath)];
       require(scriptPath);
-      
+
       return 'healthy';
     } catch (error) {
       return 'critical';
@@ -346,7 +345,7 @@ class DependabotMonitoring extends EventEmitter {
     try {
       const handlerPath = path.join(this.projectRoot, 'scripts/dependabot-webhook-handler.js');
       await fs.access(handlerPath);
-      
+
       // Check if webhook handler is running (if applicable)
       // This is a simplified check - in production, you might check for active processes
       return 'healthy';
@@ -357,17 +356,20 @@ class DependabotMonitoring extends EventEmitter {
 
   async checkGitHubActions() {
     try {
-      const workflowPath = path.join(this.projectRoot, '.github/workflows/dependabot-automation.yml');
+      const workflowPath = path.join(
+        this.projectRoot,
+        '.github/workflows/dependabot-automation.yml',
+      );
       await fs.access(workflowPath);
-      
+
       const content = await fs.readFile(workflowPath, 'utf8');
       const yaml = require('js-yaml');
       const workflow = yaml.load(content);
-      
+
       if (!workflow.on || !workflow.jobs) {
         return 'warning';
       }
-      
+
       return 'healthy';
     } catch (error) {
       return 'warning';
@@ -379,17 +381,17 @@ class DependabotMonitoring extends EventEmitter {
       const packagePath = path.join(this.projectRoot, 'package.json');
       const content = await fs.readFile(packagePath, 'utf8');
       const packageJson = JSON.parse(content);
-      
+
       // Check for required dependencies
       const requiredDeps = ['js-yaml', '@octokit/rest'];
       const installedDeps = Object.keys(packageJson.dependencies || {});
-      
-      const missingDeps = requiredDeps.filter(dep => !installedDeps.includes(dep));
-      
+
+      const missingDeps = requiredDeps.filter((dep) => !installedDeps.includes(dep));
+
       if (missingDeps.length > 0) {
         return 'warning';
       }
-      
+
       return 'healthy';
     } catch (error) {
       return 'warning';
@@ -403,30 +405,29 @@ class DependabotMonitoring extends EventEmitter {
     try {
       const usage = process.cpuUsage();
       const memory = process.memoryUsage();
-      
+
       this.metrics.performance.cpuUsage.push({
         timestamp: new Date().toISOString(),
         user: usage.user,
-        system: usage.system
+        system: usage.system,
       });
-      
+
       this.metrics.performance.memoryUsage.push({
         timestamp: new Date().toISOString(),
         rss: memory.rss,
         heapUsed: memory.heapUsed,
         heapTotal: memory.heapTotal,
-        external: memory.external
+        external: memory.external,
       });
-      
+
       // Keep only last 100 records
       if (this.metrics.performance.cpuUsage.length > 100) {
         this.metrics.performance.cpuUsage = this.metrics.performance.cpuUsage.slice(-100);
       }
-      
+
       if (this.metrics.performance.memoryUsage.length > 100) {
         this.metrics.performance.memoryUsage = this.metrics.performance.memoryUsage.slice(-100);
       }
-      
     } catch (error) {
       console.error('❌ Failed to collect performance metrics:', error.message);
     }
@@ -439,13 +440,13 @@ class DependabotMonitoring extends EventEmitter {
     try {
       // Check error rate
       const recentErrors = this.metrics.errors.filter(
-        error => new Date(error.timestamp) > new Date(Date.now() - 3600000) // Last hour
+        (error) => new Date(error.timestamp) > new Date(Date.now() - 3600000), // Last hour
       );
-      
+
       const recentProcessed = this.metrics.performance.processingTimes.filter(
-        record => new Date(record.timestamp) > new Date(Date.now() - 3600000)
+        (record) => new Date(record.timestamp) > new Date(Date.now() - 3600000),
       ).length;
-      
+
       if (recentProcessed > 0) {
         const errorRate = recentErrors.length / recentProcessed;
         if (errorRate > this.alerts.configuration.thresholds.errorRate) {
@@ -453,26 +454,27 @@ class DependabotMonitoring extends EventEmitter {
             errorRate,
             threshold: this.alerts.configuration.thresholds.errorRate,
             recentErrors: recentErrors.length,
-            recentProcessed
+            recentProcessed,
           });
         }
       }
-      
+
       // Check consecutive failures
-      const recentFailures = this.metrics.errors.slice(-this.alerts.configuration.thresholds.consecutiveFailures);
+      const recentFailures = this.metrics.errors.slice(
+        -this.alerts.configuration.thresholds.consecutiveFailures,
+      );
       if (recentFailures.length === this.alerts.configuration.thresholds.consecutiveFailures) {
         const allRecent = recentFailures.every(
-          error => new Date(error.timestamp) > new Date(Date.now() - 1800000) // Last 30 minutes
+          (error) => new Date(error.timestamp) > new Date(Date.now() - 1800000), // Last 30 minutes
         );
-        
+
         if (allRecent) {
           await this.createAlert('consecutive-failures', {
             failureCount: recentFailures.length,
-            threshold: this.alerts.configuration.thresholds.consecutiveFailures
+            threshold: this.alerts.configuration.thresholds.consecutiveFailures,
           });
         }
       }
-      
     } catch (error) {
       console.error('❌ Failed to check alert conditions:', error.message);
     }
@@ -489,14 +491,12 @@ class DependabotMonitoring extends EventEmitter {
       message: this.getAlertMessage(type, data),
       data,
       timestamp: new Date().toISOString(),
-      status: 'active'
+      status: 'active',
     };
-    
+
     // Check if similar alert already exists
-    const existingAlert = this.alerts.active.find(
-      a => a.type === type && a.status === 'active'
-    );
-    
+    const existingAlert = this.alerts.active.find((a) => a.type === type && a.status === 'active');
+
     if (existingAlert) {
       // Update existing alert
       existingAlert.data = { ...existingAlert.data, ...data };
@@ -505,10 +505,10 @@ class DependabotMonitoring extends EventEmitter {
       // Add new alert
       this.alerts.active.push(alert);
     }
-    
+
     console.log(`🚨 Alert created: ${alert.message}`);
     this.emit('alert-created', alert);
-    
+
     // Send notifications
     await this.sendAlertNotifications(alert);
   }
@@ -519,9 +519,9 @@ class DependabotMonitoring extends EventEmitter {
       'security-vulnerability': 'critical',
       'system-critical': 'critical',
       'high-error-rate': 'warning',
-      'consecutive-failures': 'critical'
+      'consecutive-failures': 'critical',
     };
-    
+
     return severityMap[type] || 'info';
   }
 
@@ -530,10 +530,10 @@ class DependabotMonitoring extends EventEmitter {
       'high-processing-time': `PR ${data.prNumber} processing took ${data.processingTime}ms (threshold: ${data.threshold}ms)`,
       'security-vulnerability': `Security vulnerability found in ${data.packageName}: ${data.severity}`,
       'system-critical': 'Dependabot automation system has critical health issues',
-      'high-error-rate': `Error rate ${(data.errorRate * 100).toFixed(1)}% exceeds threshold ${(data.threshold * 100)}%`,
-      'consecutive-failures': `${data.failureCount} consecutive failures detected`
+      'high-error-rate': `Error rate ${(data.errorRate * 100).toFixed(1)}% exceeds threshold ${data.threshold * 100}%`,
+      'consecutive-failures': `${data.failureCount} consecutive failures detected`,
     };
-    
+
     return messageMap[type] || `Alert of type ${type}`;
   }
 
@@ -541,7 +541,7 @@ class DependabotMonitoring extends EventEmitter {
     if (!this.alerts.configuration.enabled) {
       return;
     }
-    
+
     for (const channel of this.alerts.configuration.channels) {
       try {
         switch (channel) {
@@ -564,7 +564,7 @@ class DependabotMonitoring extends EventEmitter {
   async sendLogNotification(alert) {
     const logMessage = `[ALERT] ${alert.severity.toUpperCase()}: ${alert.message}`;
     console.log(logMessage);
-    
+
     // Also write to dedicated alert log
     const alertLogPath = path.join(this.logDir, 'alerts.log');
     const logEntry = `${alert.timestamp} - ${logMessage}\n`;
@@ -591,20 +591,20 @@ class DependabotMonitoring extends EventEmitter {
    * Resolve an alert
    */
   async resolveAlert(alertId, resolution = 'manually resolved') {
-    const alertIndex = this.alerts.active.findIndex(alert => alert.id === alertId);
+    const alertIndex = this.alerts.active.findIndex((alert) => alert.id === alertId);
     if (alertIndex === -1) {
       throw new Error(`Alert ${alertId} not found`);
     }
-    
+
     const alert = this.alerts.active[alertIndex];
     alert.status = 'resolved';
     alert.resolution = resolution;
     alert.resolvedAt = new Date().toISOString();
-    
+
     // Move to resolved alerts
     this.alerts.resolved.push(alert);
     this.alerts.active.splice(alertIndex, 1);
-    
+
     console.log(`✅ Alert resolved: ${alert.message}`);
     this.emit('alert-resolved', alert);
   }
@@ -617,9 +617,9 @@ class DependabotMonitoring extends EventEmitter {
       ...this.metrics,
       alertCounts: {
         active: this.alerts.active.length,
-        resolved: this.alerts.resolved.length
+        resolved: this.alerts.resolved.length,
       },
-      healthStatus: this.healthStatus
+      healthStatus: this.healthStatus,
     };
   }
 
@@ -673,14 +673,14 @@ class DependabotMonitoring extends EventEmitter {
         averageProcessingTime: Math.round(this.metrics.averageProcessingTime),
         successRate: Math.round(this.metrics.successRate * 100),
         activeAlerts: this.alerts.active.length,
-        healthStatus: this.healthStatus.status
+        healthStatus: this.healthStatus.status,
       },
       dailyStats: this.metrics.dailyStats,
       recentErrors: this.metrics.errors.slice(-10),
       activeAlerts: this.alerts.active,
-      healthComponents: this.healthStatus.components
+      healthComponents: this.healthStatus.components,
     };
-    
+
     return report;
   }
 }
@@ -688,17 +688,17 @@ class DependabotMonitoring extends EventEmitter {
 // CLI interface
 if (require.main === module) {
   const monitoring = new DependabotMonitoring();
-  
+
   monitoring.on('ready', () => {
     console.log('🔍 Dependabot monitoring system is running...');
     console.log('📊 Access metrics at: http://localhost:3001/metrics');
     console.log('🏥 Access health status at: http://localhost:3001/health');
   });
-  
+
   monitoring.on('alert-created', (alert) => {
     console.log(`🚨 New ${alert.severity} alert: ${alert.message}`);
   });
-  
+
   // Graceful shutdown
   process.on('SIGINT', async () => {
     console.log('\n⏹️  Shutting down monitoring system...');

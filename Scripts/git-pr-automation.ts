@@ -1,9 +1,9 @@
 // git-pr-automation.ts - Git and Pull Request automation for H3X
 
 import { spawn } from 'child_process';
-import * as readline from 'readline';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import * as readline from 'readline';
 
 // Interfaces
 interface GitConfig {
@@ -283,7 +283,8 @@ class GitPRAutomation {
       prBody = templateContent;
     } catch (error) {
       console.log('No PR template found, using default template.');
-      prBody = `## Changes\n\n- \n\n## Related Issues\n\n- \n\n## Testing\n\n- \n\n## Screenshots\n\n`;
+      prBody =
+        '## Changes\n\n- \n\n## Related Issues\n\n- \n\n## Testing\n\n- \n\n## Screenshots\n\n';
     }
 
     // Get additional details

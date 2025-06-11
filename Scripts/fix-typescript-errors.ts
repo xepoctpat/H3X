@@ -7,8 +7,6 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { glob } from 'glob';
-import type { IOptions as GlobOptions } from 'glob';
 
 interface FixResult {
   file: string;
@@ -37,7 +35,7 @@ class TypeScriptErrorFixer {
 
       // Fix 1: Duplicate async function declarations
       const duplicateFunctionRegex =
-        /async function (\w+)\(async function \1\([^)]*\) \{\)\: Promise<any> \{/g;
+        /async function (\w+)\(async function \1\([^)]*\) \{\): Promise<any> {/g;
       if (duplicateFunctionRegex.test(content)) {
         content = content.replace(duplicateFunctionRegex, 'async function $1($2): Promise<any> {');
         result.fixesApplied.push('Fixed duplicate async function declarations');
@@ -52,7 +50,7 @@ class TypeScriptErrorFixer {
 
       // Fix 3: Simple async function declaration fixes
       const simpleAsyncFunctionRegex =
-        /async function (\w+)\(async function \1\(\) \{\)\: Promise<any> \{/g;
+        /async function (\w+)\(async function \1\(\) \{\): Promise<any> {/g;
       if (simpleAsyncFunctionRegex.test(content)) {
         content = content.replace(simpleAsyncFunctionRegex, 'async function $1(): Promise<any> {');
         result.fixesApplied.push('Fixed simple async function declarations');
@@ -60,7 +58,7 @@ class TypeScriptErrorFixer {
 
       // Fix 4: Function parameter issues
       const parameterFunctionRegex =
-        /async function (\w+)\(async function \1\(([^)]+)\) \{\)\: Promise<any> \{/g;
+        /async function (\w+)\(async function \1\(([^)]+)\) \{\): Promise<any> {/g;
       if (parameterFunctionRegex.test(content)) {
         content = content.replace(parameterFunctionRegex, 'async function $1($2): Promise<any> {');
         result.fixesApplied.push('Fixed function parameters');
@@ -91,7 +89,7 @@ class TypeScriptErrorFixer {
       content = content.replace(tryCatchRegex, '} catch ($1) {');
 
       // Fix 9: Template literal issues in function calls
-      const templateLiteralRegex = /`([^`]*)\$\{([^}]+)\}([^`]*)`/g;
+      // const templateLiteralRegex = /`([^`]*)\$\{([^}]+)\}([^`]*)`/g;
       // This one is more complex and might need manual review
 
       // Fix 10: Return statement fixes
@@ -131,7 +129,7 @@ class TypeScriptErrorFixer {
 
       // Pattern 1: Fix the main function declaration issue
       const mainFunctionPattern =
-        /async function main\(async function main\(\) \{\)\: Promise<any> \{/g;
+        /async function main\(async function main\(\) \{\): Promise<any> {/g;
       if (mainFunctionPattern.test(content)) {
         content = content.replace(mainFunctionPattern, 'async function main(): Promise<any> {');
         result.fixesApplied.push('Fixed main function declaration');
@@ -153,7 +151,7 @@ class TypeScriptErrorFixer {
 
       // Pattern 4: Fix function with parameters
       const paramFunctionPattern =
-        /async function (\w+)\(async function \1\(([^)]*)\) \{\)\: Promise<any> \{/g;
+        /async function (\w+)\(async function \1\(([^)]*)\) \{\): Promise<any> {/g;
       if (paramFunctionPattern.test(content)) {
         content = content.replace(paramFunctionPattern, 'async function $1($2): Promise<any> {');
         result.fixesApplied.push('Fixed function with parameters');
@@ -184,6 +182,32 @@ class TypeScriptErrorFixer {
 
     return result;
   }
+  /**
+   * Find all TypeScript files recursively
+   */
+  private async findTypeScriptFiles(dir: string): Promise<string[]> {
+    const files: string[] = [];
+
+    async function scanDir(currentDir: string): Promise<void> {
+      const entries = await fs.readdir(currentDir, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const fullPath = path.join(currentDir, entry.name);
+
+        if (entry.isDirectory()) {
+          // Skip common directories we don't want to process
+          if (!['node_modules', 'dist', 'build', '.git', '.next'].includes(entry.name)) {
+            await scanDir(fullPath);
+          }
+        } else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.d.ts')) {
+          files.push(fullPath);
+        }
+      }
+    }
+
+    await scanDir(dir);
+    return files;
+  }
 
   /**
    * Process all TypeScript files in the project
@@ -191,21 +215,13 @@ class TypeScriptErrorFixer {
   async fixAllFiles(): Promise<void> {
     console.log('🔧 Starting TypeScript error fixing...\n');
 
-    const files = await glob('**/*.ts', {
-      cwd: process.cwd(),
-      ignore: ['node_modules/**', 'dist/**', '*.d.ts'],
-      absolute: false,
-    } as GlobOptions);
-
-    // Ensure we have an array of files to iterate
-    const fileList = Array.isArray(files) ? files : [await Promise.resolve(files)].flat();
-    console.log(`Found ${fileList.length} TypeScript files to process\n`);
+    // Find all TypeScript files using native fs methods
+    const files = await this.findTypeScriptFiles(process.cwd()); // Ensure we have an array of files to iterate
+    console.log(`Found ${files.length} TypeScript files to process\n`);
 
     const results: FixResult[] = [];
-
-    for (const file of fileList) {
-      const filePath = path.resolve(file);
-      console.log(`Processing: ${file}`);
+    for (const filePath of files) {
+      console.log(`Processing: ${path.relative(process.cwd(), filePath)}`);
 
       // Apply specific pattern fixes first
       const specificResult = await this.fixSpecificPatterns(filePath);
@@ -305,7 +321,7 @@ class TypeScriptErrorFixer {
 
     // Fix the main function declaration
     content = content.replace(
-      /async function main\(async function main\(\) \{\)\: Promise<any> \{/g,
+      /async function main\(async function main\(\) \{\): Promise<any> \{/g,
       'async function main(): Promise<any> {',
     );
 
@@ -345,7 +361,7 @@ async function main(): Promise<void> {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  void main();
 }
 
 export { TypeScriptErrorFixer };

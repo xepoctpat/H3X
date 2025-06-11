@@ -5,9 +5,9 @@
  * Automated conversion of JS files to TS with proper typing
  */
 
+import { exec } from 'child_process';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
@@ -405,12 +405,12 @@ async function main(): Promise<void> {
     const result = await converter.convertProjectToTypeScript();
 
     if (result.success) {
-      console.log(`\n✅ TypeScript conversion completed successfully!`);
+      console.log('\n✅ TypeScript conversion completed successfully!');
       console.log(`📁 Converted ${result.convertedFiles.length} files`);
       console.log(`⏱️ Duration: ${result.duration}ms`);
       process.exit(0);
     } else {
-      console.error(`\n❌ TypeScript conversion failed!`);
+      console.error('\n❌ TypeScript conversion failed!');
       result.errors.forEach((error) => console.error(`  ${error}`));
       process.exit(1);
     }

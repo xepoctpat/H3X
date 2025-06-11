@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Core H3X Server
+  h3x-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.h3x
+    container_name: h3x-server
+    ports:
+      - '4978:4978'
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - PORT=4978
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+    networks:
+      - h3x-network
+    restart: unless-stopped
+
+  # LM Studio Integration
+  h3x-lmstudio:
+    image: node:18-alpine
+    container_name: h3x-lmstudio
+    ports:
+      - '1234:1234'
+    environment:
+      - NODE_ENV=development
+    networks:
+      - h3x-network
+    restart: unless-stopped
+    command: ['sh', '-c', "echo 'LM Studio container ready' && sleep infinity"]
+
+networks:
+  h3x-network:
+    driver: bridge
+    name: h3x-network

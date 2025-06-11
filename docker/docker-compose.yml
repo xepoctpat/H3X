@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  protocol-server:
+    build:
+      context: ./hexperiment-system-protocol
+      dockerfile: Dockerfile
+    container_name: protocol-server
+    ports:
+      - '8081:8080'
+    environment:
+      - LOG_LEVEL=debug
+    networks:
+      - h3x-network
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:8080/api/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  h3x-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.h3x
+    container_name: h3x-server
+    ports:
+      - '4978:4978'
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+      - ./Scripts:/app/Scripts:ro
+    environment:
+      - PROTOCOL_SERVER_URL=http://protocol-server:8080
+    networks:
+      - h3x-network
+    depends_on:
+      protocol-server:
+        condition: service_healthy
+
+networks:
+  h3x-network:
+    driver: bridge

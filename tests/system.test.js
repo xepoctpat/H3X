@@ -1,3 +1,4 @@
+/* global describe, test, expect */
 const fs = require('fs');
 const path = require('path');
 
@@ -12,7 +13,8 @@ describe('H3X System Tests', () => {
   });
 
   test('main entry file exists', () => {
-    const mainFile = path.join(__dirname, '..', 'Src', 'Index.js');
+    // Updated to match actual entry file
+    const mainFile = path.join(__dirname, '..', 'src', 'index.ts');
     expect(fs.existsSync(mainFile)).toBe(true);
   });
 

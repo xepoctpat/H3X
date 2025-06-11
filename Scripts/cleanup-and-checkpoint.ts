@@ -10,9 +10,9 @@
  * 4. Generates deployment summary
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { execSync } from 'child_process';
 
 const WORKSPACE_ROOT = path.resolve(__dirname, '..');
 const SCRIPTS_DIR = path.resolve(__dirname);

@@ -1,8 +1,8 @@
 // git-branch-management.ts - Git branch management automation for H3X
 
 import { spawn } from 'child_process';
-import * as readline from 'readline';
 import * as path from 'path';
+import * as readline from 'readline';
 
 // Interfaces
 interface BranchConfig {

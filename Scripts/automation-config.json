@@ -1,34 +1,21 @@
 {
   "linting": {
     "enabled": true,
-    "tools": [
-      "eslint",
-      "typescript"
-    ],
+    "tools": ["eslint", "typescript"],
     "autofix": true,
     "failOnError": false,
-    "extensions": [
-      ".ts",
-      ".js",
-      ".jsx",
-      ".tsx"
-    ]
+    "extensions": [".ts", ".js", ".jsx", ".tsx"]
   },
   "testing": {
     "enabled": true,
-    "frameworks": [
-      "vitest",
-      "jest"
-    ],
+    "frameworks": ["vitest", "jest"],
     "coverage": true,
     "threshold": 70,
     "timeout": 30000
   },
   "building": {
     "enabled": true,
-    "targets": [
-      "development"
-    ],
+    "targets": ["development"],
     "typescript": true,
     "minify": false,
     "watch": false

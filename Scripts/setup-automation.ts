@@ -109,9 +109,7 @@ node scripts/pre-commit-hook.js
   try {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     const hasAutomationScripts =
-      packageJson.scripts &&
-      packageJson.scripts['automation:full'] &&
-      packageJson.scripts['workflow:dev'];
+      packageJson.scripts?.['automation:full'] && packageJson.scripts['workflow:dev'];
 
     if (hasAutomationScripts) {
       console.log('✅ Automation scripts found in package.json');

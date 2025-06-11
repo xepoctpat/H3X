@@ -2,7 +2,8 @@
 
 ## The Discovery
 
-By mirroring the flups triangle, we create a hexagonal lattice - one of nature's most efficient packing structures!
+By mirroring the flups triangle, we create a hexagonal lattice - one of nature's most efficient
+packing structures!
 
 ## 2D Hexagonal Representation
 

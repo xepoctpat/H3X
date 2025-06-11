@@ -1,125 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>NODE-NEURAL Central Command Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="H3X Neural Cortex Interface - Central Command and Control Dashboard">
-  <link rel="stylesheet" href="css/node-neural-dashboard-styles.css">
-</head>
-<body>
-  <div class="dashboard-container">
-    <header class="dashboard-header">
-      <h1>🧠 NODE-NEURAL Central Command</h1>
-      <div class="system-status">
-        <span id="system-status" class="status-indicator online">ONLINE</span>
-        <span id="timestamp" class="timestamp"></span>
-      </div>
-    </header>
-    
-    <div class="control-grid">
-      <div class="control-panel">
-        <h2>System Control</h2>
-        <div class="control-buttons">
-          <button id="emergency-stop" class="emergency-btn">🛑 Emergency Stop</button>
-          <button id="system-restart" class="control-btn">🔄 Restart</button>
-          <button id="diagnostics" class="control-btn">🔍 Diagnostics</button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>NODE-NEURAL Central Command Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="H3X Neural Cortex Interface - Central Command and Control Dashboard"
+    />
+    <link rel="stylesheet" href="css/node-neural-dashboard-styles.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <h1>🧠 NODE-NEURAL Central Command</h1>
+        <div class="system-status">
+          <span id="system-status" class="status-indicator online">ONLINE</span>
+          <span id="timestamp" class="timestamp"></span>
         </div>
-      </div>
-      
-      <div class="neural-interfaces-grid">
-        <h2>Neural Interface Status</h2>
-        <div class="interface-cards">
-          <div class="interface-card" data-interface="genesis">
-            <h3>🎨 HEX-GENESIS</h3>
-            <div class="status-indicator online"></div>
-            <p>Creative AI Hub</p>
-            <button onclick="window.open('hex-genesis-creative-interface.html', '_blank')">Launch</button>
-          </div>
-          
-          <div class="interface-card" data-interface="taskflow">
-            <h3>⚡ SYNAPSE-TASKFLOW</h3>
-            <div class="status-indicator online"></div>
-            <p>Workflow Orchestrator</p>
-            <button onclick="window.open('synapse-taskflow-orchestration-interface.html', '_blank')">Launch</button>
-          </div>
-          
-          <div class="interface-card" data-interface="observer">
-            <h3>📊 MATRIX-OBSERVER</h3>
-            <div class="status-indicator online"></div>
-            <p>Analytics Engine</p>
-            <button onclick="window.open('matrix-observer-analytics-interface.html', '_blank')">Launch</button>
-          </div>
-          
-          <div class="interface-card" data-interface="current">
-            <h3>⚡ CORTEX-CURRENT</h3>
-            <div class="status-indicator online"></div>
-            <p>Real-time Processor</p>
-            <button onclick="window.open('cortex-current-realtime-interface.html', '_blank')">Launch</button>
-          </div>
-          
-          <div class="interface-card" data-interface="taskmaster">
-            <h3>🤖 VIRTUAL-TASKMASTER</h3>
-            <div class="status-indicator online"></div>
-            <p>Virtual Assistant</p>
-            <button onclick="window.open('Virtual-Taskmaster.html', '_blank')">Launch</button>
+      </header>
+
+      <div class="control-grid">
+        <div class="control-panel">
+          <h2>System Control</h2>
+          <div class="control-buttons">
+            <button id="emergency-stop" class="emergency-btn">🛑 Emergency Stop</button>
+            <button id="system-restart" class="control-btn">🔄 Restart</button>
+            <button id="diagnostics" class="control-btn">🔍 Diagnostics</button>
           </div>
         </div>
-      </div>
-      
-      <div class="ai-integration-panel">
-        <h2>AI Integration Status</h2>
-        <div class="ai-services">
-          <div class="service-status">
-            <span class="service-name">LMStudio</span>
-            <span id="lmstudio-status" class="status-dot"></span>
-            <span id="lmstudio-port">:1234</span>
+
+        <div class="neural-interfaces-grid">
+          <h2>Neural Interface Status</h2>
+          <div class="interface-cards">
+            <div class="interface-card" data-interface="genesis">
+              <h3>🎨 HEX-GENESIS</h3>
+              <div class="status-indicator online"></div>
+              <p>Creative AI Hub</p>
+              <button onclick="window.open('hex-genesis-creative-interface.html', '_blank')">
+                Launch
+              </button>
+            </div>
+
+            <div class="interface-card" data-interface="taskflow">
+              <h3>⚡ SYNAPSE-TASKFLOW</h3>
+              <div class="status-indicator online"></div>
+              <p>Workflow Orchestrator</p>
+              <button
+                onclick="window.open('synapse-taskflow-orchestration-interface.html', '_blank')"
+              >
+                Launch
+              </button>
+            </div>
+
+            <div class="interface-card" data-interface="observer">
+              <h3>📊 MATRIX-OBSERVER</h3>
+              <div class="status-indicator online"></div>
+              <p>Analytics Engine</p>
+              <button onclick="window.open('matrix-observer-analytics-interface.html', '_blank')">
+                Launch
+              </button>
+            </div>
+
+            <div class="interface-card" data-interface="current">
+              <h3>⚡ CORTEX-CURRENT</h3>
+              <div class="status-indicator online"></div>
+              <p>Real-time Processor</p>
+              <button onclick="window.open('cortex-current-realtime-interface.html', '_blank')">
+                Launch
+              </button>
+            </div>
+
+            <div class="interface-card" data-interface="taskmaster">
+              <h3>🤖 VIRTUAL-TASKMASTER</h3>
+              <div class="status-indicator online"></div>
+              <p>Virtual Assistant</p>
+              <button onclick="window.open('Virtual-Taskmaster.html', '_blank')">Launch</button>
+            </div>
           </div>
-          <div class="service-status">
-            <span class="service-name">Microsoft 365 Agents</span>
-            <span id="m365-status" class="status-dot online"></span>
-            <span>Integrated</span>
+        </div>
+
+        <div class="ai-integration-panel">
+          <h2>AI Integration Status</h2>
+          <div class="ai-services">
+            <div class="service-status">
+              <span class="service-name">LMStudio</span>
+              <span id="lmstudio-status" class="status-dot"></span>
+              <span id="lmstudio-port">:1234</span>
+            </div>
+            <div class="service-status">
+              <span class="service-name">Microsoft 365 Agents</span>
+              <span id="m365-status" class="status-dot online"></span>
+              <span>Integrated</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metrics-panel">
+          <h2>System Metrics</h2>
+          <div class="metrics-grid">
+            <div class="metric">
+              <span class="metric-label">Active Interfaces</span>
+              <span id="active-interfaces" class="metric-value">5</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Processing Load</span>
+              <span id="processing-load" class="metric-value">23%</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Neural Activity</span>
+              <span id="neural-activity" class="metric-value">Normal</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Uptime</span>
+              <span id="uptime" class="metric-value">--</span>
+            </div>
           </div>
         </div>
       </div>
-      
-      <div class="metrics-panel">
-        <h2>System Metrics</h2>
-        <div class="metrics-grid">
-          <div class="metric">
-            <span class="metric-label">Active Interfaces</span>
-            <span id="active-interfaces" class="metric-value">5</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Processing Load</span>
-            <span id="processing-load" class="metric-value">23%</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Neural Activity</span>
-            <span id="neural-activity" class="metric-value">Normal</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">Uptime</span>
-            <span id="uptime" class="metric-value">--</span>
-          </div>
+
+      <div class="command-center">
+        <h2>Command Center</h2>
+        <div class="command-input">
+          <input
+            id="command-input"
+            type="text"
+            placeholder="Enter system command or neural directive..."
+          />
+          <button id="execute-btn">Execute</button>
+        </div>
+        <div id="command-log" class="command-log">
+          <div class="log-entry">[SYSTEM] NODE-NEURAL Dashboard initialized</div>
+          <div class="log-entry">[INFO] All neural interfaces online</div>
+          <div class="log-entry">[READY] Awaiting commands...</div>
         </div>
       </div>
     </div>
-    
-    <div class="command-center">
-      <h2>Command Center</h2>
-      <div class="command-input">
-        <input id="command-input" type="text" placeholder="Enter system command or neural directive...">
-        <button id="execute-btn">Execute</button>
-      </div>
-      <div id="command-log" class="command-log">
-        <div class="log-entry">[SYSTEM] NODE-NEURAL Dashboard initialized</div>
-        <div class="log-entry">[INFO] All neural interfaces online</div>
-        <div class="log-entry">[READY] Awaiting commands...</div>
-      </div>
-    </div>
-  </div>
-  
-  <script src="js/node-neural-dashboard-core.js"></script>
-</body>
+
+    <script src="js/node-neural-dashboard-core.js"></script>
+  </body>
 </html>

@@ -5,9 +5,9 @@
  * Fixes common TypeScript conversion errors in the H3X project
  */
 
+import { execSync } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { execSync } from 'child_process';
 
 class SimpleTypeScriptFixer {
   private fixCount = 0;

@@ -1,4 +1,5 @@
-{  "compilerOptions": {
+{
+  "compilerOptions": {
     "target": "ES2020",
     "module": "ES2020",
     "moduleResolution": "node",
@@ -14,18 +15,15 @@
     "allowJs": true,
     "noEmit": false,
     "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",    "types": ["node"],
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "types": ["node"],
     "typeRoots": ["../node_modules/@types"],
     "lib": ["ES2020"],
     "downlevelIteration": true
-  },"include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "*.d.ts",
-    "**/*.js"  ],"ts-node": {
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "*.d.ts", "**/*.js"],
+  "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   }

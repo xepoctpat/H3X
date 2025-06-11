@@ -68,7 +68,7 @@
   cursor: pointer;
   transition: all $transition-normal;
   text-decoration: none;
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -79,12 +79,12 @@
   @include button-base;
   background: linear-gradient(135deg, $h3x-primary, $h3x-secondary);
   color: $h3x-bg-primary;
-  
+
   &:hover:not(:disabled) {
     box-shadow: $shadow-glow;
     transform: translateY(-2px);
   }
-  
+
   &:active {
     transform: translateY(0);
   }
@@ -95,7 +95,7 @@
   background: transparent;
   color: $h3x-primary;
   border: $border-width solid $h3x-primary;
-  
+
   &:hover:not(:disabled) {
     background: $h3x-primary;
     color: $h3x-bg-primary;
@@ -110,7 +110,7 @@
   padding: $spacing-lg;
   box-shadow: $shadow-md;
   transition: all $transition-normal;
-  
+
   &:hover {
     border-color: rgba($h3x-primary, 0.6);
     box-shadow: $shadow-lg;
@@ -128,13 +128,13 @@
   font-family: $font-family-primary;
   font-size: $font-size-base;
   transition: border-color $transition-normal;
-  
+
   &:focus {
     outline: none;
     border-color: $h3x-primary;
     box-shadow: 0 0 0 2px rgba($h3x-primary, 0.2);
   }
-  
+
   &::placeholder {
     color: $h3x-text-muted;
   }
@@ -185,13 +185,13 @@
 // Hexagonal specific mixins
 @mixin hex-border {
   border: $border-width-thick solid $hex-edge;
-  box-shadow: 
+  box-shadow:
     0 0 10px rgba($hex-edge, 0.3),
     inset 0 0 10px rgba($hex-edge, 0.1);
 }
 
 @mixin hex-glow($color: $hex-vertex) {
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba($color, 0.5),
     0 0 40px rgba($color, 0.3),
     0 0 60px rgba($color, 0.1);
@@ -206,7 +206,7 @@
   border-radius: $border-radius-lg;
   background: $canvas-bg;
   overflow: hidden;
-  
+
   canvas {
     width: 100%;
     height: 100%;
@@ -216,8 +216,12 @@
 
 // Animation keyframes
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInUp {
@@ -232,7 +236,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -243,12 +248,17 @@
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes hexPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba($hex-vertex, 0.3);
   }
   50% {

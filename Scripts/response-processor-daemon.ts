@@ -3,17 +3,13 @@ interface ProcessEnv {
   [key: string]: string | undefined;
 }
 
-interface ConsoleLog {
-  log: (message?: any, ...optionalParams: any[]) => void;
-  error: (message?: any, ...optionalParams: any[]) => void;
-  warn: (message?: any, ...optionalParams: any[]) => void;
-}
-
 // Response Processor Daemon for Containerized H3X
-import { LMStudioResponseHandler } from '../lmstudio-response-handler';
-import * as Redis from 'redis';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+
+import * as Redis from 'redis';
+
+import { LMStudioResponseHandler } from '../scripts/lmstudio-response-handler';
 
 class ResponseProcessorDaemon {
   handler: any;
@@ -25,18 +21,18 @@ class ResponseProcessorDaemon {
     this.handler = new LMStudioResponseHandler({
       verbose: true,
       dockerMode: true,
-      lmStudioUrl: (process.env as ProcessEnv).LMSTUDIO_URL || 'http://h3x-lmstudio:1234',
+      lmStudioUrl: (process.env as ProcessEnv).LMSTUDIO_URL ?? 'http://h3x-lmstudio:1234',
     });
 
     this.redis = Redis.createClient({
-      url: (process.env as ProcessEnv).REDIS_URL || 'redis://h3x-redis:6379',
+      url: (process.env as ProcessEnv).REDIS_URL ?? 'redis://h3x-redis:6379',
     });
 
     this.outputDir = '/app/outputs';
     this.isRunning = true;
   }
 
-  async start() {
+  async start(): Promise<void> {
     console.log('🚀 Starting H3X Response Processor Daemon');
 
     try {
@@ -44,7 +40,7 @@ class ResponseProcessorDaemon {
       console.log('✅ Connected to Redis');
 
       // Start processing loop
-      this.processLoop();
+      void this.processLoop();
 
       // Health check endpoint
       this.startHealthServer();
@@ -54,7 +50,7 @@ class ResponseProcessorDaemon {
     }
   }
 
-  async processLoop() {
+  async processLoop(): Promise<void> {
     while (this.isRunning) {
       try {
         // Check for new requests in Redis queue
@@ -70,7 +66,7 @@ class ResponseProcessorDaemon {
     }
   }
 
-  async processRequest(request) {
+  async processRequest(request: any): Promise<void> {
     const { id, prompt, options = {} } = request;
 
     console.log(`📥 Processing request ${id}`);
@@ -102,8 +98,9 @@ class ResponseProcessorDaemon {
       } else {
         throw new Error(`LM Studio failed: ${result.error}`);
       }
-    } catch (error) {
-      console.error(`❌ Request ${id} failed:`, error);
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Request ${id} failed:`, errMsg);
 
       // Store error in Redis
       await this.redis.setEx(
@@ -111,7 +108,7 @@ class ResponseProcessorDaemon {
         3600,
         JSON.stringify({
           success: false,
-          error: error.message,
+          error: errMsg,
           timestamp: new Date().toISOString(),
         }),
       );
@@ -121,17 +118,17 @@ class ResponseProcessorDaemon {
         'h3x:response:error',
         JSON.stringify({
           id,
-          error: error.message,
+          error: errMsg,
           timestamp: new Date().toISOString(),
         }),
       );
     }
   }
 
-  startHealthServer() {
-    import http = require('http');
+  startHealthServer(): void {
+    const http = require('http');
 
-    const server = http.createServer((req, res) => {
+    const server = http.createServer((req: any, res: any) => {
       if (req.url === '/health') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(
@@ -152,11 +149,11 @@ class ResponseProcessorDaemon {
     });
   }
 
-  delay(ms) {
+  delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async stop() {
+  async stop(): Promise<void> {
     this.isRunning = false;
     await this.redis.disconnect();
     console.log('🛑 Response Processor Daemon stopped');
@@ -166,7 +163,11 @@ class ResponseProcessorDaemon {
 // Start daemon
 const daemon = new ResponseProcessorDaemon();
 
-process.on('SIGTERM', () => daemon.stop());
-process.on('SIGINT', () => daemon.stop());
+process.on('SIGTERM', () => {
+  void daemon.stop();
+});
+process.on('SIGINT', () => {
+  void daemon.stop();
+});
 
-daemon.start().catch(console.error);
+daemon.start().catch((err) => console.error(err));

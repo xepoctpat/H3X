@@ -1,6 +1,7 @@
 # H3X Code Cleanup and Security Guide
 
-This document explains the code cleanup and security setup implemented for the H3X project using GitHub Actions.
+This document explains the code cleanup and security setup implemented for the H3X project using
+GitHub Actions.
 
 ## Table of Contents
 
@@ -25,7 +26,8 @@ The following workflows have been set up in the `.github/workflows` directory:
 
 - **File**: `.github/workflows/security-scan.yml`
 - **Triggers**: Push to main/master/develop, Pull requests to main/master/develop, Weekly schedule
-- **Purpose**: Runs Snyk, npm audit, GitLeaks, OSSF Scorecard, Dependency Review, CodeQL, and Docker image scanning
+- **Purpose**: Runs Snyk, npm audit, GitLeaks, OSSF Scorecard, Dependency Review, CodeQL, and Docker
+  image scanning
 
 The security scanning workflow includes:
 
@@ -47,7 +49,8 @@ Results from these scans are uploaded as SARIF files for easy viewing in the Git
 ### PR Automation
 
 - **File**: `.github/workflows/pr-automation.yml`
-- **Triggers**: Pull request events (opened, synchronized, reopened, labeled, unlabeled) and pull request reviews
+- **Triggers**: Pull request events (opened, synchronized, reopened, labeled, unlabeled) and pull
+  request reviews
 - **Purpose**: Adds labels, validates PR titles, analyzes PR size, and auto-merges eligible PRs
 
 ## Code Quality Tools
@@ -55,12 +58,14 @@ Results from these scans are uploaded as SARIF files for easy viewing in the Git
 ### ESLint
 
 ESLint is configured in `.eslintrc.js` with the following features:
+
 - TypeScript integration with strict type checking rules
 - Security rules via `eslint-plugin-security`
 - Code quality rules via `eslint-plugin-sonarjs`
 - Import organization rules
 
 Run ESLint with:
+
 ```bash
 npm run lint        # Fix issues
 npm run lint:check  # Check without fixing
@@ -71,6 +76,7 @@ npm run lint:check  # Check without fixing
 Prettier is configured to ensure consistent code formatting.
 
 Run Prettier with:
+
 ```bash
 npm run format        # Format files
 npm run format:check  # Check formatting
@@ -86,23 +92,28 @@ Snyk checks for vulnerabilities in dependencies. To set up Snyk:
 
 1. Create an account at [snyk.io](https://snyk.io/)
 2. Generate an API token
-3. Add the token as a GitHub repository secret named `SNYK_TOKEN` in your repository settings under Security > Secrets and variables > Actions
+3. Add the token as a GitHub repository secret named `SNYK_TOKEN` in your repository settings under
+   Security > Secrets and variables > Actions
 
 ### CodeQL
 
-CodeQL performs static code analysis to find security vulnerabilities. It's already configured in the security workflow.
+CodeQL performs static code analysis to find security vulnerabilities. It's already configured in
+the security workflow.
 
 ### GitLeaks
 
-GitLeaks scans for secrets and credentials accidentally committed to the repository. The workflow is configured to generate SARIF reports that can be viewed in GitHub Security tab.
+GitLeaks scans for secrets and credentials accidentally committed to the repository. The workflow is
+configured to generate SARIF reports that can be viewed in GitHub Security tab.
 
 ### OSSF Scorecard
 
-OSSF Scorecard evaluates the security posture of the project based on several metrics including CI/CD practices, code review processes, and dependency management.
+OSSF Scorecard evaluates the security posture of the project based on several metrics including
+CI/CD practices, code review processes, and dependency management.
 
 ### Dependency Review
 
-Dependency Review analyzes pull requests for dependency changes and highlights potential security issues in added or updated dependencies.
+Dependency Review analyzes pull requests for dependency changes and highlights potential security
+issues in added or updated dependencies.
 
 ### Docker Image Scanning
 
@@ -140,9 +151,11 @@ The PR automation workflow provides:
 ### Auto-Merge
 
 PRs will be automatically merged when all these conditions are met:
+
 - The PR has been approved by at least one reviewer
 - All checks are passing
-- The PR has one of these labels: `dependencies`, `documentation`, `automated-cleanup`, or `auto-merge`
+- The PR has one of these labels: `dependencies`, `documentation`, `automated-cleanup`, or
+  `auto-merge`
 
 This helps streamline the workflow for non-critical changes that still require review.
 
@@ -161,6 +174,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
 ```
 
 Types:
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
