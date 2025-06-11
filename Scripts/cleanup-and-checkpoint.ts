@@ -13,9 +13,13 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const WORKSPACE_ROOT = path.resolve(__dirname, '..');
-const SCRIPTS_DIR = path.resolve(__dirname);
+// const SCRIPTS_DIR = path.resolve(__dirname); // Removed unused variable
 
 class H3XCleanupAutomation {
   obsoleteFiles: any[];

@@ -21,7 +21,6 @@
     "noEmit": false,
     "isolatedModules": true,
     "types": ["node", "jest"]
-  },
-  "include": ["src/**/*", "scripts/**/*", "tests/**/*", "*.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "**/*.test.ts", "**/*.spec.ts"]
+  },  "include": ["../src/**/*", "../scripts/**/*", "../tests/**/*", "../*.ts"],
+  "exclude": ["../node_modules", "../dist", "../coverage"]
 }

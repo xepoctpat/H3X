@@ -19,9 +19,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noEmit": false,
-    "isolatedModules": true,
-    "types": ["node", "jest"]
+    "isolatedModules": true,    "types": ["node", "jest", "vitest/globals"]
   },
   "include": ["src/**/*", "scripts/**/*", "tests/**/*", "*.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "**/*.test.ts", "**/*.spec.ts"]
+  "exclude": ["node_modules", "dist", "coverage"]
 }

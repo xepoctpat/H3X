@@ -5,12 +5,12 @@
  * Automated conversion of JS files to TS with proper typing
  */
 
-import { exec } from 'child_process';
+// import { exec } from 'child_process'; // Removed unused import
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { promisify } from 'util';
+// import { promisify } from 'util'; // Removed unused import
 
-const execAsync = promisify(exec);
+// const execAsync = promisify(exec); // Removed unused variable
 
 interface ConversionConfig {
   sourceDir: string;
@@ -272,12 +272,8 @@ interface ConsoleLog {
             packageJson.scripts[key] = script.replace(/node\s+([^.]+)\.js/g, 'npx tsx $1.ts');
           }
         }
-      }
-
-      // Add TypeScript dependencies if not present
-      if (!packageJson.devDependencies) {
-        packageJson.devDependencies = {};
-      }
+      }      // Add TypeScript dependencies if not present
+      packageJson.devDependencies ??= {};
 
       const tsDevDeps = {
         typescript: '^5.3.0',
