@@ -1,8 +1,8 @@
-# H3X Hexperiment System - Containerized Deployment
+# H3X Hexperiment System - Secure Containerized Deployment
 
-## 🐳 Docker Deployment (Current Method)
+## 🐳 Docker Deployment (Secure Method)
 
-The H3X system is now fully containerized for easy deployment and scalability.
+The H3X system is fully containerized for secure, scalable, and easy deployment.
 
 ### Quick Start
 
@@ -12,66 +12,72 @@ The H3X system is now fully containerized for easy deployment and scalability.
    cd H3X
    ```
 
-2. **Start the system**
+2. **Configure Environment Variables**
+   - Copy the provided `.env.example` to `.env` and securely configure your ports and secrets:
+   ```bash
+   cp .env.example .env
+   # Edit .env to securely set ports and credentials
+   ```
+
+3. **Start the system securely**
    ```bash
    docker-compose up -d
    ```
 
-3. **Access the interfaces**
-   - **Main H3X Server**: <http://localhost:4978>
-   - **Protocol Server**: <http://localhost:8081>
-   - **Health Check**: <http://localhost:8081/api/health>
+4. **Access the interfaces securely**
+   - **Main H3X Server**: `http://localhost:<H3X_SERVER_PORT>`
+   - **Protocol Server**: `http://localhost:<PROTOCOL_SERVER_PORT>`
+   - **Health Check**: `http://localhost:<PROTOCOL_SERVER_PORT>/api/health`
+
+   *(Ports are masked for security. Replace placeholders with your securely configured ports.)*
 
 ### Services
 
-- **h3x-server**: Main Node.js application with SIR Control Interface
-- **protocol-server**: Hexperiment System Protocol server for service coordination
+- **H3X-server**: Main Node.js application with secure SIR Control Interface
+- **protocol-server**: Secure Hexperiment System Protocol server for internal service coordination
 
-### Development
+### Secure Development Workflow
 
-For live development with file watching:
+For secure live development with automatic file watching:
 ```bash
-# The containers mount local volumes for live development
 docker-compose up
-# Edit files in ./Src or ./Public and see changes immediately
+# Securely edit files in ./src or ./public and see changes immediately
 ```
 
 ### System Status
 
-- ✅ **Docker Deployment**: Fully operational with service orchestration
+- ✅ **Docker Deployment**: Securely operational with service orchestration
 - ✅ **Case Sensitivity**: Resolved for Linux/container environments  
-- ✅ **Health Monitoring**: Automated health checks and restart policies
-- ✅ **Service Discovery**: Internal networking between containers
-- ✅ **Volume Mounting**: Live development support
+- ✅ **Health Monitoring**: Automated secure health checks and restart policies
+- ✅ **Service Discovery**: Secure internal networking between containers
+- ✅ **Volume Mounting**: Securely configured for live code updates
 
-## 🏗️ Architecture
+### Security Best Practices
 
-The system uses a microservices architecture with:
-- **Container Orchestration**: Docker Compose
-- **Service Networking**: Bridge network for inter-service communication
-- **Health Monitoring**: Built-in health checks
-- **Development Workflow**: Volume mounting for live code updates
+- **Ports and Credentials**: Always configured securely via environment variables (`.env` file)
+- **Container Isolation**: Secure bridge network (`h3x-network`) isolates services internally
+- **Logging and Monitoring**: Securely monitor logs and system status using Docker Compose commands
 
-## 📊 Monitoring
+### 📊 Secure Monitoring Commands
 
-Check system status:
+Check system status securely:
 ```bash
-# View service status
+# View service status securely
 docker-compose ps
 
-# View logs
+# Securely view logs
 docker-compose logs -f
 
-# Health check
-curl http://localhost:8081/api/health
+# Secure health check
+curl http://localhost:<PROTOCOL_SERVER_PORT>/api/health
 ```
 
-## 🔧 Troubleshooting
+### Troubleshooting Securely
 
-- **Port conflicts**: Configured to use ports 4978 and 8081
-- **Container issues**: Check `docker-compose logs`
-- **Network problems**: Verify h3x-network bridge is created
+- **Port Issues**: Verify secure port configuration in `.env`
+- **Container Issues**: Securely check logs with `docker-compose logs`
+- **Network Issues**: Verify secure bridge network (`h3x-network`) is properly created
 
 ---
 
-*Previous deployment methods (standalone scripts) have been archived and replaced with this containerized approach.*
+*Previous deployment methods (standalone scripts) have been securely archived and replaced with this secure containerized approach.*

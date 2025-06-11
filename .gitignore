@@ -101,3 +101,24 @@ Thumbs.db
 
 # Deployment artifacts
 .deployment
+
+# Obsolete JavaScript files (we're using TypeScript now)
+*.test.js
+*-test.js
+*.spec.js
+
+# Old config files
+.jshintrc
+.htmlhintrc
+
+# Temporary and backup files
+*.backup
+*.old
+*.deprecated
+*-old.*
+*-backup.*
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
