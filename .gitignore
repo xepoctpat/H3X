@@ -122,3 +122,14 @@ Thumbs.db
 coverage/
 .nyc_output/
 *.lcov
+
+# Archive and backup folders
+archive/obsolete-backup-*/
+archive/**/*.yml
+archive/**/*.yaml
+archive/**/*.old
+archive/**/*.backup
+
+# Old Teams Toolkit files
+**/m365agents*.yml
+**/m365agents*.yaml

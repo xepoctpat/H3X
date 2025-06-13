@@ -15,5 +15,37 @@
         }
     ],
     "docwriter.style": "Auto-detect",
-    "gitlens.ai.largePromptWarningThreshold": 80000
+    "gitlens.ai.largePromptWarningThreshold": 80000,
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true,
+        "archive/**": true,
+        "**/.fx": true,
+        "**/appPackage": true
+    },
+    "files.watcherExclude": {
+        "**/archive/**": true,
+        "**/node_modules/**": true,
+        "**/dist/**": true,
+        "**/build/**": true
+    },
+    "yaml.schemas": {
+        "!archive/**/*.yml": true,
+        "!archive/**/*.yaml": true
+    },
+    "files.associations": {
+        "archive/**/*.yml": "plaintext",
+        "archive/**/*.yaml": "plaintext"
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/build": true,
+        "archive/**": true,
+        "**/.fx": true
+    },
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
