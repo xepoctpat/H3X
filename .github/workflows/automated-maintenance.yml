@@ -62,7 +62,7 @@ jobs:
           npm run test:all || echo "Some tests failed - review needed" >> maintenance-report.md
       
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: automated maintenance and cleanup"
