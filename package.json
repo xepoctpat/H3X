@@ -57,6 +57,20 @@
     "git:quick-pr": "tsx scripts/git-pr-automation.ts quick-pr",
     "git:interactive": "tsx scripts/git-pr-automation.ts interactive",
     "git:changelog": "tsx scripts/git-pr-automation.ts changelog",
+    "maintenance:run": "tsx Scripts/remote-maintenance-agent.ts run",
+    "maintenance:monitor": "tsx Scripts/remote-maintenance-agent.ts monitor",
+    "maintenance:health": "tsx Scripts/remote-maintenance-agent.ts health",
+    "maintenance:conflicts": "tsx Scripts/remote-maintenance-agent.ts conflicts",
+    "maintenance:prs": "tsx Scripts/remote-maintenance-agent.ts prs",
+    "maintenance:branches": "tsx Scripts/remote-maintenance-agent.ts branches",
+    "maintenance:deps": "tsx Scripts/remote-maintenance-agent.ts deps",
+    "maintenance:security": "tsx Scripts/remote-maintenance-agent.ts security",
+    "maintenance:dashboard": "tsx Scripts/remote-maintenance-agent.ts dashboard",
+    "maintenance:analytics": "tsx Scripts/remote-maintenance-agent.ts analytics",
+    "maintenance:schedule": "tsx Scripts/remote-maintenance-agent.ts schedule",
+    "analytics:report": "tsx Scripts/maintenance-analytics.ts report",
+    "analytics:insights": "tsx Scripts/maintenance-analytics.ts insights",
+    "analytics:dashboard": "tsx Scripts/maintenance-analytics.ts dashboard",
     "postinstall": "echo 'H3X setup complete - no pre-commit hooks required'"
   },
   "dependencies": {
@@ -124,4 +138,3 @@
     "README.md",
     "LICENSE"
   ]
-}
