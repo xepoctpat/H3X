@@ -35,7 +35,7 @@ jobs:
         continue-on-error: true
 
       - name: Create Pull Request with changes
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: automated code cleanup [skip ci]"
@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
 
       - name: Create Pull Request for dependency updates
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update dependencies [skip ci]"
