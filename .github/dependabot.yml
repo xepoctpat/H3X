@@ -5,12 +5,39 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "09:00"
     allow:
       - dependency-type: "direct"
       - dependency-type: "development"
       - dependency-type: "indirect"
-    
+    open-pull-requests-limit: 10
+    reviewers:
+      - "xepoctpat"
+    assignees:
+      - "xepoctpat"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "auto-merge"
+
   - package-ecosystem: "github-actions"
     directory: "/.github/workflows"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "10:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "xepoctpat"
+    assignees:
+      - "xepoctpat"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "auto-merge"
