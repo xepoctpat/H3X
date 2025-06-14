@@ -41,11 +41,46 @@
     },
     "search.exclude": {
         "**/node_modules": true,
-        "**/bower_components": true,
         "**/dist": true,
         "**/build": true,
+        "**/coverage": true,
         "archive/**": true,
-        "**/.fx": true
+        "**/.fx": true,
+        "**/appPackage": true
     },
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    // Editor formatting and linting on save
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+
+    // ESLint integration
+    "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+    "eslint.format.enable": true,
+
+    // TypeScript validation
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": false, // Disable built-in JS validation in favor of ESLint
+
+    // Terminal settings for consistent experience
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "args": ["-NoLogo"]
+        }
+    },
+
+    // Git settings
+    "git.autofetch": true,
+    "git.confirmSync": false,
+
+    // Security: Prevent accidental commits of sensitive files
+    "git.ignoreLimitWarning": true,
+    "security.workspace.trust.enabled": true,
+
+    // Docker settings
+    "docker.enableDockerComposeLanguageService": true,
+    "docker.languageserver.diagnostics.enable": true
 }
