@@ -1,0 +1,97 @@
+{
+  "github": {
+    "owner": "xepoctpat",
+    "repo": "H3X",
+    "defaultBranch": "master"
+  },
+  "automation": {
+    "conflictResolution": true,
+    "autoMergePRs": true,
+    "branchCleanup": true,
+    "dependencyUpdates": true,
+    "securityPatching": true,
+    "healthMonitoring": true
+  },
+  "intervals": {
+    "healthCheck": 15,
+    "branchCleanup": 24,
+    "securityScan": 12,
+    "dependencyCheck": 6
+  },
+  "autoMerge": {
+    "enabled": true,
+    "allowedAuthors": ["dependabot[bot]", "github-actions[bot]"],
+    "requiresApproval": false,
+    "allowedUpdateTypes": ["patch", "minor"],
+    "blockedPaths": [
+      ".github/workflows/",
+      "package.json",
+      "docker-compose*.yml",
+      "Dockerfile*"
+    ],
+    "requiredChecks": [
+      "build",
+      "test",
+      "lint"
+    ]
+  },
+  "conflictResolution": {
+    "strategies": {
+      "*.json": "merge",
+      "*.yml": "ours",
+      "*.yaml": "ours",
+      "*.env*": "ours",
+      "*.md": "theirs",
+      "*.txt": "theirs",
+      "package*.json": "merge",
+      "*.ts": "manual",
+      "*.js": "manual",
+      "*.py": "manual"
+    },
+    "autoResolveThreshold": 0.8,
+    "createBackups": true
+  },
+  "branchCleanup": {
+    "staleDays": 30,
+    "protectedBranches": ["master", "main", "develop", "staging", "production"],
+    "skipBranchesWithOpenPRs": true,
+    "skipBranchesWithRecentActivity": true
+  },
+  "security": {
+    "autoFixVulnerabilities": true,
+    "severityThreshold": "moderate",
+    "createIssuesForCritical": true,
+    "notifyOnHighSeverity": true,
+    "allowedVulnerabilities": []
+  },
+  "dependencies": {
+    "autoUpdateTypes": ["patch", "minor"],
+    "excludePackages": [],
+    "groupUpdates": true,
+    "createPRForUpdates": true,
+    "runTestsBeforeUpdate": true
+  },
+  "notifications": {
+    "enabled": true,
+    "channels": ["github", "log"],
+    "webhook": null,
+    "email": null,
+    "slack": null,
+    "onSuccess": false,
+    "onFailure": true,
+    "onSecurityAlert": true
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/maintenance-agent.log",
+    "maxSize": "10MB",
+    "maxFiles": 5,
+    "console": true
+  },
+  "performance": {
+    "maxConcurrentOperations": 3,
+    "timeoutMinutes": 30,
+    "retryAttempts": 3,
+    "retryDelaySeconds": 5
+  }
+}

@@ -74,7 +74,7 @@ The No-OpenAI version is built on the Hexperiment Labs framework, which provides
 
 ### Key Components
 
-- **agent-no-openai.js** - Main agent implementation without OpenAI
+- **sir-control-agent.ts** - Main SIR Control Interface implementation
 - **monitoringTool.js** - Real-life environment monitoring implementation
 - **humanSupervisionTool.js** - Human-supervised confirmation scenarios
 - **environmentSimulationTool.js** - Environment simulation with RL standards
