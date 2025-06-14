@@ -514,7 +514,7 @@ export class MaintenanceAnalytics {
 }
 
 // CLI interface
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const analytics = new MaintenanceAnalytics();
   const command = process.argv[2] || 'report';
 
@@ -544,5 +544,3 @@ if (require.main === module) {
       console.log('Usage: node maintenance-analytics.js [report|insights|dashboard]');
   }
 }
-
-export { MaintenanceAnalytics };

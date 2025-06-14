@@ -1505,6 +1505,6 @@ For more information, see the H3X documentation.
 export { RemoteMaintenanceAgent };
 
 // Run CLI if called directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
