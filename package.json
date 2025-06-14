@@ -72,6 +72,12 @@
     "analytics:report": "tsx Scripts/maintenance-analytics.ts report",
     "analytics:insights": "tsx Scripts/maintenance-analytics.ts insights",
     "analytics:dashboard": "tsx Scripts/maintenance-analytics.ts dashboard",
+    "env:switch": "tsx Scripts/env-manager.ts switch",
+    "env:list": "tsx Scripts/env-manager.ts list",
+    "env:status": "tsx Scripts/env-manager.ts status",
+    "env:secrets": "tsx Scripts/env-manager.ts secrets",
+    "config:validate": "tsx Scripts/config-validator.ts",
+    "setup": "npm run env:switch development && npm run config:validate",
     "postinstall": "echo 'H3X setup complete - no pre-commit hooks required'"
   },
   "dependencies": {
