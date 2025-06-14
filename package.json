@@ -65,6 +65,12 @@
     "maintenance:branches": "tsx Scripts/remote-maintenance-agent.ts branches",
     "maintenance:deps": "tsx Scripts/remote-maintenance-agent.ts deps",
     "maintenance:security": "tsx Scripts/remote-maintenance-agent.ts security",
+    "maintenance:dashboard": "tsx Scripts/remote-maintenance-agent.ts dashboard",
+    "maintenance:analytics": "tsx Scripts/remote-maintenance-agent.ts analytics",
+    "maintenance:schedule": "tsx Scripts/remote-maintenance-agent.ts schedule",
+    "analytics:report": "tsx Scripts/maintenance-analytics.ts report",
+    "analytics:insights": "tsx Scripts/maintenance-analytics.ts insights",
+    "analytics:dashboard": "tsx Scripts/maintenance-analytics.ts dashboard",
     "postinstall": "echo 'H3X setup complete - no pre-commit hooks required'"
   },
   "dependencies": {

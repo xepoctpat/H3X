@@ -222,11 +222,150 @@ describe('GitHub Integration', () => {
   });
 });
 
+// Enhanced Features Tests
+describe('Enhanced Features', () => {
+  it('should generate dashboard data', async () => {
+    // Mock analytics methods
+    const mockDashboardData = {
+      summary: { totalOperations: 100, successRate: 95 },
+      recentActivity: [],
+      systemHealth: { score: 90, status: 'excellent' },
+      upcomingTasks: []
+    };
+
+    vi.spyOn(agent as any, 'getDashboardData').mockResolvedValue(mockDashboardData);
+
+    const result = await agent.getDashboardData();
+    expect(result).toEqual(mockDashboardData);
+  });
+
+  it('should generate analytics insights', async () => {
+    const mockInsights = {
+      insights: { riskFactors: [], maintenanceSchedule: [] },
+      trends: { weeklyTrend: 'stable', bottlenecks: [] },
+      recommendations: []
+    };
+
+    vi.spyOn(agent as any, 'getAnalyticsInsights').mockResolvedValue(mockInsights);
+
+    const result = await agent.getAnalyticsInsights();
+    expect(result).toEqual(mockInsights);
+  });
+
+  it('should handle scheduled task execution', async () => {
+    const mockTask = {
+      id: 'test-task',
+      name: 'Test Task',
+      operation: 'health-check',
+      priority: 50
+    };
+
+    // Mock the health check method
+    vi.spyOn(agent as any, 'performHealthCheck').mockResolvedValue(true);
+
+    await expect((agent as any).executeScheduledTask(mockTask)).resolves.toBeUndefined();
+  });
+});
+
+// Analytics Integration Tests
+describe('Analytics Integration', () => {
+  it('should record metrics during operations', async () => {
+    const { exec } = await import('child_process');
+    (exec as any).mockImplementation((cmd: string, options: any, callback: Function) => {
+      callback(null, '', '');
+    });
+
+    // Mock analytics recording
+    const recordMetricSpy = vi.spyOn((agent as any).analytics, 'recordMetric').mockResolvedValue(undefined);
+
+    await agent.runMaintenanceCycle();
+
+    expect(recordMetricSpy).toHaveBeenCalled();
+  });
+
+  it('should generate analytics reports', async () => {
+    const generateReportSpy = vi.spyOn((agent as any).analytics, 'generateReport').mockResolvedValue({
+      totalOperations: 10,
+      successRate: 90,
+      recommendations: []
+    });
+
+    await (agent as any).generateAnalyticsReport();
+
+    expect(generateReportSpy).toHaveBeenCalled();
+  });
+});
+
+// Notification System Tests
+describe('Notification System', () => {
+  it('should send notifications for errors', async () => {
+    const notifyErrorSpy = vi.spyOn((agent as any).notifications, 'notifyError').mockResolvedValue(undefined);
+
+    await (agent as any).log('Test error message', 'error', 'test-operation');
+
+    expect(notifyErrorSpy).toHaveBeenCalledWith(
+      'Maintenance Error',
+      'Test error message',
+      'test-operation',
+      undefined
+    );
+  });
+
+  it('should send notifications for warnings', async () => {
+    const notifyWarningSpy = vi.spyOn((agent as any).notifications, 'notifyWarning').mockResolvedValue(undefined);
+
+    await (agent as any).log('Test warning message', 'warn', 'test-operation');
+
+    expect(notifyWarningSpy).toHaveBeenCalledWith(
+      'Maintenance Warning',
+      'Test warning message',
+      'test-operation',
+      undefined
+    );
+  });
+});
+
+// Intelligent Scheduling Tests
+describe('Intelligent Scheduling', () => {
+  it('should generate optimal schedule', async () => {
+    const mockSchedule = [
+      {
+        task: { name: 'Health Check', operation: 'health-check' },
+        scheduledTime: Date.now() + 60000,
+        reason: 'scheduled maintenance',
+        confidence: 0.9
+      }
+    ];
+
+    vi.spyOn((agent as any).scheduler, 'getOptimalSchedule').mockResolvedValue(mockSchedule);
+
+    const schedule = await (agent as any).scheduler.getOptimalSchedule(24);
+    expect(schedule).toEqual(mockSchedule);
+  });
+
+  it('should add tasks to scheduler', () => {
+    const addTaskSpy = vi.spyOn((agent as any).scheduler, 'addTask').mockReturnValue('task-id');
+
+    const taskId = (agent as any).scheduler.addTask({
+      name: 'Test Task',
+      operation: 'test',
+      priority: 50,
+      estimatedDuration: 5,
+      dependencies: [],
+      constraints: {},
+      schedule: { type: 'interval', value: 60 }
+    });
+
+    expect(addTaskSpy).toHaveBeenCalled();
+    expect(taskId).toBe('task-id');
+  });
+});
+
 // Performance tests
 describe('Performance', () => {
   it('should complete health check within reasonable time', async () => {
     const start = Date.now();
-    
+
     // Mock fast responses
     (global.fetch as any).mockResolvedValue({
       ok: true,
@@ -234,8 +373,20 @@ describe('Performance', () => {
     });
 
     await (agent as any).performHealthCheck();
-    
+
     const duration = Date.now() - start;
     expect(duration).toBeLessThan(5000); // Should complete within 5 seconds
+  });
+
+  it('should handle multiple concurrent operations', async () => {
+    const operations = Array(5).fill(null).map((_, i) =>
+      (agent as any).performHealthCheck()
+    );
+
+    const start = Date.now();
+    await Promise.all(operations);
+    const duration = Date.now() - start;
+
+    expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
   });
 });

@@ -93,5 +93,60 @@
     "timeoutMinutes": 30,
     "retryAttempts": 3,
     "retryDelaySeconds": 5
+  },
+  "analytics": {
+    "enabled": true,
+    "retentionDays": 90,
+    "reportingInterval": "daily",
+    "metricsCollection": {
+      "performance": true,
+      "errors": true,
+      "usage": true,
+      "trends": true
+    }
+  },
+  "intelligentScheduling": {
+    "enabled": true,
+    "learningPeriodDays": 30,
+    "adaptToActivity": true,
+    "respectMaintenanceWindows": true,
+    "optimizeForLowActivity": true
+  },
+  "advancedNotifications": {
+    "enabled": true,
+    "channels": {
+      "discord": {
+        "enabled": false,
+        "webhookUrl": ""
+      },
+      "slack": {
+        "enabled": false,
+        "webhookUrl": "",
+        "channel": "#maintenance"
+      },
+      "email": {
+        "enabled": false,
+        "smtp": {
+          "host": "",
+          "port": 587,
+          "secure": false,
+          "auth": {
+            "user": "",
+            "pass": ""
+          }
+        },
+        "from": "",
+        "to": []
+      }
+    },
+    "filters": {
+      "minSeverity": "warn",
+      "operations": [],
+      "timeWindow": 30,
+      "rateLimiting": {
+        "enabled": true,
+        "maxPerHour": 10
+      }
+    }
   }
 }
