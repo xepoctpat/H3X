@@ -82,5 +82,18 @@
 
     // Docker settings
     "docker.enableDockerComposeLanguageService": true,
-    "docker.languageserver.diagnostics.enable": true
+    "docker.languageserver.diagnostics.enable": true,
+    "[markdown]": {
+        "editor.fontSize": 14,
+        "editor.lineHeight": 26,
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 64,
+        "editor.lineNumbers": "on",
+        "editor.quickSuggestions": {
+            "other": false,
+            "comments": false,
+            "strings": false
+        },
+        "editor.minimap.enabled": false
+    }
 }
