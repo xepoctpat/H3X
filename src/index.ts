@@ -9,10 +9,10 @@ import * as path from 'path';
 import express from 'express';
 
 // This bot's main dialog.
-import { sirAgent } from './agent-no-openai';
+import { sirAgent } from './sir-control-agent';
 
 // Import H3X Proof System
-import { H3XProofSystemModule } from './proof/proof-integration.js';
+import { H3XProofSystemModule } from './proof/proof-integration';
 
 // Create express application.
 const server = express();

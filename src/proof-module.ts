@@ -3,9 +3,9 @@
  * Provides proof system functionality without external dependencies
  */
 
-import { H3XBenchmarkFramework } from './proof/benchmark-framework.js';
-import { H3XProofSystem } from './proof/proof-engine.js';
-import type { Triangle3D, PlatonicSolid } from './proof/types/proof-types.js';
+import { H3XBenchmarkFramework } from './proof/benchmark-framework';
+import { H3XProofSystem } from './proof/proof-engine';
+import type { Triangle3D, PlatonicSolid } from './proof/types/proof-types.ts';
 
 export class H3XProofModule {
   private proof_system: H3XProofSystem;

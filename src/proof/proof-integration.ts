@@ -6,10 +6,10 @@
 // Import value modules first, then type imports
 import type { H3XSystemStatus } from '../../flups-integration/src/ts/types/h3x.d.ts';
 
-import { H3XBenchmarkFramework } from './benchmark-framework.js';
-import { H3XProofSystem } from './proof-engine.js';
-import { PlatonicSolid } from './types/proof-types.js';
-import type { Point3D, Triangle3D } from './types/proof-types.js';
+import { H3XBenchmarkFramework } from './benchmark-framework.ts';
+import { H3XProofSystem } from './proof-engine.ts';
+import { PlatonicSolid } from './types/proof-types.ts';
+import type { Point3D, Triangle3D } from './types/proof-types.ts';
 
 /**
  * H3X Proof System Metrics Interface

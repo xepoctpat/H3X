@@ -3,10 +3,10 @@
  * Comprehensive testing for dimensional mapping and time indistinguishability
  */
 
-import { H3XBenchmarkFramework } from '../benchmark-framework.js';
-import { H3XProofSystem } from '../proof-engine.js';
-import { H3XProofSystemModule } from '../proof-integration.js';
-import { Triangle3D, PlatonicSolid } from '../types/proof-types.js';
+import { H3XBenchmarkFramework } from '../benchmark-framework.ts';
+import { H3XProofSystem } from '../proof-engine.ts';
+import { H3XProofSystemModule } from '../proof-integration.ts';
+import { Triangle3D, PlatonicSolid } from '../types/proof-types.ts';
 
 export class H3XProofTestSuite {
   private proof_system: H3XProofSystem;

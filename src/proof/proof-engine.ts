@@ -22,7 +22,7 @@ import {
   Point3D,
   Point2D,
   RegulationRule,
-} from './types/proof-types.js';
+} from './types/proof-types.ts';
 
 export class H3XProofSystem {
   private config: ProofSystemConfig;

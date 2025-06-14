@@ -1,0 +1,354 @@
+// LM Studio Response.Output Handler for H3X
+// Demonstrates getting response.output from LM Studio API with npm and Docker integration
+
+import { spawn } from 'child_process';
+
+import axios from 'axios';
+
+class LMStudioResponseHandler {
+  lmStudioUrl: string;
+  dockerMode: boolean;
+  verbose: boolean;
+  retryAttempts: number;
+  timeout: number;
+
+  constructor(options: any = {}) {
+    this.lmStudioUrl = options.lmStudioUrl || 'http://127.0.0.1:1234';
+    this.dockerMode = options.dockerMode || false;
+    this.verbose = options.verbose || false;
+    this.retryAttempts = options.retryAttempts || 3;
+    this.timeout = options.timeout || 30000;
+  }
+
+  log(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
+    const timestamp = new Date().toISOString();
+    const colors = {
+      info: '\x1b[36m', // cyan
+      success: '\x1b[32m', // green
+      error: '\x1b[31m', // red
+      warning: '\x1b[33m', // yellow
+      reset: '\x1b[0m',
+    };
+
+    if (this.verbose) {
+      console.log(`${colors[type]}[${timestamp}] ${message}${colors.reset}`);
+    }
+  }
+
+  // Main method to get response.output from LM Studio
+  async getResponseOutput(prompt: string, options: any = {}): Promise<any> {
+    try {
+      this.log('Starting LM Studio API call...', 'info');
+
+      const response = await this.callLMStudioAPI(prompt, options);
+
+      if (response?.choices?.[0]) {
+        const output = response.choices[0].message.content;
+
+        this.log('Successfully retrieved response.output', 'success');
+
+        return {
+          success: true,
+          output: output,
+          metadata: {
+            model: response.model,
+            usage: response.usage,
+            timestamp: new Date().toISOString(),
+            dockerMode: this.dockerMode,
+          },
+          rawResponse: response,
+        };
+      } else {
+        throw new Error('Invalid response structure from LM Studio');
+      }
+    } catch (error) {
+      this.log(`Error getting response.output: ${error instanceof Error ? error.message : String(error)}`, 'error');      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        output: null,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          dockerMode: this.dockerMode,
+        },
+      };
+    }
+  }
+  // Core LM Studio API call
+  async callLMStudioAPI(prompt: string, options: any = {}) {
+    const requestBody = {
+      model: options.model || 'local-model',
+      messages: [
+        {
+          role: 'system',
+          content:
+            options.systemPrompt ||
+            'You are a helpful AI assistant. Provide clear, accurate responses.',
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      max_tokens: options.maxTokens || 500,
+      temperature: options.temperature || 0.7,
+      stream: false,
+      ...options.additionalParams,
+    };
+
+    this.log(`Making API call to ${this.lmStudioUrl}/v1/chat/completions`, 'info');
+
+    const response = await axios.post(`${this.lmStudioUrl}/v1/chat/completions`, requestBody, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${options.apiKey || 'not-needed'}`,
+      },
+      timeout: this.timeout,
+    });
+
+    return response.data;
+  }
+
+  // Check LM Studio connection
+  async checkConnection() {
+    try {
+      this.log('Checking LM Studio connection...', 'info');
+
+      const response = await axios.get(`${this.lmStudioUrl}/v1/models`, {
+        timeout: 5000,
+      });
+
+      if (response.status === 200) {
+        this.log('LM Studio connection successful', 'success');
+        return {
+          connected: true,
+          models: response.data.data,
+          endpoint: this.lmStudioUrl,
+        };
+      }
+    } catch (error) {
+      this.log(`LM Studio connection failed: ${error.message}`, 'error');
+      return {
+        connected: false,
+        error: error.message,
+        endpoint: this.lmStudioUrl,
+      };
+    }
+  }
+  // Batch processing for multiple prompts
+  async batchProcessPrompts(
+    prompts: string[],
+    options: { concurrency?: number; batchIndex?: number } = {},
+  ): Promise<any[]> {
+    this.log(`Processing ${prompts.length} prompts in batch`, 'info');
+
+    const results: any[] = [];
+    const concurrency = options.concurrency || 3;
+
+    for (let i = 0; i < prompts.length; i += concurrency) {
+      const batch = prompts.slice(i, i + concurrency);
+      const batchPromises = batch.map((prompt, index) =>
+        this.getResponseOutput(prompt, {
+          ...options,
+          batchIndex: i + index,
+        }),
+      );
+
+      const batchResults = await Promise.allSettled(batchPromises);
+      results.push(...batchResults.map((r) => (r.status === 'fulfilled' ? r.value : r.reason)));
+
+      this.log(
+        `Completed batch ${Math.floor(i / concurrency) + 1}/${Math.ceil(prompts.length / concurrency)}`,
+        'info',
+      );
+    }
+
+    return results;
+  }
+  // Docker integration methods
+  async startLMStudioContainer(
+    options: { containerName?: string; port?: number; modelPath?: string; image?: string } = {},
+  ): Promise<any> {
+    if (!this.dockerMode) {
+      this.log('Docker mode not enabled', 'warning');
+      return { success: false, message: 'Docker mode not enabled' };
+    }
+
+    try {
+      this.log('Starting LM Studio Docker container...', 'info');
+
+      const dockerCommand = [
+        'docker',
+        'run',
+        '-d',
+        '--name',
+        options.containerName ?? 'lmstudio-server',
+        '-p',
+        `${options.port ?? 1234}:1234`,
+        '-v',
+        `${options.modelPath ?? './models'}:/models`,
+        options.image ?? 'lmstudio/server:latest',
+      ];
+
+      const process = spawn(dockerCommand[0], dockerCommand.slice(1));
+
+      return new Promise((resolve, reject) => {
+        let output = '';
+
+        process.stdout.on('data', (data) => {
+          output += data.toString();
+        });
+
+        process.on('close', (code) => {
+          if (code === 0) {
+            this.log('LM Studio container started successfully', 'success');
+            resolve({ success: true, containerId: output.trim() });
+          } else {
+            reject(new Error(`Docker command failed with code ${code}`));
+          }
+        });
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.log(`Failed to start LM Studio container: ${errorMessage}`, 'error');
+      return { success: false, error: errorMessage };
+    }
+  }
+  // Health check for containerized LM Studio
+  async healthCheck(): Promise<any> {
+    try {
+      const connectionStatus = await this.checkConnection();
+
+      if (connectionStatus?.connected) {
+        // Test with a simple prompt
+        const testResult = await this.getResponseOutput(
+          "Say 'Health check successful' if you can respond.",
+          { maxTokens: 50 },
+        );
+
+        return {
+          healthy: testResult.success,
+          connection: connectionStatus,
+          testResponse: testResult,
+          timestamp: new Date().toISOString(),
+        };
+      } else {
+        return {
+          healthy: false,
+          connection: connectionStatus,
+          timestamp: new Date().toISOString(),
+        };
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return {
+        healthy: false,
+        error: errorMessage,
+        timestamp: new Date().toISOString(),
+      };
+    }
+  }
+  // Integration with H3X automation
+  async integrationTest(): Promise<any> {
+    this.log('Running H3X LM Studio integration test...', 'info');
+
+    const testPrompts = [
+      'Analyze the current system status',
+      'Perform environmental scan',
+      'Generate system health report',
+    ];
+
+    const results = await this.batchProcessPrompts(testPrompts, {
+      concurrency: 3,
+    });
+
+    const successCount = results.filter((r) => r.success).length;
+
+    this.log(
+      `Integration test completed: ${successCount}/${results.length} successful`,
+      successCount === results.length ? 'success' : 'warning',
+    );
+
+    return {
+      totalTests: results.length,
+      successful: successCount,
+      results: results,
+      overallSuccess: successCount === results.length,
+    };
+  }
+}
+
+// Example usage functions
+async function demonstrateBasicUsage(): Promise<any> {
+  console.log('🔮 H3X LM Studio Response.Output Demo\n');
+
+  const handler = new LMStudioResponseHandler({
+    verbose: true,
+    dockerMode: false,
+  });
+  // Check connection
+  const connection = await handler.checkConnection();
+  if (!connection?.connected) {
+    console.log('❌ LM Studio not available. Please start LM Studio server first.');
+    return;
+  }
+
+  console.log('✅ LM Studio connected successfully\n');
+
+  // Get response.output example
+  const result = await handler.getResponseOutput(
+    'Explain how Docker containers work with LM Studio integration',
+    {
+      maxTokens: 300,
+      temperature: 0.7,
+    },
+  );
+
+  if (result.success) {
+    console.log('📤 Response Output:');
+    console.log(result.output);
+    console.log('\n📊 Metadata:');
+    console.log(JSON.stringify(result.metadata, null, 2));
+  } else {
+    console.log('❌ Failed to get response:', result.error);
+  }
+}
+
+async function demonstrateDockerIntegration(): Promise<any> {
+  console.log('🐳 H3X Docker + LM Studio Integration Demo\n');
+
+  const handler = new LMStudioResponseHandler({
+    verbose: true,
+    dockerMode: true,
+    lmStudioUrl: 'http://lmstudio-server:1234', // Docker internal network
+  });
+
+  // Health check
+  const health = await handler.healthCheck();
+  console.log('🏥 Health Check Results:');
+  console.log(JSON.stringify(health, null, 2));
+
+  if (health.healthy) {
+    // Run integration test
+    const testResults = await handler.integrationTest();
+    console.log('\n🧪 Integration Test Results:');
+    console.log(`Success Rate: ${testResults.successful}/${testResults.totalTests}`);
+  }
+}
+
+// Export for use in other modules
+export { LMStudioResponseHandler, demonstrateBasicUsage, demonstrateDockerIntegration };
+
+// CLI execution
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const args = process.argv.slice(2);
+  const mode = args[0] || 'basic';
+  switch (mode) {
+    case 'docker':
+      void demonstrateDockerIntegration();
+      break;
+    case 'basic':
+    default:
+      void demonstrateBasicUsage();
+      break;
+  }
+}

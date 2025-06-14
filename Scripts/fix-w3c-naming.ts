@@ -10,7 +10,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-function kebabCase(str) {
+function kebabCase(str: string): string {
   return str
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .replace(/[_\s]+/g, '-')
@@ -75,7 +75,7 @@ const PRESERVE_FOLDERS = new Set([
   'temp',
 ]);
 
-function shouldPreserveName(itemName, isDirectory = false) {
+function shouldPreserveName(itemName: string, isDirectory = false): boolean {
   // Check if it's a preserved file
   if (!isDirectory && PRESERVE_FILES.has(itemName)) {
     return true;
@@ -102,7 +102,7 @@ function shouldPreserveName(itemName, isDirectory = false) {
   return false;
 }
 
-function getNewName(oldName, isDirectory = false) {
+function getNewName(oldName: string, isDirectory = false): string {
   if (shouldPreserveName(oldName, isDirectory)) {
     return oldName;
   }
@@ -124,7 +124,7 @@ function getNewName(oldName, isDirectory = false) {
   return kebabCase(nameWithoutExt) + ext;
 }
 
-function renameItem(oldPath, newPath) {
+function renameItem(oldPath: string, newPath: string): boolean {
   try {
     if (oldPath === newPath) {
       return false; // No change needed
@@ -140,12 +140,12 @@ function renameItem(oldPath, newPath) {
     console.log(`✅ Renamed: ${path.basename(oldPath)} → ${path.basename(newPath)}`);
     return true;
   } catch (error) {
-    console.error(`❌ Error renaming ${oldPath} to ${newPath}:`, error.message);
+    console.error(`❌ Error renaming ${oldPath} to ${newPath}:`, error instanceof Error ? error.message : String(error));
     return false;
   }
 }
 
-function processDirectory(dirPath, level = 0) {
+function processDirectory(dirPath: string, level = 0): void {
   const items = fs.readdirSync(dirPath);
   const renamedItems = new Map(); // oldName -> newName
 

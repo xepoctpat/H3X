@@ -78,25 +78,19 @@ class H3XBuildSystem {
 
     if (typeCheck) {
       await this.typeCheck();
-    }
-
-    let tsconfigFile: string;
-    let outputDir: string;
+    }    let tsconfigFile: string;
 
     switch (target) {
       case 'production':
         tsconfigFile = 'tsconfig.build.json';
-        outputDir = 'dist';
         break;
       case 'scripts':
         tsconfigFile = 'tsconfig.scripts.json';
-        outputDir = 'dist/scripts';
         break;
       case 'development':
       case 'testing':
       default:
         tsconfigFile = 'tsconfig.json';
-        outputDir = 'dist';
         break;
     }
 
@@ -138,11 +132,10 @@ class H3XBuildSystem {
   }
 
   async runLinting(): Promise<void> {
-    this.log('Running ESLint...');
-    try {
+    this.log('Running ESLint...');    try {
       await execAsync('npm run lint:check');
       this.log('Linting passed', 'success');
-    } catch (error: any) {
+    } catch {
       this.log('Linting issues found, attempting to fix...', 'warning');
       try {
         await execAsync('npm run lint');
@@ -195,16 +188,15 @@ class H3XBuildSystem {
       process.exit(1);
     }
   }
-
   async generateBuildInfo(): Promise<void> {
     const buildInfo = {
       timestamp: new Date().toISOString(),
-      version: process.env.npm_package_version || '0.0.0',
+      version: process.env.npm_package_version ?? '0.0.0',
       nodeVersion: process.version,
       platform: process.platform,
       arch: process.arch,
       gitCommit: await this.getGitCommit(),
-      buildTarget: process.env.BUILD_TARGET || 'development',
+      buildTarget: process.env.BUILD_TARGET ?? 'development',
     };
 
     const buildInfoPath = path.join(this.distDir, 'build-info.json');
@@ -267,7 +259,7 @@ async function main(): Promise<void> {
 }
 
 // Check if script is run directly
-const isMainModule = process.argv[1] && process.argv[1].includes('build-system');
+const isMainModule = process.argv[1]?.includes('build-system');
 
 if (isMainModule) {
   main().catch((error) => {
@@ -275,5 +267,8 @@ if (isMainModule) {
     process.exit(1);
   });
 }
+
+// Ensure TypeScript references use the correct config file
+// If you use tsc programmatically, set the config path to '../../tsconfig.json' or './tsconfig.json' as appropriate
 
 export default H3XBuildSystem;

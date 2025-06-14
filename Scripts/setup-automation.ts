@@ -7,17 +7,16 @@
 
 import { execSync } from 'child_process';
 import * as fs from 'fs';
-import * as path from 'path';
 
 console.log('🚀 H3X Automation Setup - Initializing...\n');
 
 /**
  * Execute command safely
  */
-function runCommand(command, description) {
+function runCommand(command: string, description: string): boolean {
   console.log(`Running: ${description}`);
   try {
-    const output = execSync(command, {
+    execSync(command, {
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -25,7 +24,7 @@ function runCommand(command, description) {
     return true;
   } catch (error) {
     console.log(`❌ ${description} - FAILED`);
-    console.log('Error:', error.message);
+    console.log('Error:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
@@ -33,7 +32,7 @@ function runCommand(command, description) {
 /**
  * Create directory if it doesn't exist
  */
-function ensureDirectory(dirPath) {
+function ensureDirectory(dirPath: string): void {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
     console.log(`📁 Created directory: ${dirPath}`);
@@ -45,7 +44,7 @@ function ensureDirectory(dirPath) {
 /**
  * Main setup function
  */
-async function setupAutomation(): Promise<any> {
+async function setupAutomation(): Promise<void> {
   console.log('📋 Setting up H3X automation infrastructure...\n');
 
   // 1. Ensure required directories exist
@@ -82,7 +81,7 @@ node scripts/pre-commit-hook.js
         execSync(`chmod +x ${preCommitHookPath}`);
       }
       console.log('✅ Pre-commit hook created');
-    } catch (error) {
+    } catch {
       console.log('⚠️  Could not set executable permission on hook');
     }
   } else {
@@ -116,7 +115,7 @@ node scripts/pre-commit-hook.js
     } else {
       console.log('⚠️  Automation scripts missing from package.json');
     }
-  } catch (error) {
+  } catch {
     console.log('❌ Could not verify package.json');
   }
 
@@ -198,6 +197,6 @@ Generated on: ${new Date().toISOString()}
 
 // Run setup
 setupAutomation().catch((error) => {
-  console.error('❌ Setup failed:', error.message);
+  console.error('❌ Setup failed:', error instanceof Error ? error.message : String(error));
   process.exit(1);
 });

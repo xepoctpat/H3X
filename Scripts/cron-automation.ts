@@ -57,10 +57,9 @@ class H3XCronAutomation {
     const directories = ['logs/cron', 'config/cron', 'scripts/cron-jobs', 'reports/cron'];
 
     for (const dir of directories) {
-      const fullPath = path.join(this.projectRoot, dir);
-      try {
+      const fullPath = path.join(this.projectRoot, dir);      try {
         await fs.mkdir(fullPath, { recursive: true });
-      } catch (error) {
+      } catch {
         // Directory already exists
       }
     }
@@ -229,7 +228,7 @@ class H3XCronAutomation {
       '',
     ];
 
-    for (const [name, job] of this.cronJobs.entries()) {
+    for (const [, job] of this.cronJobs.entries()) {
       if (job.enabled) {
         const cronEntry = `${job.schedule} cd ${this.projectRoot} && ${job.command} >> ${path.join(this.logDir, job.logFile)} 2>&1`;
         crontabEntries.push(`# ${job.description}`);
@@ -408,7 +407,7 @@ echo "📝 Logs will be written to: ${this.logDir}"
     }
   }
 
-  private calculateNextRun(schedule: string): string {
+  private calculateNextRun(_schedule: string): string {
     // Simple next run calculation (for production, use a proper cron parser)
     const now = new Date();
     const nextRun = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Default to tomorrow
@@ -489,9 +488,7 @@ async function main(): Promise<void> {
     switch (command) {
       case 'setup':
         await cronSystem.setupSystemCron();
-        break;
-
-      case 'run':
+        break;      case 'run': {
         if (!jobName) {
           console.error('❌ Job name required');
           process.exit(1);
@@ -500,8 +497,7 @@ async function main(): Promise<void> {
         console.log(`${result.success ? '✅' : '❌'} ${result.message} (${result.duration}ms)`);
         process.exit(result.success ? 0 : 1);
         break;
-
-      case 'list':
+      }case 'list': {
         const jobs = await cronSystem.listCronJobs();
         console.log('📋 Configured Cron Jobs:');
         jobs.forEach((job: CronJobConfig) => {
@@ -509,11 +505,11 @@ async function main(): Promise<void> {
           console.log(`  ${status} ${job.name}: ${job.description}`);
           console.log(`    Schedule: ${job.schedule}`);
           console.log(`    Command: ${job.command}`);
-          console.log('');
-        });
+          console.log('');        });
         break;
+      }
 
-      case 'enable':
+      case 'enable': {
         if (!jobName) {
           console.error('❌ Job name required');
           process.exit(1);
@@ -524,8 +520,9 @@ async function main(): Promise<void> {
           process.exit(1);
         }
         break;
+      }
 
-      case 'disable':
+      case 'disable': {
         if (!jobName) {
           console.error('❌ Job name required');
           process.exit(1);
@@ -536,10 +533,12 @@ async function main(): Promise<void> {
           process.exit(1);
         }
         break;
+      }
 
-      case 'report':
+      case 'report': {
         await cronSystem.generateMonitoringReport();
         break;
+      }
 
       default:
         console.log(`
@@ -578,7 +577,7 @@ Installation:
 
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  void main();
 }
 
 export { H3XCronAutomation };

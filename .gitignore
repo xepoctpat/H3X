@@ -101,3 +101,35 @@ Thumbs.db
 
 # Deployment artifacts
 .deployment
+
+# Obsolete JavaScript files (we're using TypeScript now)
+*.test.js
+*-test.js
+*.spec.js
+
+# Old config files
+.jshintrc
+.htmlhintrc
+
+# Temporary and backup files
+*.backup
+*.old
+*.deprecated
+*-old.*
+*-backup.*
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Archive and backup folders
+archive/obsolete-backup-*/
+archive/**/*.yml
+archive/**/*.yaml
+archive/**/*.old
+archive/**/*.backup
+
+# Old Teams Toolkit files
+**/m365agents*.yml
+**/m365agents*.yaml

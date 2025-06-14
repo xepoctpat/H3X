@@ -15,5 +15,85 @@
         }
     ],
     "docwriter.style": "Auto-detect",
-    "gitlens.ai.largePromptWarningThreshold": 80000
+    "gitlens.ai.largePromptWarningThreshold": 80000,
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true,
+        "archive/**": true,
+        "**/.fx": true,
+        "**/appPackage": true
+    },
+    "files.watcherExclude": {
+        "**/archive/**": true,
+        "**/node_modules/**": true,
+        "**/dist/**": true,
+        "**/build/**": true
+    },
+    "yaml.schemas": {
+        "!archive/**/*.yml": true,
+        "!archive/**/*.yaml": true
+    },
+    "files.associations": {
+        "archive/**/*.yml": "plaintext",
+        "archive/**/*.yaml": "plaintext"
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true,
+        "archive/**": true,
+        "**/.fx": true,
+        "**/appPackage": true
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    // Editor formatting and linting on save
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+
+    // ESLint integration
+    "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+    "eslint.format.enable": true,
+
+    // TypeScript validation
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": false, // Disable built-in JS validation in favor of ESLint
+
+    // Terminal settings for consistent experience
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "args": ["-NoLogo"]
+        }
+    },
+
+    // Git settings
+    "git.autofetch": true,
+    "git.confirmSync": false,
+
+    // Security: Prevent accidental commits of sensitive files
+    "git.ignoreLimitWarning": true,
+    "security.workspace.trust.enabled": true,
+
+    // Docker settings
+    "docker.enableDockerComposeLanguageService": true,
+    "docker.languageserver.diagnostics.enable": true,
+    "[markdown]": {
+        "editor.fontSize": 14,
+        "editor.lineHeight": 26,
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 64,
+        "editor.lineNumbers": "on",
+        "editor.quickSuggestions": {
+            "other": false,
+            "comments": false,
+            "strings": false
+        },
+        "editor.minimap.enabled": false
+    }
 }

@@ -7,14 +7,13 @@
 
 import { exec } from 'child_process';
 import * as fs from 'fs';
-import * as path from 'path';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
 class TestingToolsSetup {
-  tools: any[];
-  configFiles: any[];
+  tools: Array<{ name: string; package: string; version: string }>;
+  configFiles: Array<{ name: string; exists: boolean }>;
 
   constructor() {
     this.tools = [
@@ -27,10 +26,8 @@ class TestingToolsSetup {
       { name: '.htmlhintrc', exists: false },
       { name: '.jshintrc', exists: false },
       { name: '.markdownlint.json', exists: false },
-    ];
-  }
-
-  log(message, type = 'info') {
+    ];  }
+  log(message: string, type = 'info'): void {
     const timestamp = new Date().toISOString();
     const prefix =
       {
@@ -38,21 +35,20 @@ class TestingToolsSetup {
         success: '✅',
         warning: '⚠️',
         error: '❌',
-      }[type] || 'ℹ️';
+      }[type] ?? 'ℹ️';
 
     console.log(`[${timestamp}] ${prefix} ${message}`);
   }
-
-  async checkExistingInstallations() {
+  async checkExistingInstallations(): Promise<void> {
     this.log('Checking existing installations...');
     let packageJson;
     try {
       packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-    } catch (e) {
+    } catch {
       this.log('package.json not found. Please run `npm init -y` first.', 'error');
       process.exit(1);
     }
-    const devDeps = packageJson.devDependencies || {};
+    const devDeps = packageJson.devDependencies ?? {};
     for (const tool of this.tools) {
       if (devDeps[tool.package]) {
         this.log(`${tool.name} already listed in devDependencies`, 'success');
@@ -62,7 +58,7 @@ class TestingToolsSetup {
     }
   }
 
-  async checkConfigFiles() {
+  async checkConfigFiles(): Promise<void> {
     this.log('Checking configuration files...');
     for (const config of this.configFiles) {
       config.exists = fs.existsSync(config.name);
@@ -74,7 +70,7 @@ class TestingToolsSetup {
     }
   }
 
-  async createHTMLHintConfig() {
+  async createHTMLHintConfig(): Promise<void> {
     if (fs.existsSync('.htmlhintrc')) {
       this.log('HTMLHint config already exists', 'info');
       return;
@@ -107,7 +103,7 @@ class TestingToolsSetup {
     this.log('Created .htmlhintrc configuration', 'success');
   }
 
-  async createJSHintConfig() {
+  async createJSHintConfig(): Promise<void> {
     if (fs.existsSync('.jshintrc')) {
       this.log('JSHint config already exists', 'info');
       return;
@@ -146,7 +142,7 @@ class TestingToolsSetup {
     this.log('Created .jshintrc configuration', 'success');
   }
 
-  async createMarkdownLintConfig() {
+  async createMarkdownLintConfig(): Promise<void> {
     if (fs.existsSync('.markdownlint.json')) {
       this.log('MarkdownLint config already exists', 'info');
       return;
@@ -162,12 +158,11 @@ class TestingToolsSetup {
     fs.writeFileSync('.markdownlint.json', JSON.stringify(markdownConfig, null, 2));
     this.log('Created .markdownlint.json configuration', 'success');
   }
-
-  async installDependencies() {
+  async installDependencies(): Promise<void> {
     this.log('Installing testing dependencies...');
 
     try {
-      const { stdout, stderr } = await execAsync(
+      const { stderr } = await execAsync(
         'npm install --save-dev htmlhint@^1.1.4 jshint@^2.13.6 markdownlint-cli@^0.37.0',
       );
       if (stderr && !stderr.includes('WARN')) {
@@ -175,12 +170,11 @@ class TestingToolsSetup {
       }
       this.log('Dependencies installed successfully', 'success');
     } catch (error) {
-      this.log(`Failed to install dependencies: ${error.message}`, 'error');
+      this.log(`Failed to install dependencies: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
       throw error;
     }
   }
-
-  async verifyInstallations() {
+  async verifyInstallations(): Promise<void> {
     this.log('Verifying tool installations...');
 
     const verificationCommands = [
@@ -193,13 +187,13 @@ class TestingToolsSetup {
       try {
         const { stdout } = await execAsync(command);
         this.log(`${name}: ${stdout.trim()}`, 'success');
-      } catch (error) {
+      } catch {
         this.log(`${name}: Installation may have issues`, 'warning');
       }
     }
   }
 
-  async createHealthCheckScript() {
+  async createHealthCheckScript(): Promise<void> {
     if (fs.existsSync('scripts/health-check.js')) {
       this.log('health-check.js already exists', 'info');
       return;
@@ -256,12 +250,11 @@ runHealthCheck();`;
     fs.writeFileSync('scripts/health-check.js', healthCheckScript);
     this.log('Created scripts/health-check.js', 'success');
   }
-
-  async updatePackageJsonScripts() {
+  async updatePackageJsonScripts(): Promise<void> {
     this.log('Updating package.json scripts...');
     try {
       const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-      packageJson.scripts = packageJson.scripts || {};
+      packageJson.scripts = packageJson.scripts ?? {};
       const newScripts = {
         'test:all': 'npm run test:html && npm run test:js && npm run test:md',
         'test:html': 'htmlhint ./Public/**/*.html',
@@ -273,14 +266,13 @@ runHealthCheck();`;
         'daily:full': 'npm run test:all && npm run test:health',
       };
       packageJson.scripts = { ...packageJson.scripts, ...newScripts };
-      fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2));
-      this.log('Updated package.json with test scripts', 'success');
+      fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2));      this.log('Updated package.json with test scripts', 'success');
     } catch (error) {
-      this.log(`Failed to update package.json: ${error.message}`, 'error');
+      this.log(`Failed to update package.json: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
     }
   }
 
-  async displayUsageInstructions() {
+  async displayUsageInstructions(): Promise<void> {
     console.log('\\n🎉 Setup Complete! Here are your new testing commands:\\n');
 
     const commands = [
@@ -308,8 +300,7 @@ runHealthCheck();`;
     console.log('  npm run daily:check     # For daily health monitoring');
     console.log('  npm run test:all        # For comprehensive testing');
   }
-
-  async run() {
+  async run(): Promise<void> {
     this.log('🚀 Starting H3X Testing Tools Setup');
     console.log('='.repeat(60));
 
@@ -327,7 +318,7 @@ runHealthCheck();`;
 
       this.log('🎉 Testing tools setup completed successfully!', 'success');
     } catch (error) {
-      this.log(`Setup failed: ${error.message}`, 'error');
+      this.log(`Setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
       process.exit(1);
     }
   }

@@ -19,7 +19,7 @@ const requiredDirs = ['src', 'public', 'env', 'scripts'];
 let allDirsExist = true;
 
 requiredDirs.forEach((dir) => {
-  // eslint-disable-next-line security/detect-non-literal-fs-filename
+   
   if (fs.existsSync(dir)) {
     console.info(`✅ Directory exists: ${dir}/`);
   } else {
@@ -29,11 +29,16 @@ requiredDirs.forEach((dir) => {
 });
 
 // Check if main files exist
-const requiredFiles = ['package.json', 'dockerfile.h3x', 'docker-compose.yml'];
+const requiredFiles = [
+  'package.json', 
+  'docker/Dockerfile', 
+  'docker/docker-compose.yml',
+  'docker-compose.unified.yml',
+];
 let allFilesExist = true;
 
 requiredFiles.forEach((file) => {
-  // eslint-disable-next-line security/detect-non-literal-fs-filename
+   
   if (fs.existsSync(file)) {
     console.info(`✅ File exists: ${file}`);
   } else {
