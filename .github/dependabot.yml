@@ -6,41 +6,16 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "10:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "xepoctpat"
-    labels:
-      - "dependencies"
-      - "npm"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
+
     allow:
       - dependency-type: "direct"
       - dependency-type: "development"
       - dependency-type: "indirect"
-    
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "10:00"
-    reviewers:
-      - "xepoctpat"
-    labels:
-      - "dependencies"
-      - "docker"
-    
+
   - package-ecosystem: "github-actions"
     directory: "/.github/workflows"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "10:00"
-    reviewers:
-      - "xepoctpat"
-    labels:
-      - "dependencies"
-      - "github-actions"
+
