@@ -14,6 +14,7 @@ The H3X system is fully containerized for secure, scalable, and easy deployment.
 
 2. **Configure Environment Variables**
    - Copy the provided `.env.example` to `.env` and securely configure your ports and secrets:
+
    ```bash
    cp .env.example .env
    # Edit .env to securely set ports and credentials
