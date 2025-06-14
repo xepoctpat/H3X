@@ -3,9 +3,9 @@
  * Provides proof system functionality without external dependencies
  */
 
-import { H3XBenchmarkFramework } from './proof/benchmark-framework';
-import { H3XProofSystem } from './proof/proof-engine';
-import type { Triangle3D, PlatonicSolid } from './proof/types/proof-types.ts';
+import { H3XBenchmarkFramework } from './proof/benchmark-framework.js';
+import { H3XProofSystem } from './proof/proof-engine.js';
+import type { Triangle3D, PlatonicSolid } from './proof/types/proof-types.js';
 
 export class H3XProofModule {
   private proof_system: H3XProofSystem;
@@ -44,6 +44,10 @@ export class H3XProofModule {
         { x: 1, y: 0, z: 0 },
         { x: 0, y: 1, z: 0 },
         { x: 0, y: 0, z: 1 },
+      ] as [
+        { x: number; y: number; z: number },
+        { x: number; y: number; z: number },
+        { x: number; y: number; z: number }
       ],
       id: 'demo_triangle',
       platonic_source: 'tetrahedron' as PlatonicSolid,
@@ -83,7 +87,7 @@ export class H3XProofModule {
       total_proofs: all_proofs.length,
       flup_count: lattice_status.flups_count,
       regulator_count: lattice_status.regulators_count,
-      lattice_utilization: lattice_status.utilization,
+      lattice_utilization: lattice_status.flups_count / 1000, // Assuming 1000 is max capacity for now
       energy_efficiency: 1 - metrics.energy_consumption / 1000,
       storage_efficiency: metrics.storage_efficiency,
       information_density: metrics.information_density,

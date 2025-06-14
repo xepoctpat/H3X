@@ -20,7 +20,7 @@ Agents.
 
 - Node.js (versions 18, 20, or 22)
 - GitHub and M365 accounts
-- No OpenAI API key required
+- No GitHub API key required
 
 ### Installation and Setup
 

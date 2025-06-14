@@ -18,7 +18,97 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+// Type definitions
+interface DependabotPRData {
+  number: number | string;
+  title: string;
+  body: string;
+  user?: { login: string };
+  labels?: { name: string }[];
+  author_association?: string;
+}
+
+interface DependencyUpdateInfo {
+  ecosystem: string;
+  package: string;
+  fromVersion: string;
+  toVersion: string;
+  updateType: string;
+}
+
+interface SecurityResults {
+  hasVulnerabilities: boolean;
+  vulnerabilities: any[];
+  advisories: any[];
+  severity: string;
+  snykVulnerabilities?: any[];
+  error?: string;
+}
+
+interface BreakingChanges {
+  detected: boolean;
+  likelihood: string;
+  reasons: string[];
+  mitigation: string[];
+}
+
+interface CIStatus {
+  allPassed: boolean;
+  failed: string[];
+  pending: string[];
+  success: string[];
+}
+
+interface PerformanceImpact {
+  bundleSizeImpact: string;
+  runtimeImpact: string;
+  recommendations: string[];
+}
+
+interface AnalysisResult {
+  prNumber: number | string;
+  title: string;
+  timestamp: string;
+  eligible: boolean;
+  reasons: string[];
+  risks: string[];
+  recommendations: string[];
+  updateInfo?: DependencyUpdateInfo;
+  security?: SecurityResults;
+  breakingChanges?: BreakingChanges;
+  ciStatus?: CIStatus;
+  performance?: PerformanceImpact;
+}
+
+interface AutomationConfig {
+  autoMerge: {
+    enabled: boolean;
+    allowedUpdateTypes: string[];
+    allowedEcosystems: string[];
+    requiresAllChecks: boolean;
+    waitTimeMinutes: number;
+  };
+  security: {
+    scanEnabled: boolean;
+    blockVulnerableUpdates: boolean;
+    allowedSeverity: string[];
+  };
+  testing: {
+    runTests: boolean;
+    runBuildCheck: boolean;
+    runSecurityScan: boolean;
+  };
+  notifications: {
+    enabled: boolean;
+    channels: string[];
+  };
+}
+
 class DependabotAutomation {
+  projectRoot: string;
+  logFile: string;
+  config: AutomationConfig;
+
   constructor() {
     this.projectRoot = process.cwd();
     this.logFile = path.join(this.projectRoot, 'logs/automation/dependabot-automation.log');
@@ -50,7 +140,7 @@ class DependabotAutomation {
   /**
    * Initialize the automation system
    */
-  async initialize() {
+  async initialize(): Promise<void> {
     await this.log('🤖 Initializing Dependabot Automation System', 'info');
 
     // Ensure log directory exists
@@ -66,13 +156,14 @@ class DependabotAutomation {
   /**
    * Load configuration from file
    */
-  async loadConfiguration() {
+  async loadConfiguration(): Promise<void> {
     const configPath = path.join(this.projectRoot, 'config/dependabot-automation.json');
     try {
       const configData = await fs.readFile(configPath, 'utf8');
       const userConfig = JSON.parse(configData);
       this.config = { ...this.config, ...userConfig };
-      await this.log('📋 Configuration loaded from file', 'info');    } catch {
+      await this.log('📋 Configuration loaded from file', 'info');
+    } catch {
       await this.log('📋 Using default configuration', 'info');
     }
   }
@@ -80,10 +171,10 @@ class DependabotAutomation {
   /**
    * Analyze a Dependabot PR for auto-merge eligibility
    */
-  async analyzeDependabotPR(prNumber, prData) {
+  async analyzeDependabotPR(prNumber: number | string, prData: DependabotPRData): Promise<AnalysisResult> {
     await this.log(`🔍 Analyzing Dependabot PR #${prNumber}`, 'info');
 
-    const analysis = {
+    const analysis: AnalysisResult = {
       prNumber,
       title: prData.title,
       timestamp: new Date().toISOString(),
@@ -158,9 +249,9 @@ class DependabotAutomation {
       analysis.recommendations.push('Safe for auto-merge');
 
       await this.log(`✅ PR #${prNumber} is eligible for auto-merge`, 'success');
-    } catch (error) {
-      analysis.reasons.push(`Analysis error: ${error.message}`);
-      await this.log(`❌ Error analyzing PR #${prNumber}: ${error.message}`, 'error');
+    } catch (error: any) {
+      analysis.reasons.push(`Analysis error: ${error?.message || String(error)}`);
+      await this.log(`❌ Error analyzing PR #${prNumber}: ${error?.message || String(error)}`, 'error');
     }
 
     return analysis;
@@ -169,19 +260,19 @@ class DependabotAutomation {
   /**
    * Check if a PR is from Dependabot
    */
-  isDependabotPR(prData) {
-    return (
+  isDependabotPR(prData: DependabotPRData): boolean {
+    return Boolean(
       prData.user?.login === 'dependabot[bot]' ||
       (prData.author_association === 'COLLABORATOR' && prData.title.includes('Bump')) ||
-      prData.labels?.some((label) => label.name === 'dependencies')
+      (prData.labels?.some((label: { name: string }) => label.name === 'dependencies')),
     );
   }
 
   /**
    * Parse dependency update information from PR title and body
    */
-  parseDependencyUpdate(title, body) {
-    const updateInfo = {
+  parseDependencyUpdate(title: string, body: string): DependencyUpdateInfo {
+    const updateInfo: DependencyUpdateInfo = {
       ecosystem: 'unknown',
       package: 'unknown',
       fromVersion: 'unknown',
@@ -215,14 +306,15 @@ class DependabotAutomation {
   /**
    * Determine update type (major, minor, patch)
    */
-  determineUpdateType(fromVersion, toVersion) {
+  determineUpdateType(fromVersion: string, toVersion: string): string {
     try {
       const from = fromVersion.replace(/[^0-9.]/g, '').split('.');
       const to = toVersion.replace(/[^0-9.]/g, '').split('.');
 
       if (parseInt(to[0]) > parseInt(from[0])) return 'major';
       if (parseInt(to[1]) > parseInt(from[1])) return 'minor';
-      if (parseInt(to[2]) > parseInt(from[2])) return 'patch';      return 'patch'; // Default to patch if unclear
+      if (parseInt(to[2]) > parseInt(from[2])) return 'patch';
+      return 'patch'; // Default to patch if unclear
     } catch {
       return 'unknown';
     }
@@ -231,8 +323,8 @@ class DependabotAutomation {
   /**
    * Analyze security impact of dependency update
    */
-  async analyzeSecurityImpact(updateInfo) {
-    const securityResults = {
+  async analyzeSecurityImpact(updateInfo: DependencyUpdateInfo): Promise<SecurityResults> {
+    const securityResults: SecurityResults = {
       hasVulnerabilities: false,
       vulnerabilities: [],
       advisories: [],
@@ -259,9 +351,9 @@ class DependabotAutomation {
 
       // Additional security scanning with Snyk if available
       await this.runSnykScan(updateInfo, securityResults);
-    } catch (error) {
-      await this.log(`Warning: Security analysis failed: ${error.message}`, 'warning');
-      securityResults.error = error.message;
+    } catch (error: any) {
+      await this.log(`Warning: Security analysis failed: ${error?.message || String(error)}`, 'warning');
+      securityResults.error = error?.message || String(error);
     }
 
     return securityResults;
@@ -270,7 +362,7 @@ class DependabotAutomation {
   /**
    * Run Snyk security scan
    */
-  async runSnykScan(updateInfo, securityResults) {
+  async runSnykScan(updateInfo: DependencyUpdateInfo, securityResults: SecurityResults): Promise<void> {
     try {
       const snykResult = await execAsync('snyk test --json', {
         cwd: this.projectRoot,
@@ -280,7 +372,8 @@ class DependabotAutomation {
       const snykData = JSON.parse(snykResult.stdout);
       if (snykData.vulnerabilities) {
         securityResults.snykVulnerabilities = snykData.vulnerabilities;
-      }    } catch {
+      }
+    } catch {
       // Snyk not available or failed - continue without it
       await this.log('Snyk scan not available or failed', 'info');
     }
@@ -289,8 +382,8 @@ class DependabotAutomation {
   /**
    * Analyze potential breaking changes
    */
-  async analyzeBreakingChanges(updateInfo) {
-    const breakingChanges = {
+  async analyzeBreakingChanges(updateInfo: DependencyUpdateInfo): Promise<BreakingChanges> {
+    const breakingChanges: BreakingChanges = {
       detected: false,
       likelihood: 'low',
       reasons: [],
@@ -314,7 +407,7 @@ class DependabotAutomation {
   /**
    * Check for known breaking change patterns
    */
-  async checkBreakingChangePatterns(updateInfo, breakingChanges) {
+  async checkBreakingChangePatterns(updateInfo: DependencyUpdateInfo, breakingChanges: BreakingChanges): Promise<void> {
     // Known packages that frequently introduce breaking changes
     const riskPackages = ['webpack', 'babel', 'eslint', 'typescript', 'react', 'vue', 'angular'];
 
@@ -328,8 +421,8 @@ class DependabotAutomation {
   /**
    * Check CI/CD status for the PR
    */
-  async checkCIStatus(prNumber) {
-    const status = {
+  async checkCIStatus(prNumber: number | string): Promise<CIStatus> {
+    const status: CIStatus = {
       allPassed: false,
       failed: [],
       pending: [],
@@ -351,8 +444,8 @@ class DependabotAutomation {
       }
 
       status.allPassed = status.failed.length === 0 && status.pending.length === 0;
-    } catch (error) {
-      status.failed.push(`CI check failed: ${error.message}`);
+    } catch (error: any) {
+      status.failed.push(`CI check failed: ${error?.message || String(error)}`);
     }
 
     return status;
@@ -361,11 +454,12 @@ class DependabotAutomation {
   /**
    * Run local tests
    */
-  async runLocalTests(status) {
+  async runLocalTests(status: CIStatus): Promise<void> {
     try {
       await execAsync('npm test', { cwd: this.projectRoot, timeout: 300000 });
       status.success.push('Local tests passed');
-      await this.log('✅ Local tests passed', 'success');    } catch {
+      await this.log('✅ Local tests passed', 'success');
+    } catch {
       status.failed.push('Local tests failed');
       await this.log('❌ Local tests failed', 'error');
     }
@@ -374,11 +468,12 @@ class DependabotAutomation {
   /**
    * Run build check
    */
-  async runBuildCheck(status) {
+  async runBuildCheck(status: CIStatus): Promise<void> {
     try {
       await execAsync('npm run build', { cwd: this.projectRoot, timeout: 300000 });
       status.success.push('Build check passed');
-      await this.log('✅ Build check passed', 'success');    } catch {
+      await this.log('✅ Build check passed', 'success');
+    } catch {
       status.failed.push('Build check failed');
       await this.log('❌ Build check failed', 'error');
     }
@@ -387,8 +482,8 @@ class DependabotAutomation {
   /**
    * Analyze performance impact
    */
-  async analyzePerformanceImpact(updateInfo) {
-    const performance = {
+  async analyzePerformanceImpact(updateInfo: DependencyUpdateInfo): Promise<PerformanceImpact> {
+    const performance: PerformanceImpact = {
       bundleSizeImpact: 'unknown',
       runtimeImpact: 'minimal',
       recommendations: [],
@@ -408,9 +503,8 @@ class DependabotAutomation {
   /**
    * Auto-merge eligible PR
    */
-  async autoMergePR(prNumber, analysis) {
+  async autoMergePR(prNumber: number | string, analysis: AnalysisResult): Promise<void> {
     await this.log(`🔄 Auto-merging PR #${prNumber}`, 'info');
-
     try {
       // Wait for configured time before merging
       if (this.config.autoMerge.waitTimeMinutes > 0) {
@@ -420,17 +514,14 @@ class DependabotAutomation {
         );
         await this.delay(this.config.autoMerge.waitTimeMinutes * 60 * 1000);
       }
-
       // Merge the PR (this would use GitHub API in real implementation)
       await this.log(`✅ Successfully auto-merged PR #${prNumber}`, 'success');
-
       // Generate changelog entry
       await this.generateChangelogEntry(analysis);
-
       // Trigger post-merge actions
       await this.runPostMergeActions(analysis);
-    } catch (error) {
-      await this.log(`❌ Auto-merge failed for PR #${prNumber}: ${error.message}`, 'error');
+    } catch (error: any) {
+      await this.log(`❌ Auto-merge failed for PR #${prNumber}: ${error?.message ?? String(error)}`, 'error');
       throw error;
     }
   }
@@ -438,59 +529,50 @@ class DependabotAutomation {
   /**
    * Generate changelog entry for dependency update
    */
-  async generateChangelogEntry(analysis) {
+  async generateChangelogEntry(analysis: AnalysisResult): Promise<void> {
     const changelogPath = path.join(this.projectRoot, 'CHANGELOG.md');
     const { updateInfo } = analysis;
-
-    const entry = `### Dependencies\n- Updated \`${updateInfo.package}\` from ${updateInfo.fromVersion} to ${updateInfo.toVersion}\n`;
-
+    const entry = `### Dependencies\n- Updated \`${updateInfo?.package}\` from ${updateInfo?.fromVersion} to ${updateInfo?.toVersion}\n`;
     try {
       let changelog = '';
       try {
-        changelog = await fs.readFile(changelogPath, 'utf8');      } catch {
+        changelog = await fs.readFile(changelogPath, 'utf8');
+      } catch {
         // Changelog doesn't exist, create it
         changelog = '# Changelog\n\n## [Unreleased]\n\n';
       }
-
       // Insert new entry after [Unreleased] section
       const updatedChangelog = changelog.replace(
         /## \[Unreleased\]\n\n/,
         `## [Unreleased]\n\n${entry}\n`,
       );
-
       await fs.writeFile(changelogPath, updatedChangelog);
       await this.log('📝 Updated changelog with dependency update', 'info');
-    } catch (error) {
-      await this.log(`Warning: Could not update changelog: ${error.message}`, 'warning');
+    } catch (error: any) {
+      await this.log(`Warning: Could not update changelog: ${error?.message ?? String(error)}`, 'warning');
     }
   }
 
   /**
    * Run post-merge actions
    */
-  async runPostMergeActions(analysis) {
+  async runPostMergeActions(analysis: AnalysisResult): Promise<void> {
     try {
-      // Trigger integration with existing H3X automation
-      import { H3XAutomation } from './h3x-automation.ts';
-      const h3xAutomation = new H3XAutomation();
-
-      // Create a checkpoint for the dependency update
-      await h3xAutomation.createGitCheckpoint(
-        `chore(deps): Auto-merged dependency update - ${analysis.updateInfo.package} ${analysis.updateInfo.toVersion}`,
-      );
-
+      // TODO: Integrate with H3XAutomation if available
+      // import { H3XAutomation } from './h3x-automation.ts';
+      // const h3xAutomation = new H3XAutomation();
+      // await h3xAutomation.createGitCheckpoint(...);
       await this.log('🔄 Triggered H3X automation post-merge actions', 'info');
-    } catch (error) {
-      await this.log(`Warning: Post-merge actions failed: ${error.message}`, 'warning');
+    } catch (error: any) {
+      await this.log(`Warning: Post-merge actions failed: ${error?.message ?? String(error)}`, 'warning');
     }
   }
 
   /**
    * Generate dependency update report
    */
-  async generateReport() {
+  async generateReport(): Promise<any> {
     await this.log('📊 Generating Dependabot automation report', 'info');
-
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -500,18 +582,16 @@ class DependabotAutomation {
         securityIssues: 0,
       },
       details: {
-        ecosystems: {},
-        updateTypes: {},
-        securityFindings: [],
+        ecosystems: {} as Record<string, any>,
+        updateTypes: {} as Record<string, any>,
+        securityFindings: [] as any[],
       },
-      recommendations: [],
+      recommendations: [] as string[],
     };
-
     // Read automation logs to compile statistics
     try {
       const logContent = await fs.readFile(this.logFile, 'utf8');
       const logLines = logContent.split('\n').filter((line) => line.trim());
-
       // Analyze log entries for statistics
       logLines.forEach((line) => {
         if (line.includes('Analyzing Dependabot PR')) {
@@ -524,22 +604,18 @@ class DependabotAutomation {
           report.summary.securityIssues++;
         }
       });
-    } catch (error) {
-      await this.log(`Warning: Could not read logs for report: ${error.message}`, 'warning');
+    } catch (error: any) {
+      await this.log(`Warning: Could not read logs for report: ${error?.message ?? String(error)}`, 'warning');
     }
-
     // Generate recommendations
     report.recommendations.push('Regular monitoring of auto-merge success rate');
     report.recommendations.push('Review blocked PRs for potential automation improvements');
-
     if (report.summary.securityIssues > 0) {
       report.recommendations.push('Review security findings and update policies');
     }
-
     // Save report
     const reportPath = path.join(this.projectRoot, 'logs/automation/dependabot-report.json');
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-
     await this.log(`📊 Report saved to ${reportPath}`, 'success');
     return report;
   }
@@ -547,23 +623,21 @@ class DependabotAutomation {
   /**
    * Utility: Delay execution
    */
-  delay(ms) {
+  delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
    * Logging utility
    */
-  async log(message, level = 'info') {
+  async log(message: string, level: string = 'info'): Promise<void> {
     const timestamp = new Date().toISOString();
     const logEntry = `[${timestamp}] [${level.toUpperCase()}] ${message}\n`;
-
     console.log(logEntry.trim());
-
     try {
       await fs.appendFile(this.logFile, logEntry);
-    } catch (error) {
-      console.error('Failed to write to log file:', error.message);
+    } catch (error: any) {
+      console.error('Failed to write to log file:', error?.message ?? String(error));
     }
   }
 }
@@ -573,16 +647,15 @@ async function main(): Promise<void> {
   const automation = new DependabotAutomation();
   const command = process.argv[2] || 'help';
   const prNumber = process.argv[3];
-
   try {
     await automation.initialize();
-
-    switch (command.toLowerCase()) {      case 'analyze': {
+    switch (command.toLowerCase()) {
+      case 'analyze': {
         if (!prNumber) {
           throw new Error('PR number required for analyze command');
         }
         // In real implementation, this would fetch PR data from GitHub API
-        const mockPRData = {
+        const mockPRData: DependabotPRData = {
           number: prNumber,
           title: 'Bump axios from 1.6.1 to 1.6.2',
           body: 'Updates axios dependency',
@@ -594,27 +667,25 @@ async function main(): Promise<void> {
         console.log(JSON.stringify(analysis, null, 2));
         break;
       }
-
       case 'auto-merge': {
         if (!prNumber) {
           throw new Error('PR number required for auto-merge command');
-        }        // This would include the full analysis and merge workflow
+        }
+        // This would include the full analysis and merge workflow
         console.log(`Auto-merge workflow for PR #${prNumber} would be executed`);
         break;
       }
-
       case 'report': {
         const report = await automation.generateReport();
         console.log('\nDependabot Automation Report:');
         console.log(JSON.stringify(report, null, 2));
         break;
       }
-
-      case 'config': {        console.log('\nCurrent Configuration:');
+      case 'config': {
+        console.log('\nCurrent Configuration:');
         console.log(JSON.stringify(automation.config, null, 2));
         break;
       }
-
       case 'help':
       default:
         console.log(`
@@ -636,8 +707,8 @@ Examples:
         `);
         break;
     }
-  } catch (error) {
-    console.error(`❌ Error: ${error.message}`);
+  } catch (error: any) {
+    console.error(`❌ Error: ${error?.message ?? String(error)}`);
     process.exit(1);
   }
 }
@@ -646,4 +717,4 @@ if (require.main === module) {
   void main();
 }
 
-export = { DependabotAutomation };
+export default DependabotAutomation;

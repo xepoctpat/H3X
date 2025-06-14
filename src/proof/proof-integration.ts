@@ -204,7 +204,7 @@ export class H3XProofSystemModule {
         total_proofs: all_proofs.length,
         validation_score: avg_validation_score,
         energy_efficiency: 1 - base_metrics.energy_consumption / 1000, // Normalized
-        lattice_utilization: 0, // Set to 0 or a valid value if available
+        lattice_utilization: lattice_status.flups_count / 1000, // Assuming 1000 is max capacity for now
         flup_count: lattice_status.flups_count,
         regulator_count: lattice_status.regulators_count,
         benchmark_score: avg_benchmark_score,

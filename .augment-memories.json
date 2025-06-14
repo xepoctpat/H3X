@@ -1,0 +1,245 @@
+{
+  "generated": "2025-06-14T07:05:58.160Z",
+  "project": "H3X Hexperiment System",
+  "version": "2.0.0",
+  "memories": [
+    {
+      "category": "convention",
+      "content": "All new code should be written in TypeScript, not JavaScript",
+      "confidence": 0.95,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "deployment",
+      "content": "Project is fully containerized - use Docker commands for development and deployment",
+      "confidence": 0.95,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "technology",
+      "content": "Project uses LangChain framework for local AI processing (no OpenAI)",
+      "confidence": 0.9,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.997Z"
+    },
+    {
+      "category": "integration",
+      "content": "Project integrates with GitHub API for code intelligence and Copilot features",
+      "confidence": 0.9,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "technology",
+      "content": "Project uses Three.js for 3D geometric processing and visualization",
+      "confidence": 0.9,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "testing",
+      "content": "Use Vitest for unit and integration tests, not Jest",
+      "confidence": 0.9,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Run `npm run memory:generate` to update Augment Agent memories",
+      "confidence": 0.9,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "architecture",
+      "content": "Main application code is organized in the /src directory",
+      "confidence": 0.9,
+      "source": "file structure",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "architecture",
+      "content": "Automation and utility scripts are in /scripts directory",
+      "confidence": 0.9,
+      "source": "file structure",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "deployment",
+      "content": "Docker configurations are organized in /docker directory",
+      "confidence": 0.9,
+      "source": "file structure",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "testing",
+      "content": "Tests are organized in /tests directory with unit, integration, and e2e subdirectories",
+      "confidence": 0.9,
+      "source": "file structure",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "convention",
+      "content": "TypeScript strict mode is enabled - maintain high type safety standards",
+      "confidence": 0.9,
+      "source": "tsconfig.json",
+      "timestamp": "2025-06-14T07:05:58.006Z"
+    },
+    {
+      "category": "architecture",
+      "content": "Project implements AI agents - main agent logic in agent*.ts files",
+      "confidence": 0.9,
+      "source": "src structure",
+      "timestamp": "2025-06-14T07:05:58.007Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Always run tests before committing: npm run test",
+      "confidence": 0.9,
+      "source": "development workflow",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "integration",
+      "content": "Project supports multiple AI backends: OpenAI, LMStudio, and standalone mode",
+      "confidence": 0.9,
+      "source": "AI integration",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Use `npm run git:pr` for automated PR creation",
+      "confidence": 0.8,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Use `npm run standalone` to run H3X without OpenAI dependencies",
+      "confidence": 0.8,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "integration",
+      "content": "Project supports LMStudio integration via `npm run lmstudio`",
+      "confidence": 0.8,
+      "source": "package.json",
+      "timestamp": "2025-06-14T07:05:57.998Z"
+    },
+    {
+      "category": "deployment",
+      "content": "Project has 2 Docker Compose configurations for different environments",
+      "confidence": 0.8,
+      "source": "docker files",
+      "timestamp": "2025-06-14T07:05:58.005Z"
+    },
+    {
+      "category": "deployment",
+      "content": "Multiple Docker environments available: dev, prod, simple, unified",
+      "confidence": 0.8,
+      "source": "docker directory",
+      "timestamp": "2025-06-14T07:05:58.005Z"
+    },
+    {
+      "category": "convention",
+      "content": "Project uses multiple TypeScript configurations for different build targets",
+      "confidence": 0.8,
+      "source": "tsconfig files",
+      "timestamp": "2025-06-14T07:05:58.006Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Project has extensive automation scripts for CI/CD, git operations, and development workflows",
+      "confidence": 0.8,
+      "source": "scripts directory",
+      "timestamp": "2025-06-14T07:05:58.006Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Git operations are automated via scripts - use npm run git:* commands",
+      "confidence": 0.8,
+      "source": "scripts directory",
+      "timestamp": "2025-06-14T07:05:58.006Z"
+    },
+    {
+      "category": "architecture",
+      "content": "Custom framework components are in src/framework directory",
+      "confidence": 0.8,
+      "source": "src/framework",
+      "timestamp": "2025-06-14T07:05:58.007Z"
+    },
+    {
+      "category": "architecture",
+      "content": "Hexperiment System Protocol implementation in src/protocol directory",
+      "confidence": 0.8,
+      "source": "src/protocol",
+      "timestamp": "2025-06-14T07:05:58.007Z"
+    },
+    {
+      "category": "deployment",
+      "content": "Deployment documentation available - check Docker and deployment guides",
+      "confidence": 0.8,
+      "source": "documentation",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "architecture",
+      "content": "H3X follows modular architecture: Source code in /src directory, Automation scripts in /scripts directory, Docker configuration in /docker directory, Tests organized in /tests directory",
+      "confidence": 0.8,
+      "source": "analysis",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "convention",
+      "content": "Prefer explicit types over any, use interfaces for object shapes",
+      "confidence": 0.8,
+      "source": "TypeScript standards",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Use npm run lint:fix to automatically fix linting issues",
+      "confidence": 0.8,
+      "source": "development workflow",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "workflow",
+      "content": "Build production version with npm run build:prod",
+      "confidence": 0.8,
+      "source": "development workflow",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "integration",
+      "content": "Database support includes MongoDB, Redis, and PostgreSQL",
+      "confidence": 0.8,
+      "source": "database integration",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "documentation",
+      "content": "Extensive documentation available in /docs directory",
+      "confidence": 0.7,
+      "source": "docs directory",
+      "timestamp": "2025-06-14T07:05:58.159Z"
+    },
+    {
+      "category": "convention",
+      "content": "Use camelCase for variables and functions, PascalCase for classes and types",
+      "confidence": 0.7,
+      "source": "TypeScript standards",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    },
+    {
+      "category": "convention",
+      "content": "Use async/await over Promises.then() for better readability",
+      "confidence": 0.7,
+      "source": "JavaScript standards",
+      "timestamp": "2025-06-14T07:05:58.160Z"
+    }
+  ]
+}

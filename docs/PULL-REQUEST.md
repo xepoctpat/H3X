@@ -10,9 +10,9 @@ capabilities and comprehensive documentation.
 
 ### 🔧 Core Features
 
-- **Microsoft 365 Agents Framework Integration**: Complete setup with OpenAI GPT-4 integration
+- **Microsoft 365 Agents Framework Integration**: Complete setup with GitHub Copilot + LMStudio integration
 - **Standalone Server Deployment**: Runs independently on port 3978 with health monitoring
-- **Authentication System**: Fixed OpenAI API integration with proper environment variable handling
+- **Authentication System**: Fixed GitHub API integration with proper environment variable handling
 - **3D Visualization Interface**: Hexperiment Labs SIR Control Interface with interactive elements
 - **Comprehensive Testing Suite**: Enhanced test client with interactive chat mode
 
@@ -43,8 +43,8 @@ capabilities and comprehensive documentation.
 ### Authentication Fix
 
 ```diff
-- const openAIApiKey = process.env.OPENAI_API_KEY;
-+ const openAIApiKey = process.env.SECRET_OPENAI_API_KEY;
+- const openAIApiKey = process.env.GITHUB_TOKEN;
++ const openAIApiKey = process.env.SECRET_GITHUB_TOKEN;
 ```
 
 ### Server Enhancement
@@ -56,7 +56,7 @@ capabilities and comprehensive documentation.
 
 ### Environment Configuration
 
-- Created `env/.env.standalone` with proper OpenAI API key configuration
+- Created `env/.env.standalone` with proper GitHub API key configuration
 - Enhanced playground environment setup
 - Added environment variable validation
 
@@ -70,7 +70,7 @@ H3X/
 │   └── tools/                # Agent tools (weather, datetime)
 ├── env/
 │   ├── .env.standalone       # Standalone deployment config
-│   └── .env.playground.user  # OpenAI API key config
+│   └── .env.playground.user  # GitHub API key config
 ├── appPackage/              # Teams app package
 ├── infra/                   # Azure deployment infrastructure
 ├── test-client-enhanced.js  # Comprehensive testing tool
@@ -119,8 +119,8 @@ npm run test-enhanced
 # 1. Install dependencies
 npm install
 
-# 2. Configure OpenAI API key
-# Edit env/.env.standalone and add your OPENAI_API_KEY
+# 2. Configure GitHub API key
+# Edit env/.env.standalone and add your GITHUB_TOKEN
 
 # 3. Verify setup
 npm run setup-check
@@ -135,7 +135,7 @@ npm run test-enhanced
 ## 🔗 Integration Points
 
 - **Microsoft 365 Agents Framework**: Full compatibility with latest toolkit
-- **OpenAI GPT-4**: Advanced AI capabilities with proper authentication
+- **GitHub Copilot + LMStudio**: Advanced AI capabilities with proper authentication
 - **Microsoft Bot Framework**: Ready for Teams and Azure deployment
 - **Azure Infrastructure**: Bicep templates for cloud deployment
 - **VSCode Integration**: Optimized development environment

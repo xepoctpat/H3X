@@ -1,4 +1,3 @@
-
 // Auto-generated interfaces
 interface ProcessEnv {
   [key: string]: string | undefined;
@@ -11,7 +10,7 @@ interface ConsoleLog {
 }
 
 /**
- * H3X Dependabot Automation Dashboard Server
+ * H3X Dependabot Automation Dashboard
  *
  * Provides a web interface for monitoring and managing the Dependabot automation system:
  * - Real-time metrics dashboard
@@ -22,15 +21,19 @@ interface ConsoleLog {
  */
 
 import { promises as fs } from 'fs';
-import path = require('path');
-
-import express = require('express');
-
-
-import * as DependabotMonitoring from './dependabot-monitoring';
+import * as path from 'path';
+import express, { Request, Response, NextFunction } from 'express';
+import DependabotMonitoring from './dependabot-monitoring';
+import DependabotAutomation from './dependabot-automation';
 
 class DependabotDashboard {
-  constructor(port = 3001) {
+  port: number | string;
+  app: ReturnType<typeof express>;
+  monitoring: DependabotMonitoring;
+  projectRoot: string;
+  server?: any;
+
+  constructor(port: number | string = 3001) {
     this.port = port;
     this.app = express();
     this.monitoring = new DependabotMonitoring();
@@ -46,7 +49,7 @@ class DependabotDashboard {
     this.app.use(express.static(path.join(__dirname, '../public')));
 
     // CORS for development
-    this.app.use((req, res, next) => {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -54,7 +57,7 @@ class DependabotDashboard {
     });
 
     // Request logging
-    this.app.use((req, res, next) => {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
       console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
       next();
     });
@@ -62,7 +65,7 @@ class DependabotDashboard {
 
   setupRoutes() {
     // Health check
-    this.app.get('/health', (req, res) => {
+    this.app.get('/health', (req: Request, res: Response) => {
       const healthStatus = this.monitoring.getHealthStatus();
       res.json({
         status: 'ok',
@@ -72,68 +75,92 @@ class DependabotDashboard {
     });
 
     // Metrics endpoint
-    this.app.get('/api/metrics', (req, res) => {
+    this.app.get('/api/metrics', (req: Request, res: Response) => {
       try {
         const metrics = this.monitoring.getMetrics();
         res.json(metrics);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Alerts endpoint
-    this.app.get('/api/alerts', (req, res) => {
+    this.app.get('/api/alerts', (req: Request, res: Response) => {
       try {
         const alerts = this.monitoring.getAlerts();
         res.json(alerts);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Resolve alert
-    this.app.post('/api/alerts/:alertId/resolve', async (req, res) => {
+    this.app.post('/api/alerts/:alertId/resolve', async (req: Request, res: Response) => {
       try {
         const { alertId } = req.params;
         const { resolution } = req.body;
         await this.monitoring.resolveAlert(alertId, resolution);
         res.json({ success: true });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Dashboard report
-    this.app.get('/api/report', (req, res) => {
+    this.app.get('/api/report', (req: Request, res: Response) => {
       try {
         const report = this.monitoring.generateReport();
         res.json(report);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Configuration endpoints
-    this.app.get('/api/config', async (req, res) => {
+    this.app.get('/api/config', async (req: Request, res: Response) => {
       try {
         const config = await this.getAutomationConfig();
         res.json(config);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
-    this.app.put('/api/config', async (req, res) => {
+    this.app.put('/api/config', async (req: Request, res: Response) => {
       try {
         await this.updateAutomationConfig(req.body);
         res.json({ success: true });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Recent activity
-    this.app.get('/api/activity', (req, res) => {
+    this.app.get('/api/activity', (req: Request, res: Response) => {
       try {
         const metrics = this.monitoring.getMetrics();
         const recentActivity = {
@@ -142,13 +169,17 @@ class DependabotDashboard {
           dailyStats: metrics.dailyStats,
         };
         res.json(recentActivity);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Performance data
-    this.app.get('/api/performance', (req, res) => {
+    this.app.get('/api/performance', (req: Request, res: Response) => {
       try {
         const metrics = this.monitoring.getMetrics();
         const performance = {
@@ -157,32 +188,44 @@ class DependabotDashboard {
           memoryUsage: metrics.performance.memoryUsage,
         };
         res.json(performance);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Manual PR processing trigger
-    this.app.post('/api/process-pr/:prNumber', async (req, res) => {
+    this.app.post('/api/process-pr/:prNumber', async (req: Request, res: Response) => {
       try {
         const { prNumber } = req.params;
-        import { DependabotAutomation } from './dependabot-automation';
+        // For demonstration, create a mock PR data object
+        const mockPRData = {
+          number: prNumber,
+          title: 'Update dependency',
+          body: 'Automated update',
+        };
         const automation = new DependabotAutomation();
-
-        const result = await automation.analyzePR(parseInt(prNumber));
+        const result = await automation.analyzeDependabotPR(prNumber, mockPRData);
         res.json({ success: true, result });
-      } catch (error) {
-        res.status(500).json({ error: error.message });
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          res.status(500).json({ error: (error as any).message });
+        } else {
+          res.status(500).json({ error });
+        }
       }
     });
 
     // Dashboard HTML page
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (req: Request, res: Response) => {
       res.send(this.generateDashboardHTML());
     });
 
     // API documentation
-    this.app.get('/api', (req, res) => {
+    this.app.get('/api', (req: Request, res: Response) => {
       res.json({
         endpoints: {
           'GET /health': 'System health check',
@@ -216,7 +259,7 @@ class DependabotDashboard {
     }
   }
 
-  async updateAutomationConfig(newConfig) {
+  async updateAutomationConfig(newConfig: any) {
     const configPath = path.join(this.projectRoot, 'config/dependabot-automation.json');
     await fs.writeFile(configPath, JSON.stringify(newConfig, null, 2));
   }
@@ -607,7 +650,7 @@ class DependabotDashboard {
   }
 
   async start() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       this.server = this.app.listen(this.port, () => {
         console.log(`🚀 Dependabot Dashboard running at http://localhost:${this.port}`);
         console.log(`📊 Health check: http://localhost:${this.port}/health`);
@@ -651,4 +694,4 @@ if (require.main === module) {
   });
 }
 
-export = DependabotDashboard;
+export default DependabotDashboard;

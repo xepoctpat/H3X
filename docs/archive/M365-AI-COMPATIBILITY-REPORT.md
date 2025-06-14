@@ -152,7 +152,7 @@ Your `ai-integration-control-center.html` can integrate with M365 AI through:
 
 ### **Already Available in Your System:**
 
-- ✅ `src/agent.js` - Full M365 + OpenAI integration
+- ✅ `src/agent.js` - Full M365 + GitHub integration
 - ✅ `src/agent-no-openai.js` - Pure M365 SDK version
 - ✅ `src/index.js` - Express server with Bot Framework
 - ✅ `Test-Client-No-Openai.js` - Testing framework

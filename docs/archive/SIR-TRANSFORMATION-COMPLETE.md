@@ -135,7 +135,7 @@ Your SIR Control Interface exposes these endpoints:
 
 ### 🔄 **Ready for Next Steps**
 
-- [ ] **OpenAI API Key Configuration**: Update with valid API key for full functionality
+- [ ] **GitHub API Key Configuration**: Update with valid API key for full functionality
 - [ ] **Teams Integration**: Deploy to Microsoft Teams environment
 - [ ] **Azure Deployment**: Scale to Azure cloud infrastructure
 - [ ] **Custom SIR Tools**: Develop additional domain-specific capabilities
@@ -148,14 +148,14 @@ The system currently uses encrypted API keys from the Microsoft 365 Agents Toolk
 functionality:
 
 1. **For Playground Testing**: Use the built-in encrypted key system
-2. **For Production**: Configure a valid OpenAI API key in `env/.env.standalone`
+2. **For Production**: Configure a valid GitHub API key in `env/.env.standalone`
 
 ---
 
 ## 🎯 **Next Actions**
 
 1. **Test the 3D Visualization**: Open `index.html` to see the SIR Control Interface
-2. **Configure API Key**: Set up OpenAI API access for full SIR capabilities
+2. **Configure API Key**: Set up GitHub API access for full SIR capabilities
 3. **Deploy to Teams**: Use the Microsoft 365 Agents Toolkit for Teams integration
 4. **Extend SIR Tools**: Add custom environmental analysis capabilities
 

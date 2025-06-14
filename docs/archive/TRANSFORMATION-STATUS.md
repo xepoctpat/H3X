@@ -36,7 +36,7 @@
 
 ### **⚠️ Known Issue (Expected Behavior)**
 
-- **OpenAI API Integration**: Encrypted API key requires Teams Toolkit decryption
+- **GitHub API Integration**: Encrypted API key requires Teams Toolkit decryption
   - The API key in `env/.env.playground.user` is encrypted with `crypto_` prefix
   - This is normal Microsoft 365 Agents Toolkit security behavior
   - For full testing, use the official playground mode: `npm run dev:teamsfx:playground`
@@ -55,7 +55,7 @@
    This will decrypt the API key and provide full SIR functionality testing
 
 2. **Alternative: Plain Text API Key** (For Advanced Users):
-   - Create a new OpenAI API key
+   - Create a new GitHub API key
    - Replace the encrypted value with plain text for standalone testing
 
 ### **For Production Deployment**

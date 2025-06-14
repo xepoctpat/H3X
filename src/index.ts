@@ -8,8 +8,8 @@ import * as path from 'path';
 
 import express from 'express';
 
-// This bot's main dialog.
-import { sirAgent } from './agent-no-openai';
+// H3X GitHub-integrated agent
+import { h3xGitHubAgent } from './agent-github';
 
 // Import H3X Proof System
 import { H3XProofSystemModule } from './proof/proof-integration';
@@ -66,10 +66,10 @@ server.get('/api/health', (req, res) => {
 // Status endpoint (no auth required)
 server.get('/', (req, res) => {
   res.json({
-    service: 'Hexperiment Labs SIR Control Interface',
+    service: 'H3X Virtual Geometrically Enhanced Database Engine',
     version: '2.0.0',
     status: 'running',
-    environment: 'local_container',
+    environment: 'github_integrated',
     endpoints: {
       'POST /api/messages': 'Local bot endpoint for conversations',
       'GET /health': 'Health check endpoint',
@@ -77,20 +77,20 @@ server.get('/', (req, res) => {
       'GET /api/sir-status': 'SIR agent status',
     },
     features: [
-      'Local containerized deployment',
-      'Environmental analysis with real-life standards',
-      'Simulation control',
-      'AI assistant generation',
-      'Human-supervised confirmation scenarios',
-      'Monitoring system implementation',
-      'PDF framework integration ready',
+      'Virtual geometrically enhanced database',
+      '3D spatial data processing with Three.js',
+      'Multi-database integration (MongoDB, Redis, PostgreSQL)',
+      'GitHub API integration and Copilot support',
+      'Real-time feedback loops',
+      'Geometric optimization and spatial indexing',
+      'LMStudio integration for local AI',
     ],
     mode: 'LOCAL_ACTIVE',
     description:
-      'Super Intelligent Regulator for AI assistant generation and environment analysis - Containerized Local Deployment',
-    framework: 'Local Express Server',
-    aiDependency: 'None - Pure local processing',
-    azureDependency: 'None - Full local deployment',
+      'Virtual Geometrically Enhanced Database Engine with GitHub integration and 3D spatial processing',
+    framework: 'Express + Three.js + Multi-Database',
+    aiDependency: 'GitHub Copilot + LMStudio (local)',
+    openaiDependency: 'None - OpenAI completely removed',
     realLifeStandards: true,
     timestamp: new Date().toISOString(),
   });

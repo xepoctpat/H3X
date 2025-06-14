@@ -3,7 +3,7 @@
 ## 🔮 Overview
 
 This guide will help you connect your H3X SIR Control Interface to LMStudio for local AI processing
-without requiring OpenAI API keys.
+without requiring GitHub API keys.
 
 ## 📋 Prerequisites
 

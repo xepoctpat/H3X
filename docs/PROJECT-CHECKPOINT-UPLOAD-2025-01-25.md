@@ -202,7 +202,7 @@ class NodeNeuralDashboard {
 
 - ✅ Node.js runtime environment
 - ✅ Express.js server framework
-- ✅ OpenAI API integration (optional)
+- ✅ GitHub API integration (optional)
 - ✅ LM Studio local AI (alternative)
 - ✅ Custom H3X framework modules
 
@@ -211,7 +211,7 @@ class NodeNeuralDashboard {
 - ✅ Node.js v14+
 - ✅ Modern web browser (Chrome, Firefox, Edge)
 - ✅ IIS or Node.js server environment
-- ✅ Optional: OpenAI API key or LM Studio setup
+- ✅ Optional: GitHub API key or LM Studio setup
 
 ---
 

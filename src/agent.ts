@@ -12,7 +12,6 @@ interface ConsoleLog {
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { AzureChatOpenAI, ChatOpenAI } from '@langchain/openai';
 import { ActivityTypes } from '@microsoft/agents-activity';
 import { AgentApplicationBuilder, MessageFactory } from '@microsoft/agents-hosting';
 
@@ -28,8 +27,7 @@ sirAgent.onConversationUpdate('membersAdded', async (context) => {
   );
 });
 
-const agentModel = new ChatOpenAI({
-  apiKey: (process.env as ProcessEnv).SECRET_OPENAI_API_KEY,
+const agentModel = // OpenAI removed - using GitHub integration.GITHUB_TOKEN,
   model: 'gpt-3.5-turbo',
   temperature: 0,
 });

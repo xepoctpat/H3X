@@ -31,14 +31,12 @@ curl http://localhost:8081/api/health
 The system consists of two main services:
 
 #### H3X Server (Port 4978)
-
 - **Image**: Built from Dockerfile.h3x
 - **Purpose**: Main application server with SIR Control Interface
 - **Dependencies**: Protocol server, mounted volumes
 - **Health**: Automatic restart policies
 
 #### Protocol Server (Port 8081)
-
 - **Image**: Built from hexperiment-system-protocol/Dockerfile
 - **Purpose**: Service coordination and protocol management
 - **Health Endpoint**: `/api/health`
@@ -63,7 +61,6 @@ docker-compose down
 ### Volume Mounting
 
 The system mounts local directories for live development:
-
 - `./Public` → Container public files
 - `./Src` → Container source code
 
@@ -72,7 +69,6 @@ Changes to these directories are immediately reflected in running containers.
 ### Network Architecture
 
 Services communicate via the `h3x-network` bridge:
-
 - **Internal DNS**: Services can reach each other by name
 - **Service Discovery**: Automatic container networking
 - **Port Mapping**: External access via mapped ports
@@ -80,17 +76,14 @@ Services communicate via the `h3x-network` bridge:
 ### Troubleshooting
 
 #### Port Conflicts
-
 If ports 4978 or 8081 are in use:
-
 ```yaml
 # Edit docker-compose.yml
 ports:
-  - '5000:3978' # Change external port
+  - "5000:3978"  # Change external port
 ```
 
 #### Container Issues
-
 ```bash
 # Check container status
 docker-compose ps
@@ -103,7 +96,6 @@ docker-compose restart [service-name]
 ```
 
 #### Network Problems
-
 ```bash
 # Recreate network
 docker-compose down
@@ -113,7 +105,6 @@ docker-compose up -d
 ### Configuration
 
 Environment variables can be set in `docker-compose.yml`:
-
 ```yaml
 environment:
   - NODE_ENV=production
@@ -135,5 +126,4 @@ docker-compose up -d
 
 ---
 
-_This containerized approach replaces all previous deployment methods and provides a consistent,
-reliable deployment experience across all environments._
+*This containerized approach replaces all previous deployment methods and provides a consistent, reliable deployment experience across all environments.*

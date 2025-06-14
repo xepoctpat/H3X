@@ -14,7 +14,7 @@ H3X System Architecture
 │   │   └── Dependencies: protocol-server
 │   │
 │   └── protocol-server (Alpine)
-│       ├── Port: 8081 (external) → 8080 (internal)
+│       ├── Port: 8081 (external) → 8080 (internal) 
 │       ├── Health: /api/health endpoint
 │       └── Size: 26.4MB optimized container
 │
@@ -42,7 +42,6 @@ External Request → Docker Host → Container Port Mapping
 ### Container Images
 
 #### H3X Server Image
-
 - **Base**: Node.js 18 Alpine
 - **Size**: ~264MB (multi-stage build)
 - **Components**:
@@ -51,8 +50,7 @@ External Request → Docker Host → Container Port Mapping
   - Environment simulation
   - Code generators
 
-#### Protocol Server Image
-
+#### Protocol Server Image  
 - **Base**: Alpine Linux
 - **Size**: 26.4MB (lightweight)
 - **Components**:
@@ -64,12 +62,11 @@ External Request → Docker Host → Container Port Mapping
 
 ```yaml
 volumes:
-  - ./Public:/app/Public # Static files and web interfaces
-  - ./Src:/app/Src # Source code for live development
+  - ./Public:/app/Public    # Static files and web interfaces
+  - ./Src:/app/Src          # Source code for live development
 ```
 
 **Benefits**:
-
 - Live code updates without container rebuilds
 - Persistent configuration changes
 - Development workflow optimization
@@ -86,7 +83,6 @@ networks:
 ```
 
 **Features**:
-
 - Isolated container communication
 - Service discovery by container name
 - External access via port mapping
@@ -95,14 +91,12 @@ networks:
 ### Health Monitoring
 
 #### Protocol Server Health Check
-
 - **Endpoint**: `http://protocol-server:8080/api/health`
 - **Response**: `{"service":"Hexperiment System Protocol","status":"healthy"}`
 - **Interval**: Every 30 seconds
 - **Timeout**: 10 seconds
 
 #### H3X Server Health Check
-
 - **Method**: Process monitoring
 - **Restart Policy**: `unless-stopped`
 - **Dependency**: Waits for protocol-server
@@ -110,13 +104,11 @@ networks:
 ### Security Considerations
 
 1. **Network Isolation**
-
    - Containers communicate via private bridge network
    - External access only through mapped ports
    - No direct host network access
 
 2. **Container Security**
-
    - Non-root user execution
    - Read-only file systems where possible
    - Minimal base images (Alpine)
@@ -129,7 +121,6 @@ networks:
 ### Scaling Strategy
 
 #### Horizontal Scaling
-
 ```bash
 # Scale h3x-server instances
 docker-compose up --scale h3x-server=3
@@ -138,7 +129,6 @@ docker-compose up --scale h3x-server=3
 ```
 
 #### Vertical Scaling
-
 ```yaml
 # Resource limits in docker-compose.yml
 deploy:
@@ -151,7 +141,6 @@ deploy:
 ### Configuration Management
 
 #### Environment Variables
-
 ```yaml
 environment:
   - NODE_ENV=production
@@ -161,7 +150,6 @@ environment:
 ```
 
 #### Configuration Files
-
 - `docker-compose.yml`: Service orchestration
 - `Dockerfile.h3x`: H3X server image build
 - `hexperiment-system-protocol/Dockerfile`: Protocol server build
@@ -178,7 +166,6 @@ Local Code → Multi-stage → Container → docker-compose up
 ### Monitoring and Observability
 
 #### Log Management
-
 ```bash
 # Service logs
 docker-compose logs -f
@@ -191,7 +178,6 @@ docker-compose logs --tail=1000 h3x-server
 ```
 
 #### Metrics Collection
-
 - Container resource usage: `docker stats`
 - Service health: Health check endpoints
 - Application metrics: Built-in monitoring
@@ -199,7 +185,6 @@ docker-compose logs --tail=1000 h3x-server
 ### Backup and Disaster Recovery
 
 #### Data Backup
-
 ```bash
 # Application backup
 docker-compose down
@@ -210,7 +195,6 @@ docker run --rm -v h3x_data:/data -v $(pwd):/backup alpine tar czf /backup/volum
 ```
 
 #### Recovery Process
-
 ```bash
 # Restore application
 tar -xzf h3x-backup-YYYYMMDD.tar.gz
@@ -223,14 +207,12 @@ docker run --rm -v h3x_data:/data -v $(pwd):/backup alpine tar xzf /backup/volum
 ### Performance Optimization
 
 #### Container Optimization
-
 - Multi-stage Docker builds
-- Alpine Linux base images
+- Alpine Linux base images  
 - Dependency layer caching
 - .dockerignore for build context
 
 #### Runtime Optimization
-
 - Health check intervals
 - Restart policies
 - Resource constraints
@@ -238,4 +220,4 @@ docker run --rm -v h3x_data:/data -v $(pwd):/backup alpine tar xzf /backup/volum
 
 ---
 
-_H3X Containerized Architecture - Generated 2025-05-28T19:24:43.082Z_
+*H3X Containerized Architecture - Generated 2025-06-11T05:23:59.559Z*
